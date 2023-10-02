@@ -1,9 +1,7 @@
 
-using Configuration.Controllers;
-using Controlleur;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using SmallTransit.Configuration;
 
-namespace Configuration
+namespace TestHost
 {
     public class Program
     {
@@ -18,7 +16,22 @@ namespace Configuration
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            ConfigurationSetup(builder.Services);
+            builder.Services.AddSmallTransit(configuration =>
+            {
+                configuration.Host = "localhost";
+                configuration.Port = 5672;
+                configuration.AddReceiver<string>("queue", rcv =>
+                {
+                    rcv.PrefetchCount = 1;
+                    rcv.RoutingKey = "*";
+                });
+
+                configuration.AddReceiver<string>("queue2", rcv =>
+                {
+                    rcv.PrefetchCount = 2;
+                    rcv.RoutingKey = "john";
+                });
+            });
 
             var app = builder.Build();
 
@@ -35,13 +48,6 @@ namespace Configuration
             app.MapControllers();
 
             app.Run();
-        }
-
-        private static void ConfigurationSetup(IServiceCollection services)
-        {
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
-
-            services.AddScoped<IJohny, Johny>();
         }
     }
 }
