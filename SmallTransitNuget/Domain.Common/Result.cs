@@ -34,6 +34,11 @@ public record Result(Exception? Exception)
         return new Result(exception);
     }
 
+    public static Result Failure(string exceptionMessage)
+    {
+        return new Result(new Exception(exceptionMessage));
+    }
+
     public static Result<TContent> Success<TContent>(TContent content)
     {
         return new Result<TContent>(content, null);
@@ -44,9 +49,19 @@ public record Result(Exception? Exception)
         return new Result<TContent>(default, exception);
     }
 
+    public static Result<TContent> Failure<TContent>(string exceptionMessage)
+    {
+        return new Result<TContent>(default, new Exception(exceptionMessage));
+    }
+
     public static Result<TContent> FromFailure<TContent>(Result innerResult)
     {
         return Failure<TContent>(innerResult.Exception ?? new ArgumentException("Inner result must be a failure", nameof(innerResult)));
+    }
+
+    public static Result FromFailure(Result innerResult)
+    {
+        return Failure(innerResult.Exception ?? new ArgumentException("Inner result must be a failure", nameof(innerResult)));
     }
 
     public static Result<TContent> From<TContent>(Result<TContent> innerResult)

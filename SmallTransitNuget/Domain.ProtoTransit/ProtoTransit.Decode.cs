@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.ProtoTransit.Entities.Header;
+using Domain.ProtoTransit.Seedwork;
 
 namespace Domain.ProtoTransit;
 
@@ -20,5 +21,24 @@ public abstract partial class ProtoTransit
         return protoTransitMessage.InitializeFrom(message);
     }
 
-    private protected virtual Result<ProtoTransit> InitializeFrom(byte[] message) => Result.Success(this);
+    private Result<ProtoTransit> InitializeFrom(byte[] message)
+    {
+        var headerInfos = Header.GetPropertyHeaderInfos(_protoProperties.Values.ToArray());
+
+        if (headerInfos.IsFailure()) return Result.FromFailure<ProtoTransit>(headerInfos);
+
+        for (var index = 0; index < headerInfos.Content.Count; index++)
+        {
+            var headerInfo = headerInfos.Content[index];
+            var propertyResult = TryGetProperty(headerInfo.PropertyType);
+
+            if (propertyResult.IsFailure()) return Result.FromFailure<ProtoTransit>(propertyResult);
+
+            propertyResult.Content!.Bytes = Parse(headerInfos.Content![index]);
+        }
+
+        return Result.Success(this);
+
+        byte[] Parse(MessagePortion messagePortion) => message.Skip(messagePortion.BeginAtIndex).Take(messagePortion.Length).ToArray();
+    }
 }

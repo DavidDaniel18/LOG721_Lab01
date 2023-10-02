@@ -1,21 +1,58 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
+using Domain.Common;
 using Domain.ProtoTransit.Entities.Header;
 using Domain.ProtoTransit.Seedwork;
+using Domain.ProtoTransit.ValueObjects.Properties;
 
 namespace Domain.ProtoTransit;
 
 public abstract partial class ProtoTransit
 {
     private protected readonly ProtoHeader Header;
-    
+
     private static readonly Dictionary<MessageTypesEnum, Func<ProtoTransit>> ProtoTransitFactory = InitializeFromEnumDescriptions();
+
+    private readonly Dictionary<Type, ProtoProperty> _protoProperties = new();
 
     private byte[]? _bytes;
 
-    private protected ProtoTransit(ProtoHeader header)
+    private protected ProtoTransit(MessageTypesEnum messageType)
     {
-        Header = header;
+        Header = new ProtoHeader(messageType);
+    }
+
+    private protected void AddProperty<TProperty>() where TProperty : ProtoProperty
+    {
+        _protoProperties.Add(typeof(TProperty), ProtoProperty.Create(typeof(TProperty)));
+    }
+
+    internal Result TrySetProperty<TProperty>(byte[] value) where TProperty : ProtoProperty
+    {
+        var propertyResult = TryGetProperty(typeof(TProperty));
+
+        if (propertyResult.IsFailure()) return Result.FromFailure(propertyResult);
+
+        propertyResult.Content!.Bytes = value;
+
+        Header.TrySetValue(propertyResult.Content!.HeaderType, value);
+
+        return Result.Success();
+    }
+
+    private Result<ProtoProperty> TryGetProperty(Type type)
+    {
+        if (_protoProperties.TryGetValue(type, out var protoProperty))
+        {
+            return Result.Success(protoProperty);
+        }
+
+        return Result.Failure<ProtoProperty>($"Property {type.Name} not found.");
+    }
+
+    private protected IEnumerable<ProtoProperty> GetProperties()
+    {
+        return _protoProperties.Values;
     }
 
     private static Dictionary<MessageTypesEnum, Func<ProtoTransit>> InitializeFromEnumDescriptions()

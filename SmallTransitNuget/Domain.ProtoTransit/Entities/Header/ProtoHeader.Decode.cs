@@ -1,32 +1,13 @@
 ﻿using Domain.Common;
-using Domain.Common.Exceptions;
 using Domain.ProtoTransit.Extensions;
+using Domain.ProtoTransit.Seedwork;
 using Domain.ProtoTransit.ValueObjects.Header;
+using Domain.ProtoTransit.ValueObjects.Properties;
 
 namespace Domain.ProtoTransit.Entities.Header;
 
 internal partial class ProtoHeader
 {
-    private readonly List<Type> _specificHeaderItems = new ();
-
-    private protected void AddSpecificHeaderItem<THeaderItem>() where THeaderItem : ProtoHeaderItem
-        => _specificHeaderItems.Add(typeof(THeaderItem));
-
-    private protected int GetTotalHeaderLength() => Convert.ToInt32(_headerItems[typeof(HeaderLengthItem)].HeaderValue.FromBytesToInt());
-
-    private protected Result<int> GetHeaderValue<THeaderItem>() where THeaderItem : ProtoHeaderItem
-    {
-        var type = typeof(THeaderItem);
-
-        if (_headerItems.ContainsKey(type) is false) return Result.Failure<int>(new DomainGenericException($"Header {typeof(THeaderItem)} not found"));
-
-        var header = _headerItems[typeof(THeaderItem)];
-
-        var value = header.HeaderValue.FromBytesToInt();
-
-        return Result.Success(Convert.ToInt32(value));
-    }
-
     internal Result InitializeFromBytes(byte[] message)
     {
         var headerLengthValueInBytes = message[..HeaderLengthItem.StorageSizeInBytes];
@@ -49,19 +30,61 @@ internal partial class ProtoHeader
         return Result.Success(messageType);
     }
 
-    private protected virtual Result InitializeSpecificHeadersFromBytes(byte[] header)
+    internal Result<List<MessagePortion>> GetPropertyHeaderInfos(IEnumerable<ProtoProperty> protoProperties)
+    {
+        var messagePortions = new List<MessagePortion>();
+
+        var totalHeaderLength = GetHeaderItemValue(typeof(HeaderLengthItem)).Content;
+
+        var currentIndex = 0;
+
+        foreach (var protoProperty in protoProperties)
+        {
+            var valueResult = GetHeaderItemValue(protoProperty.HeaderType);
+
+            if (valueResult.IsFailure()) return Result.FromFailure<List<MessagePortion>>(valueResult);
+
+            messagePortions.Add(new MessagePortion(totalHeaderLength + currentIndex, valueResult.Content, protoProperty.GetType()));
+
+            currentIndex += valueResult.Content;
+        }
+
+        return Result.Success(messagePortions);
+    }
+
+    private protected Result<int> GetHeaderItemValue(Type type)
+    {
+        if (_headerItems.ContainsKey(type) is false) return Result.Failure<int>($"Header {type} not found");
+
+        var header = _headerItems[type];
+
+        var value = header.HeaderValue.FromBytesToInt();
+
+        return Result.Success(value);
+    }
+
+    private protected Result InitializeSpecificHeadersFromBytes(byte[] header)
     {
         var currentIndex = HeaderLengthItem.StorageSizeInBytes + MessageTypeItem.StorageSizeInBytes;
 
-        foreach (var protoHeaderItem in _specificHeaderItems.Select(ProtoHeaderItem.Create))
+        foreach (var protoHeaderItem in GetSpecificHeaderItems().Select(ProtoHeaderItem.Create))
         {
             protoHeaderItem.HeaderValue = header[currentIndex..(currentIndex + protoHeaderItem.HeaderLength)];
-            
+
             AddHeaderItem(protoHeaderItem);
 
             currentIndex += protoHeaderItem.HeaderLength;
         }
 
         return Result.Success();
+    }
+
+
+    private IEnumerable<Type> GetSpecificHeaderItems()
+    {
+        return _headerItems
+            .Where(kv => _defaultHeaderTypes.Contains(kv.Key) is false)
+            .Select(kv => kv.Key)
+            .ToArray();
     }
 }
