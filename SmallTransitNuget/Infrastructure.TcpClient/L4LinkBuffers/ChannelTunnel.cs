@@ -2,8 +2,10 @@
 
 namespace Infrastructure.TcpClient.L4LinkBuffers;
 
-internal sealed class ChannelTunnel : ITunnel
+internal sealed class ChannelTunnel : IByteAccumulator
 {
+    private const int TransferredBites = 1024;
+
     private readonly Channel<byte[]> _channel = Channel.CreateUnbounded<byte[]>(new UnboundedChannelOptions
     {
         SingleReader = true,
@@ -18,41 +20,47 @@ internal sealed class ChannelTunnel : ITunnel
         _memoryStream.Dispose();
     }
 
-    public async ValueTask<int> ReadAsync(byte[] buffer, CancellationToken cancellationToken)
-    {
-        if (_memoryStream.Length == _memoryStream.Position) // If we have read everything from the MemoryStream
-        {
-            if (!await RefillBufferAsync(cancellationToken)) // If we can't read more from the Channel
-            {
-                return 0; // Signal the end of the stream
-            }
-        }
+    public IAsyncEnumerable<byte[]> GetAccumulator(CancellationToken cancellationToken) => _channel.Reader.ReadAllAsync(cancellationToken);
 
-        // Read from the MemoryStream
-        return await _memoryStream.ReadAsync(buffer, cancellationToken);
-    }
+    //public async Task<byte[]> ReadAsync(CancellationToken cancellationToken)
+    //{
+    //    var buffer = new byte[TransferredBites];
 
-    private async ValueTask<bool> RefillBufferAsync(CancellationToken cancellationToken)
-    {
-        byte[] bytesFromChannel;
-        try
-        {
-            if (!_channel.Reader.TryRead(out bytesFromChannel))
-            {
-                bytesFromChannel = await _channel.Reader.ReadAsync(cancellationToken);
-            }
-        }
-        catch (ChannelClosedException)
-        {
-            return false; // Signal the end of the stream
-        }
+    //    if (_memoryStream.Length == _memoryStream.Position) // If we have read everything from the MemoryStream
+    //    {
+    //        if (!await RefillBufferAsync(cancellationToken)) // If we can't read more from the Channel
+    //        {
+    //            return default; // Signal the end of the stream
+    //        }
+    //    }
 
-        _memoryStream = new MemoryStream(bytesFromChannel);
+    //    // Read from the MemoryStream
+    //    _ = await _memoryStream.ReadAsync(buffer, cancellationToken);
 
-        return true;
-    }
+    //    return buffer;
+    //}
 
-    public async ValueTask WriteAsync(byte[] buffer, CancellationToken cancellationToken)
+    //private async ValueTask<bool> RefillBufferAsync(CancellationToken cancellationToken)
+    //{
+    //    byte[] bytesFromChannel;
+    //    try
+    //    {
+    //        if (!_channel.Reader.TryRead(out bytesFromChannel))
+    //        {
+    //            bytesFromChannel = await _channel.Reader.ReadAsync(cancellationToken);
+    //        }
+    //    }
+    //    catch (ChannelClosedException)
+    //    {
+    //        return false; // Signal the end of the stream
+    //    }
+
+    //    _memoryStream = new MemoryStream(bytesFromChannel);
+
+    //    return true;
+    //}
+
+    public async Task WriteAsync(byte[] buffer, CancellationToken cancellationToken)
     {
         await _channel.Writer.WriteAsync(buffer, cancellationToken);
     }

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Domain.ProtoTransit.Extensions;
+﻿namespace Domain.ProtoTransit.Extensions;
 
 internal static class ByteExtensions
 {
@@ -11,20 +9,6 @@ internal static class ByteExtensions
         ToBigEndian(bytes);
 
         return bytes;
-    }
-
-    internal static byte[] ToBytes(this string value)
-    {
-        var bytes = Encoding.ASCII.GetBytes(value);
-
-        ToBigEndian(bytes);
-
-        return bytes;
-    }
-
-    internal static string FromBytesToString(this byte[] value)
-    {
-        return Encoding.ASCII.GetString(value);
     }
 
     internal static int FromBytesToInt(this byte[] value)

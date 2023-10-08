@@ -7,17 +7,17 @@ using Domain.ProtoTransit.ValueObjects.Properties;
 
 namespace Domain.ProtoTransit;
 
-public abstract partial class ProtoTransit
+internal abstract partial class Protocol
 {
     private protected readonly ProtoHeader Header;
 
-    private static readonly Dictionary<MessageTypesEnum, Func<ProtoTransit>> ProtoTransitFactory = InitializeFromEnumDescriptions();
+    internal static readonly Dictionary<MessageTypesEnum, Func<Protocol>> ProtoTransitFactory = InitializeFromEnumDescriptions();
 
     private readonly Dictionary<Type, ProtoProperty> _protoProperties = new();
 
     private byte[]? _bytes;
 
-    private protected ProtoTransit(MessageTypesEnum messageType)
+    private protected Protocol(MessageTypesEnum messageType)
     {
         Header = new ProtoHeader(messageType);
     }
@@ -29,25 +29,21 @@ public abstract partial class ProtoTransit
 
     internal Result TrySetProperty<TProperty>(byte[] value) where TProperty : ProtoProperty
     {
-        var propertyResult = TryGetProperty(typeof(TProperty));
+        return TryGetProperty<TProperty>().Bind(property =>
+        {
+            property.Bytes = value;
 
-        if (propertyResult.IsFailure()) return Result.FromFailure(propertyResult);
-
-        propertyResult.Content!.Bytes = value;
-
-        Header.TrySetValue(propertyResult.Content!.HeaderType, value);
-
-        return Result.Success();
+            return Header.TrySetValue(property.HeaderType, value);
+        });
     }
+
+    internal Result<ProtoProperty> TryGetProperty<TProperty>() where TProperty : ProtoProperty => TryGetProperty(typeof(TProperty));
 
     private Result<ProtoProperty> TryGetProperty(Type type)
     {
-        if (_protoProperties.TryGetValue(type, out var protoProperty))
-        {
-            return Result.Success(protoProperty);
-        }
-
-        return Result.Failure<ProtoProperty>($"Property {type.Name} not found.");
+        return _protoProperties.TryGetValue(type, out var protoProperty)?
+                Result.Success(protoProperty) :
+                Result.Failure<ProtoProperty>($"Property {type.Name} not found.");
     }
 
     private protected IEnumerable<ProtoProperty> GetProperties()
@@ -55,9 +51,9 @@ public abstract partial class ProtoTransit
         return _protoProperties.Values;
     }
 
-    private static Dictionary<MessageTypesEnum, Func<ProtoTransit>> InitializeFromEnumDescriptions()
+    private static Dictionary<MessageTypesEnum, Func<Protocol>> InitializeFromEnumDescriptions()
     {
-        var protoTransitFactory = new Dictionary<MessageTypesEnum, Func<ProtoTransit>>();
+        var protoTransitFactory = new Dictionary<MessageTypesEnum, Func<Protocol>>();
 
         foreach (MessageTypesEnum value in Enum.GetValues(typeof(MessageTypesEnum)))
         {
@@ -70,7 +66,7 @@ public abstract partial class ProtoTransit
 
         return protoTransitFactory;
 
-        Func<ProtoTransit> GetProtoTransitILConstructor(Type type)
+        Func<Protocol> GetProtoTransitILConstructor(Type type)
         {
             var method = new DynamicMethod("EmitActivate", type, null, true);
 
@@ -80,7 +76,7 @@ public abstract partial class ProtoTransit
 
             generator.Emit(OpCodes.Ret);
 
-            var emitActivate = (Func<ProtoTransit>)method.CreateDelegate(typeof(Func<ProtoTransit>));
+            var emitActivate = (Func<Protocol>)method.CreateDelegate(typeof(Func<Protocol>));
 
             return emitActivate;
         }

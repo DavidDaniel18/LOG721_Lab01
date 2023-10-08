@@ -44,11 +44,11 @@ internal partial class ProtoHeader
         AddHeaderItem(ProtoHeaderItem.Create(typeof(THeaderItem)));
     }
 
-    internal void TrySetValue(Type headerType, byte[] value)
+    internal Result TrySetValue(Type headerType, byte[] value)
     {
-        if (_headerItems.ContainsKey(headerType) is false) return;
-
-        _headerItems[headerType].HeaderValue = value.Length.ToBytes();
+        return _headerItems.TryGetValue(headerType, out var headerItem) ?
+        Result.Success(headerItem.HeaderValue = value.Length.ToBytes()) :
+        Result.Failure($"Header {headerType} is not a valid header");
     }
 
     internal Result SetHeaders(IEnumerable<ProtoProperty> getProperties)

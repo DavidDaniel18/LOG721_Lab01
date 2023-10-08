@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit.Entities.Messages.Core;
 
-public sealed class Nack : ProtoTransit
+internal sealed class Nack : Protocol
 {
     private Nack() : base(MessageTypesEnum.Nack)
     {

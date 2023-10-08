@@ -2,4 +2,7 @@
 
 namespace Application.Commands.Publication;
 
-internal sealed class Publish : Command { }
+internal sealed class Publish : Command
+{
+    
+}

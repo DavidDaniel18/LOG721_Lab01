@@ -1,11 +1,13 @@
-﻿namespace Application.Common.Interfaces;
+﻿using Domain.Common;
 
-internal interface IHandler<TResult, in TRequest> where TResult : class
+namespace Application.Common.Interfaces;
+
+public interface IHandler<TResult, in TRequest> where TResult : class
 {
     Task<Result<TResult>> HandleAsync(TRequest request);
 }
 
-internal interface IHandler<in TRequest>
+public interface IHandler<in TRequest>
 {
     Task<Result> HandleAsync(TRequest request);
 }

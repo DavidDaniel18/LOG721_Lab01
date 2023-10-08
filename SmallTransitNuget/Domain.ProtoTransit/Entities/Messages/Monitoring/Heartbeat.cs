@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit.Entities.Messages.Monitoring;
 
-public sealed class Heartbeat : ProtoTransit
+internal sealed class Heartbeat : Protocol
 {
     private Heartbeat() : base(MessageTypesEnum.Heartbeat) { }
 }

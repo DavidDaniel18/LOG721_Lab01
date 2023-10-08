@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit.Entities.Messages.Core;
 
-public sealed class HandShake : ProtoTransit
+internal sealed class HandShake : Protocol
 {
     private HandShake() : base(MessageTypesEnum.HandShake)
     {

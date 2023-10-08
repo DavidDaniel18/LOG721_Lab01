@@ -1,6 +1,17 @@
-﻿namespace Domain.ProtoTransit.Entities.Messages.Data;
+﻿using Domain.ProtoTransit.ValueObjects.Properties;
 
-public sealed partial class Subscribe : ProtoTransit
+namespace Domain.ProtoTransit.Entities.Messages.Data;
+
+internal sealed class Subscribe : Protocol
 {
-    private Subscribe() : base(MessageTypesEnum.Subscribe) { }
+    private Subscribe() : base(MessageTypesEnum.Subscribe)
+    {
+        AddProperty<RoutingKey>();
+        AddProperty<PayloadType>();
+        AddProperty<QueueName>();
+
+        var result = Header.SetHeaders(GetProperties());
+
+        result.ThrowIfException();
+    }
 }

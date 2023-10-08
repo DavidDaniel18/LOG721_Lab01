@@ -4,7 +4,7 @@ namespace Domain.ProtoTransit.ValueObjects.Properties;
 
 internal abstract record ProtoProperty(Type HeaderType)
 {
-    internal byte[] Bytes;
+    internal byte[] Bytes = Array.Empty<byte>();
 
     private static readonly Dictionary<Type, Func<ProtoProperty>> ProtoPropertyFactory = InitializeFromEnumDescriptions();
 

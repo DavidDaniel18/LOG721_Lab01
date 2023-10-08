@@ -1,3 +1,5 @@
-﻿namespace Application.Queries.Reception;
+﻿using Application.Queries.Seedwork;
 
-internal sealed class Receive : Command { }
+namespace Application.Queries.Reception;
+
+internal sealed class Receive : Query { }

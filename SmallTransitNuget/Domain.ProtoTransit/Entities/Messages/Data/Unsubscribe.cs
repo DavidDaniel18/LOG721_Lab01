@@ -1,8 +1,6 @@
-﻿using Domain.ProtoTransit.Entities.Header;
+﻿namespace Domain.ProtoTransit.Entities.Messages.Data;
 
-namespace Domain.ProtoTransit.Entities.Messages.Data;
-
-public sealed partial class Unsubscribe : ProtoTransit
+internal sealed class Unsubscribe : Protocol
 {
     private Unsubscribe() : base(MessageTypesEnum.Unsubscribe)
     {

@@ -1,36 +1,32 @@
 ﻿using Domain.Common;
-using Domain.ProtoTransit.Entities.Interfaces;
 
 namespace Domain.ProtoTransit;
 
-public abstract partial class ProtoTransit : IEncodeMessage
+internal abstract partial class Protocol
 {
     public Result<byte[]> GetBytes()
     {
-        if(_bytes is not null) return Result.Success(_bytes);
+        if (_bytes is not null) return Result.Success(_bytes);
 
-        var headerBytes = Header.GetBytes();
+        return Header.GetBytes()
+            .Bind(headerBytes => GetBodyBytes(_protoProperties.Values.Select(prop => prop.Bytes).ToList())
+                .Bind(payloadBytes =>
+                {
+                    var result = new byte[headerBytes.Length + payloadBytes.Length];
 
-        if (headerBytes.IsFailure()) return Result.FromFailure<byte[]>(headerBytes);
+                    headerBytes.CopyTo(result, 0);
 
-        var payloadBytesResult = GetPayloadBytes(PayloadProperties);
+                    payloadBytes.CopyTo(result, headerBytes.Length);
 
-        if(payloadBytesResult.IsFailure()) return Result.FromFailure<byte[]>(payloadBytesResult);
+                    _bytes = result;
 
-        var result = new byte[headerBytes.Content!.Length + payloadBytesResult.Content!.Length];
-
-        headerBytes.Content!.CopyTo(result, 0);
-
-        payloadBytesResult.Content!.CopyTo(result, headerBytes.Content!.Length);
-
-        _bytes = result;
-
-        return Result.Success(_bytes);
+                    return Result.Success(_bytes);
+                }));
     }
 
-    private Result<byte[]> GetPayloadBytes(byte[]?[] properties)
+    private Result<byte[]> GetBodyBytes(List<byte[]> properties)
     {
-        if (properties.Any(prop => prop is null))
+        if (properties.Any(prop => prop.Length < 1))
             return Result.Failure<byte[]>("No property can be null when getting payload bytes for encoding");
 
         var payloadLength = properties.Sum(prop => prop!.Length);

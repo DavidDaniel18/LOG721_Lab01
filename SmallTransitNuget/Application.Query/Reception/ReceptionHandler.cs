@@ -1,4 +1,7 @@
-﻿namespace Application.Queries.Reception;
+﻿using Application.Common.Interfaces;
+using Domain.Common;
+
+namespace Application.Queries.Reception;
 
 internal sealed class ReceptionHandler<TContract> : IHandler<TContract, Receive> where TContract : class
 {

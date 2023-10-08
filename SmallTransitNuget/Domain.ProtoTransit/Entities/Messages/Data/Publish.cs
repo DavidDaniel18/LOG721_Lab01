@@ -2,7 +2,7 @@
 
 namespace Domain.ProtoTransit.Entities.Messages.Data;
 
-public sealed class Publish : ProtoTransit
+internal sealed class Publish : Protocol
 {
     private Publish() : base(MessageTypesEnum.Publish)
     {

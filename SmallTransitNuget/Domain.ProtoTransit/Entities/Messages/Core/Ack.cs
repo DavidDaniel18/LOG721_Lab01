@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit.Entities.Messages.Core;
 
-public sealed class Ack : ProtoTransit
+internal sealed class Ack : Protocol
 {
     private Ack() : base(MessageTypesEnum.Ack) { }
 }
