@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface IPublication
+    public interface IMessageService
     {
-        string RoutingKey { get; }
-        byte[] Message { get; }
+        void AddMessageToQueue(string queueName, IPublication publication);
     }
 }

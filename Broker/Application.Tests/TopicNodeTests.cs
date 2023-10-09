@@ -17,6 +17,7 @@ namespace Application.Tests
         //}
 
         [Test]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Assertion", "NUnit2005:Consider using Assert.That(actual, Is.EqualTo(expected)) instead of Assert.AreEqual(expected, actual)", Justification = "<Pending>")]
         public void GetTopicNodesWithPattern_Test() 
         { 
             ITopicNode root = ConcurrentTopicNode.Create();

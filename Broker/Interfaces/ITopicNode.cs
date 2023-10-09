@@ -19,8 +19,6 @@ namespace Interfaces
         void AddChildNode(ITopicNode node);
         bool IsRoot();
         bool AddTopicNodes(string pattern);
-        //bool AddTopicNodes(ITopicNode node, string[] patternKeys, int index);
         bool RemoveTopicNodes(string pattern);
-        //bool RemoveTopicNodes(ITopicNode node, string[] patternKeys, int index);
     }
 }

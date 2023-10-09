@@ -1,5 +1,12 @@
 
+using Application;
 using Configuration.Controllers;
+using Controllers.Controllers;
+using Controllers.Repositories;
+using Entities.Cache;
+using Interfaces;
+using Interfaces.Cache;
+using Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace Configuration
@@ -45,7 +52,33 @@ namespace Configuration
         private static void ConfigurationSetup(IServiceCollection services)
         {
             services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherController).Assembly));
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(SubscriberController).Assembly));
 
+            // Handlers
+            services.AddScoped<IPublisherHandler, PublisherHandler>();
+            services.AddScoped<ISubsciptionHandler, SubscriptionHandler>();
+
+            // Services
+            services.AddScoped<IQueueService, QueueService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IChannelService, ChannelService>();
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
+
+            services.AddScoped<IRouter, Router>();
+
+            // Repositories
+            services.AddScoped<IQueueRepository, QueueRepository>();
+            services.AddScoped<IMessageRepository, MessageRespository>();
+            services.AddScoped<IChannelRepository, ChannelRepository>();
+            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+
+            // Caches
+            services.AddSingleton<IQueueCache, QueueCache>();
+            services.AddSingleton<IMessageCache, MessageCache>();
+            services.AddSingleton<ISubscriptionCache, SubscriptionCache>();
+            services.AddSingleton<IChannelCache, ChannelCache>();
+            services.AddSingleton<ITopicCache, TopicCache>(); 
         }
     }
 }

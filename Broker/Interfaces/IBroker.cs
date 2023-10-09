@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface IPublication
+    public interface IBroker
     {
-        string RoutingKey { get; }
-        byte[] Message { get; }
+        void ListenToQueue(string queueName);
     }
 }
