@@ -4,27 +4,41 @@ using Controlleur.Interface;
 
 namespace Controlleur.Classe
 {
-    class Publication : IPublication
+    class Publication
     {
         private Topic topic;
         private Dictionary<string, string> content;
 
-        public JsonDocument fromCanonicaltoJSON()
+        public static JsonDocument fromCanonicaltoJSON()
         {
             throw new NotImplementedException();
         }
 
-        public XmlDocument fromCanonicaltoXML()
+        public static XmlDocument fromCanonicaltoXML()
         {
             throw new NotImplementedException();
         }
 
-        public void fromJSONtoCanonical(JsonDocument json)
+        public static Message fromJSONtoCanonical(JsonDocument json)
         {
-            throw new NotImplementedException();
+            JsonElement root = json.RootElement;
+            string str_message;
+
+            if (root.TryGetProperty("message", out JsonElement json_message))
+            {
+                str_message = json_message.GetString();
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid JSON. Vous devez spécifier une valeur pour la clé \"message\"");
+            }
+
+
+            Message message = new Message(new Guid(), str_message, new DateTime());
+            return message;
         }
 
-        public void fromXMLtoCanonical(XmlDocument xmlDocument)
+        public static Message fromXMLtoCanonical(XmlDocument xmlDocument)
         {
             throw new NotImplementedException();
         }

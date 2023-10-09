@@ -5,7 +5,7 @@ namespace Controlleur.Classe
     class Publisher : IPublisher
     {
 
-        void IPublisher.advertise(ITopic t, IPublication.Format format)
+        void IPublisher.advertise(ITopic t, Format format)
         {
             throw new NotImplementedException();
         }
@@ -17,7 +17,7 @@ namespace Controlleur.Classe
         }
 
 
-        void IPublisher.unadvertise(ITopic t, IPublication.Format format)
+        void IPublisher.unadvertise(ITopic t, Format format)
         {
             throw new NotImplementedException();
         }

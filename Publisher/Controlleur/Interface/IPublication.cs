@@ -5,10 +5,6 @@ namespace Controlleur.Interface
 {
     interface IPublication
     {
-        enum Format
-        {
-            XML, JSON
-        }
         // Void à remplacer
         void fromXMLtoCanonical(XmlDocument xmlDocument);
         XmlDocument fromCanonicaltoXML();

@@ -1,7 +1,7 @@
-//using Configuration.Controllers;
-//using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Configuration.Controllers;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
-namespace Configuration
+namespace Configuration.Controllers
 {
     public class Program
     {
@@ -35,7 +35,7 @@ namespace Configuration
 
         private static void ConfigurationSetup(IServiceCollection services)
         {
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Publish).Assembly));
 
         }
     }
