@@ -7,7 +7,7 @@ internal sealed class ChannelTunnel
 {
     private const int TransferredBites = 1024;
 
-    byte[] bytesStorage = Array.Empty<byte>();
+    byte[] _bytesStorage = Array.Empty<byte>();
 
     private readonly Channel<byte[]> _channel = Channel.CreateUnbounded<byte[]>(new UnboundedChannelOptions
     {
@@ -48,13 +48,13 @@ internal sealed class ChannelTunnel
     {
         await foreach (var bytes in GetAccumulator(CancellationToken.None))
         {
-            bytesStorage = bytesStorage.Concat(bytes).ToArray();
+            _bytesStorage = _bytesStorage.Concat(bytes).ToArray();
 
-            var reminderResult = reminderSelector(bytesStorage);
+            var reminderResult = reminderSelector(_bytesStorage);
 
             if (reminderResult.IsSuccess())
             {
-                bytesStorage = reminderResult.Content!;
+                _bytesStorage = reminderResult.Content!;
             }
 
             return reminderResult;

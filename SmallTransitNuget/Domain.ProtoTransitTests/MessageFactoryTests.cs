@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Domain.Common;
+﻿using Domain.Common;
+using Domain.ProtoTransit;
 using Domain.ProtoTransit.Entities.Messages.Core;
 using Domain.ProtoTransit.Entities.Messages.Data;
 using Domain.ProtoTransit.ValueObjects.Properties;
 using MessagePack;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Domain.ProtoTransit.Tests
+namespace Domain.ProtoTransitTests
 {
     [TestClass()]
     public class MessageFactoryTests

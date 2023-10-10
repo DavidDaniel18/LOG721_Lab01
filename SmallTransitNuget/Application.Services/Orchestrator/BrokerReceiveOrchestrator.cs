@@ -7,6 +7,7 @@ using Domain.Services.Receive.BrokerReceive;
 using Domain.Services.Receive.States;
 using Domain.Services.Send.Subscribing.Dto;
 using MessagePack;
+using SmallTransit.Abstractions.Broker;
 
 namespace Application.Services.Orchestrator;
 

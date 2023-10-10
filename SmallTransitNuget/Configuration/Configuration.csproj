@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<Version>0.7.5</Version>
+	<PackageId>SmallTransit</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Dispatcher\" />
-    <Folder Include="Publisher\" />
-    <Folder Include="Receiver\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +22,37 @@
     <PackageReference Include="Scrutor" Version="4.2.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
-    <ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj" />
-    <ProjectReference Include="..\Presentation.Controllers\Presentation.Controllers.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Application.Common\SmallTransit.Abstractions.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Domain.Services\Domain.Services.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Presentation.Controllers\Presentation.Controllers.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+	</ItemGroup>
+
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<SmallTransitAbstractionsOutput Include="$(SolutionDir)Application.Common\bin\$(Configuration)\net7.0\SmallTransit.Abstractions.dll" />
+			<DomainServicesOutput Include="$(SolutionDir)Domain.Services\bin\$(Configuration)\net7.0\Domain.Services.dll" />
+			<InfrastructureTcpClientOutput Include="$(SolutionDir)Infrastructure.TcpClient\bin\$(Configuration)\net7.0\Infrastructure.TcpClient.dll" />
+			<PresentationControllersOutput Include="$(SolutionDir)Presentation.Controllers\bin\$(Configuration)\net7.0\Presentation.Controllers.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SmallTransitAbstractionsOutput);@(DomainServicesOutput);@(InfrastructureTcpClientOutput);@(PresentationControllersOutput)" DestinationFolder="$(OutDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+	</Target>
+
+	<ItemGroup>
+		<None Include="$(OutDir)SmallTransit.Abstractions.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Domain.Services.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Infrastructure.TcpClient.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Presentation.Controllers.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+	</ItemGroup>
 
 </Project>

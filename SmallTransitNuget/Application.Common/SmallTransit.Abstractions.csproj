@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>0.7.3</Version>
+	<PackageId>SmallTransit.Abstractions</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.11" />
+  </ItemGroup>
+	
+	<ItemGroup>
+    <ProjectReference Include="..\Domain.Common\Domain.Common.csproj">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </ProjectReference>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<DomainCommonOutput Include="$(SolutionDir)Domain.Common\bin\$(Configuration)\net7.0\Domain.Common.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(DomainCommonOutput)" DestinationFolder="$(OutDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+	</Target>
+
+	<ItemGroup>
+		<None Include="$(OutDir)Domain.Common.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+	</ItemGroup>
+
+</Project>

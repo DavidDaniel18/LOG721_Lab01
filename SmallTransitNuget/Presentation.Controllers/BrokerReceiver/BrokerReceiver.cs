@@ -1,12 +1,13 @@
-﻿using Application.UseCases;
+﻿using Application.Common.Broker;
+using Application.Common.Interfaces;
+using Application.UseCases;
 using Domain.Common;
 using Domain.Services.Receive;
 using Microsoft.AspNetCore.Connections;
-using Presentation.Controllers.Intefaces;
 
 namespace Presentation.Controllers.BrokerReceiver;
 
-public sealed class BrokerReceiver : ConnectionHandler, IBrokerPushEndpoint, IBrokerReceiveEndpoint
+public sealed class BrokerReceiver : ConnectionHandler, IBrokerPushEndpoint
 {
     private readonly Broker _broker;
     private readonly IControllerDelegate<BrokerSubscriptionDto> _controllerDelegate;
@@ -22,7 +23,7 @@ public sealed class BrokerReceiver : ConnectionHandler, IBrokerPushEndpoint, IBr
         await Receive(connection, new CancellationTokenSource());
     }
 
-    public async Task<Result<IBrokerPushEndpoint>> Receive(ConnectionContext connectionContext, CancellationTokenSource cancellationTokenSource)
+    public async Task<Result> Receive(ConnectionContext connectionContext, CancellationTokenSource cancellationTokenSource)
     {
         var listeningResult = await _broker.BeginListen(connectionContext.Transport.Input.AsStream(), connectionContext.Transport.Output.AsStream(), cancellationTokenSource);
 
@@ -33,9 +34,14 @@ public sealed class BrokerReceiver : ConnectionHandler, IBrokerPushEndpoint, IBr
                 listeningResult.Content!.PayloadType,
                 listeningResult.Content!.QueueName,
                 this));
+
+            while (cancellationTokenSource.IsCancellationRequested is false)
+            {
+                await Task.Delay(1000).ConfigureAwait(false);
+            }
         }
 
-        return Result.FromFailure<IBrokerPushEndpoint>(listeningResult);
+        return Result.FromFailure(listeningResult);
     }
 
     public async Task<Result> Push(byte[] message)

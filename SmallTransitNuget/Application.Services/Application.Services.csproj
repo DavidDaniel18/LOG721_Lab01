@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
+    <ProjectReference Include="..\Application.Common\SmallTransit.Abstractions.csproj" />
     <ProjectReference Include="..\Domain.Common\Domain.Common.csproj" />
     <ProjectReference Include="..\Domain.ProtoTransit\Domain.ProtoTransit.csproj" />
     <ProjectReference Include="..\Domain.Services\Domain.Services.csproj" />

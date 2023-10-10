@@ -1,6 +1,5 @@
 
 using Configuration;
-using SmallTransit.Configuration;
 
 namespace TestHost
 {
@@ -19,20 +18,15 @@ namespace TestHost
 
             builder.Services.AddSmallTransit(configuration =>
             {
-                configuration.Host = "localhost";
-                configuration.Port = 5672;
-                configuration.AddReceiver<string>("queue", rcv =>
+                configuration.Host = "host.docker.internal";
+                configuration.Port = 3450;
+                configuration.AddReceiver<MqController>("queue", rcv =>
                 {
-                    rcv.PrefetchCount = 1;
                     rcv.RoutingKey = "*";
                 });
-
-                configuration.AddReceiver<string>("queue2", rcv =>
-                {
-                    rcv.PrefetchCount = 2;
-                    rcv.RoutingKey = "john";
-                });
             });
+
+            builder.Services.AddSmallTransitBroker(3450);
 
             var app = builder.Build();
 

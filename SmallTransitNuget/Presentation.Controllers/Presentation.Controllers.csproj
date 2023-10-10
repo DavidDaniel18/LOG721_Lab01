@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.Common\SmallTransit.Abstractions.csproj" />
     <ProjectReference Include="..\Application.Usecases\Application.UseCases.csproj" />
     <ProjectReference Include="..\Domain.Common\Domain.Common.csproj" />
   </ItemGroup>

@@ -1,13 +1,16 @@
 ﻿using Application.Common.Interfaces;
 using Application.Services.InfrastructureInterfaces;
+using Application.UseCases;
 using Configuration.Dispatcher;
 using Configuration.Options;
 using Domain.Services.Common;
+using Domain.Services.Receive;
 using Infrastructure.TcpClient;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Presentation.Controllers.BrokerReceiver;
+using Presentation.Controllers.Publish;
 
 namespace Configuration;
 
@@ -24,12 +27,36 @@ public static class ServiceRegistration
             collection.AddScoped(receiverConfiguration.ContractType);
         }
 
-        ScrutorScanForType(collection, typeof(IConsumer<>));
+        collection.AddSingleton(typeof(IControllerDelegate<>), typeof(ControllerDispatcher<>));
 
-        collection.AddSingleton(typeof(ControllerDispatcher<>));
+        Infrastructure(collection);
+        Presentation(collection);
+        Application(collection);
 
+        return collection;
+    }
+
+    private static IServiceCollection Infrastructure(IServiceCollection collection)
+    {
         collection.AddScoped<ITcpBridge, TcpBridge>();
         collection.AddScoped<IComHandler, TcpBridge>();
+
+        return collection;
+    }
+
+    private static IServiceCollection Presentation(IServiceCollection collection)
+    {
+        //ScrutorScanForType(collection, typeof(IConsumer<>));
+        collection.AddScoped(typeof(IPublisher<>), typeof(Publisher<>));
+
+        return collection;
+    }
+
+    private static IServiceCollection Application(IServiceCollection collection)
+    {
+        collection.AddScoped<Broker>();
+        collection.AddScoped(typeof(PublishClient<>));
+        collection.AddScoped(typeof(ReceiveClient<>));
 
         return collection;
     }
