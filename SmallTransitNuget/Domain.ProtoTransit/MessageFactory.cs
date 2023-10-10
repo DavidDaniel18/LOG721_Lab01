@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit;
 
-internal static class MessageFactory
+public static class MessageFactory
 {
     internal static Protocol Create(MessageTypesEnum messageType)
     {

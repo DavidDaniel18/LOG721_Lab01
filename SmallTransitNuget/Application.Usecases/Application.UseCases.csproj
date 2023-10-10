@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IO.Pipelines" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
+    <ProjectReference Include="..\Application.Services\Application.Services.csproj" />
+    <ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj" />
   </ItemGroup>
 
 </Project>

@@ -71,7 +71,7 @@ internal partial class ProtoHeader
         {
             protoHeaderItem.HeaderValue = header[currentIndex..(currentIndex + protoHeaderItem.HeaderLength)];
 
-            AddHeaderItem(protoHeaderItem);
+            _headerItems[protoHeaderItem.GetType()] = protoHeaderItem;
 
             currentIndex += protoHeaderItem.HeaderLength;
         }

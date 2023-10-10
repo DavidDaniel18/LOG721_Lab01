@@ -2,7 +2,7 @@
 
 namespace Domain.Services.Send.Push.States;
 
-internal abstract class PushState : State<PushContext, byte[]>
+internal abstract class PushSendState : SendState<PushContext, byte[]>
 {
-    protected PushState(PushContext pushContext) : base(pushContext) { }
+    protected PushSendState(PushContext pushContext) : base(pushContext) { }
 }

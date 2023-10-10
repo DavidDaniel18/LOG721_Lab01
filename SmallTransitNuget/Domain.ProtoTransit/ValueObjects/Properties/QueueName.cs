@@ -2,4 +2,4 @@
 
 namespace Domain.ProtoTransit.ValueObjects.Properties;
 
-internal record QueueName() : ProtoProperty(typeof(QueueNameItem));
+public record QueueName() : ProtoProperty(typeof(QueueNameItem));

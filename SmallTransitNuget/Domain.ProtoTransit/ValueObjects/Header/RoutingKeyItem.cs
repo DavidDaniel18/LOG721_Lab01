@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit.ValueObjects.Header;
 
-internal sealed record RoutingKeyItem(int Order = 3) : ProtoHeaderItem("RoutingKeyItem", StorageSizeInBytes, Order)
+public sealed record RoutingKeyItem() : ProtoHeaderItem("RoutingKeyItem", StorageSizeInBytes, 3)
 {
     internal static readonly int StorageSizeInBytes = 1;
 }

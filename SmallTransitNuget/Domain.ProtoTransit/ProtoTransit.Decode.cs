@@ -24,27 +24,32 @@ internal abstract partial class Protocol
             var headerInitializationResult = protoTransitMessage.Header.InitializeFromBytes(message);
 
             return headerInitializationResult.IsFailure()
-                ? Result.FromFailure<Protocol>(headerInitializationResult)
+                ? Result.FromFailure<(Protocol Protocol, int Length)>(headerInitializationResult)
                 : protoTransitMessage.InitializeFrom(message);
         })
-            .Bind(protocol => Result.Success((protocol, message[messageSize..])));
+            .Bind(tuple => Result.Success((tuple.Protocol, message[(tuple.Length.Equals(0) ? messageSize : tuple.Length)..])));
     }
 
-    private Result<Protocol> InitializeFrom(byte[] message)
+    private Result<(Protocol Protocol, int Length)> InitializeFrom(byte[] message)
     {
-        return Header.GetPropertyHeaderInfos(_protoProperties.Values.ToArray()).Bind(messagePortions =>
+        var result = Header.GetPropertyHeaderInfos(_protoProperties.Values.ToArray());
+
+        if (result.IsFailure()) return Result.FromFailure<(Protocol Protocol, int Length)>(result);
+
+        for (var index = 0; index < result.Content!.Count; index++)
         {
-            foreach (var messagePortion in messagePortions)
-            {
-                var propertyResult = TryGetProperty(messagePortion.PropertyType);
+            var messagePortion = result.Content![index];
 
-                if (propertyResult.IsFailure()) return Result.FromFailure<Protocol>(propertyResult);
+            var propertyResult = TryGetProperty(messagePortion.PropertyType);
 
-                propertyResult.Content!.Bytes = Parse(messagePortion);
-            }
+            if (propertyResult.IsFailure()) return Result.FromFailure<(Protocol Protocol, int Length)>(propertyResult);
 
-            return Result.Success(this);
-        });
+            propertyResult.Content!.Bytes = Parse(messagePortion);
+
+            if(index.Equals(result.Content!.Count-1)) return Result.Success((this, messagePortion.BeginAtIndex + messagePortion.Length));
+        }
+
+        return Result.Success((this, 0));
 
         byte[] Parse(MessagePortion messagePortion) => message[messagePortion.BeginAtIndex..(messagePortion.Length + messagePortion.BeginAtIndex)];
     }

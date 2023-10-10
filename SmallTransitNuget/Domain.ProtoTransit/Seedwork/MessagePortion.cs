@@ -2,7 +2,7 @@
 
 internal struct MessagePortion
 {
-    internal Type PropertyType;
+    internal readonly Type PropertyType;
     internal readonly int BeginAtIndex;
     internal readonly int Length;
 

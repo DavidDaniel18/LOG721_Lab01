@@ -2,4 +2,4 @@
 
 namespace Domain.ProtoTransit.ValueObjects.Properties;
 
-internal record RoutingKey() : ProtoProperty(typeof(RoutingKeyItem));
+public record RoutingKey() : ProtoProperty(typeof(RoutingKeyItem));

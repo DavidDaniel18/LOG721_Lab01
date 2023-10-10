@@ -4,7 +4,7 @@ namespace Domain.ProtoTransit.Entities.Messages.Data;
 
 internal sealed class Push : Protocol
 {
-    private Push() : base(MessageTypesEnum.Push)
+    public Push() : base(MessageTypesEnum.Push)
     {
         AddProperty<Payload>();
 

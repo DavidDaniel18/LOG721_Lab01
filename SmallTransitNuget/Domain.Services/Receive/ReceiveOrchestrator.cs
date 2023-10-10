@@ -1,5 +1,5 @@
-﻿using Domain.Services.Receive.States;
-using Domain.Services.Send;
+﻿using Domain.Services.Common;
+using Domain.Services.Receive.States;
 
 namespace Domain.Services.Receive;
 

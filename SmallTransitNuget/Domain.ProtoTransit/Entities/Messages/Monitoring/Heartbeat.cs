@@ -2,5 +2,5 @@
 
 internal sealed class Heartbeat : Protocol
 {
-    private Heartbeat() : base(MessageTypesEnum.Heartbeat) { }
+    public Heartbeat() : base(MessageTypesEnum.Heartbeat) { }
 }

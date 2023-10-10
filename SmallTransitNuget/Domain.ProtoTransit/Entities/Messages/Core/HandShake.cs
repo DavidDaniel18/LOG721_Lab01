@@ -2,7 +2,7 @@
 
 internal sealed class HandShake : Protocol
 {
-    private HandShake() : base(MessageTypesEnum.HandShake)
+    public HandShake() : base(MessageTypesEnum.HandShake)
     {
 
     }

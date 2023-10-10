@@ -1,4 +1,5 @@
 
+using Configuration;
 using SmallTransit.Configuration;
 
 namespace TestHost

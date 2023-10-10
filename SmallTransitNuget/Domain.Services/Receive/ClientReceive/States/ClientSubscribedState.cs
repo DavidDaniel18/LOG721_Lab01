@@ -3,7 +3,6 @@ using Domain.ProtoTransit;
 using Domain.ProtoTransit.Entities.Messages.Core;
 using Domain.ProtoTransit.Entities.Messages.Data;
 using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Receive.BrokerReceive;
 using Domain.Services.Receive.States;
 
 namespace Domain.Services.Receive.ClientReceive.States;

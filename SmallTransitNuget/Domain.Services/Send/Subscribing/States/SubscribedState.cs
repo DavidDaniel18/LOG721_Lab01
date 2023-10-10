@@ -6,15 +6,15 @@ using Domain.Services.Send.Subscribing.Dto;
 
 namespace Domain.Services.Send.Subscribing.States;
 
-internal sealed class SubscribedState : SubscribeState
+internal sealed class SubscribedSendState : SubscribeSendState
 {
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnAck { get; }
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnNack { get; }
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnInternalError { get; }
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnConnectionClosed { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnAck { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnNack { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnInternalError { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnConnectionClosed { get; }
     private protected override MessageTypesEnum ResponseMessageType { get; }
 
-    public SubscribedState(SubscribeContext context) : base(context) { }
+    public SubscribedSendState(SubscribeContext context) : base(context) { }
 
     internal override Result<SagaItem<SubscribeContext, SubscriptionDto>> BuildMessageSaga(SubscriptionDto payload)
     {

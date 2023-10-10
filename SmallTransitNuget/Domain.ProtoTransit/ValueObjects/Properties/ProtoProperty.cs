@@ -2,7 +2,7 @@
 
 namespace Domain.ProtoTransit.ValueObjects.Properties;
 
-internal abstract record ProtoProperty(Type HeaderType)
+public abstract record ProtoProperty(Type HeaderType)
 {
     internal byte[] Bytes = Array.Empty<byte>();
 
@@ -36,7 +36,7 @@ internal abstract record ProtoProperty(Type HeaderType)
             var currentType = typeof(ProtoProperty);
 
             var types = assembly.GetTypes()
-                .Where(t => t.Namespace == namespaceToSearch && t != currentType)
+                .Where(t => t.Namespace == namespaceToSearch && t != currentType && t.DeclaringType is null)
                 .ToArray();
 
             return types;

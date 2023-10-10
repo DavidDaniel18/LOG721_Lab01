@@ -6,15 +6,15 @@ using Domain.Services.Send.SeedWork.States;
 
 namespace Domain.Services.Send.Publishing.States;
 
-internal sealed class OpenedPublishingState : PublishingState
+internal sealed class OpenedPublishingSendState : PublishingSendState
 {
-    private protected override Func<State<PublishContext, SerializedPublishMessage>> OnAck { get; }
-    private protected override Func<State<PublishContext, SerializedPublishMessage>> OnNack { get; }
-    private protected override Func<State<PublishContext, SerializedPublishMessage>> OnInternalError { get; }
-    private protected override Func<State<PublishContext, SerializedPublishMessage>> OnConnectionClosed { get; }
+    private protected override Func<SendState<PublishContext, SerializedPublishMessage>> OnAck { get; }
+    private protected override Func<SendState<PublishContext, SerializedPublishMessage>> OnNack { get; }
+    private protected override Func<SendState<PublishContext, SerializedPublishMessage>> OnInternalError { get; }
+    private protected override Func<SendState<PublishContext, SerializedPublishMessage>> OnConnectionClosed { get; }
     private protected override MessageTypesEnum ResponseMessageType => MessageTypesEnum.HandShake;
 
-    public OpenedPublishingState(PublishContext publishContext) : base(publishContext)
+    public OpenedPublishingSendState(PublishContext publishContext) : base(publishContext)
     {
         var closingState = new ClosingSendState<PublishContext, SerializedPublishMessage>(Context);
 

@@ -2,7 +2,7 @@
 
 internal sealed class Close : Protocol
 {
-    private Close() : base(MessageTypesEnum.Close)
+    public Close() : base(MessageTypesEnum.Close)
     {
     }
 }

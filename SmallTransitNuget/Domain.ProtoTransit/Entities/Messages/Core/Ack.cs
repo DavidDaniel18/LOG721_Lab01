@@ -2,5 +2,5 @@
 
 internal sealed class Ack : Protocol
 {
-    private Ack() : base(MessageTypesEnum.Ack) { }
+    public Ack() : base(MessageTypesEnum.Ack) { }
 }

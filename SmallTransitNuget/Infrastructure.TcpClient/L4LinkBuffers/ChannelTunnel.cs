@@ -1,10 +1,13 @@
 ﻿using System.Threading.Channels;
+using Domain.Common;
 
 namespace Infrastructure.TcpClient.L4LinkBuffers;
 
-internal sealed class ChannelTunnel : IByteAccumulator
+internal sealed class ChannelTunnel
 {
     private const int TransferredBites = 1024;
+
+    byte[] bytesStorage = Array.Empty<byte>();
 
     private readonly Channel<byte[]> _channel = Channel.CreateUnbounded<byte[]>(new UnboundedChannelOptions
     {
@@ -22,46 +25,41 @@ internal sealed class ChannelTunnel : IByteAccumulator
 
     public IAsyncEnumerable<byte[]> GetAccumulator(CancellationToken cancellationToken) => _channel.Reader.ReadAllAsync(cancellationToken);
 
-    //public async Task<byte[]> ReadAsync(CancellationToken cancellationToken)
-    //{
-    //    var buffer = new byte[TransferredBites];
-
-    //    if (_memoryStream.Length == _memoryStream.Position) // If we have read everything from the MemoryStream
-    //    {
-    //        if (!await RefillBufferAsync(cancellationToken)) // If we can't read more from the Channel
-    //        {
-    //            return default; // Signal the end of the stream
-    //        }
-    //    }
-
-    //    // Read from the MemoryStream
-    //    _ = await _memoryStream.ReadAsync(buffer, cancellationToken);
-
-    //    return buffer;
-    //}
-
-    //private async ValueTask<bool> RefillBufferAsync(CancellationToken cancellationToken)
-    //{
-    //    byte[] bytesFromChannel;
-    //    try
-    //    {
-    //        if (!_channel.Reader.TryRead(out bytesFromChannel))
-    //        {
-    //            bytesFromChannel = await _channel.Reader.ReadAsync(cancellationToken);
-    //        }
-    //    }
-    //    catch (ChannelClosedException)
-    //    {
-    //        return false; // Signal the end of the stream
-    //    }
-
-    //    _memoryStream = new MemoryStream(bytesFromChannel);
-
-    //    return true;
-    //}
-
     public async Task WriteAsync(byte[] buffer, CancellationToken cancellationToken)
     {
         await _channel.Writer.WriteAsync(buffer, cancellationToken);
+    }
+
+    public async Task<Result> SendMessage(byte[] value)
+    {
+        try
+        {
+            await WriteAsync(value, CancellationToken.None);
+
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            return Result.Failure(e);
+        }
+    }
+
+    public async Task<Result> WaitForResponse(Func<byte[], Result<byte[]>> reminderSelector)
+    {
+        await foreach (var bytes in GetAccumulator(CancellationToken.None))
+        {
+            bytesStorage = bytesStorage.Concat(bytes).ToArray();
+
+            var reminderResult = reminderSelector(bytesStorage);
+
+            if (reminderResult.IsSuccess())
+            {
+                bytesStorage = reminderResult.Content!;
+            }
+
+            return reminderResult;
+        }
+
+        return Result.Failure("Channel was closed");
     }
 }

@@ -2,6 +2,7 @@
 using Domain.ProtoTransit;
 using Domain.ProtoTransit.Entities.Messages.Core;
 using Domain.ProtoTransit.Exceptions;
+using Domain.Services.Common;
 using Domain.Services.Common.Exceptions;
 using Domain.Services.Send.SeedWork.Saga;
 using Domain.Services.Send.SeedWork.StateHolder;

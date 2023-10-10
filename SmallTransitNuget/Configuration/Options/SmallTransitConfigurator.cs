@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Application.Common.Interfaces;
 
 namespace Configuration.Options;
 
@@ -10,29 +11,12 @@ public sealed class SmallTransitConfigurator
 
     internal readonly ConcurrentBag<ReceiverConfiguration> ReceiverConfigurator = new ();
 
-    public void AddReceiver<TContract>(string queueName, Action<ReceiverConfigurator> configure) where TContract : class
+    public void AddReceiver<TConsumer>(string queueName, Action<ReceiverConfigurator> configure) where TConsumer : class, IConsumer
     {
         var configurator = new ReceiverConfigurator();
 
         configure.Invoke(configurator);
 
-        ReceiverConfigurator.Add(new ReceiverConfiguration(typeof(TContract), queueName, configurator));
-
-    }
-
-    internal sealed class ReceiverConfiguration
-    {
-        internal Type ContractType { get; }
-
-        internal string QueueName { get; }
-
-        internal ReceiverConfigurator ReceiverConfigurator { get; }
-
-        public ReceiverConfiguration(Type contractType, string queueName, ReceiverConfigurator receiverConfigurator)
-        {
-            ContractType = contractType;
-            QueueName = queueName;
-            ReceiverConfigurator = receiverConfigurator;
-        }
+        ReceiverConfigurator.Add(new ReceiverConfiguration(typeof(TConsumer), queueName, configurator));
     }
 }

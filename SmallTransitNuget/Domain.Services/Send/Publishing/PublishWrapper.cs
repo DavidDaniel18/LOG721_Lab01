@@ -1,3 +1,3 @@
 ﻿namespace Domain.Services.Send.Publishing;
 
-public record PublishWrapper(object payload, string routingKey);
+public record PublishWrapper<TContract>(TContract Payload, string RoutingKey);

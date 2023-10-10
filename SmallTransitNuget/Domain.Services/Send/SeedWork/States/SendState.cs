@@ -5,17 +5,17 @@ using Domain.Services.Send.SeedWork.Saga;
 
 namespace Domain.Services.Send.SeedWork.States;
 
-internal abstract class State<TContext, TPayload>
+internal abstract class SendState<TContext, TPayload>
 {
     internal TContext Context { get; }
     internal ConnectionStateInfo? ConnectionStateInfo { get; set; }
-    private protected abstract Func<State<TContext, TPayload>> OnAck { get; }
-    private protected abstract Func<State<TContext, TPayload>> OnNack { get; }
-    private protected abstract Func<State<TContext, TPayload>> OnInternalError { get; }
-    private protected abstract Func<State<TContext, TPayload>> OnConnectionClosed { get; }
+    private protected abstract Func<SendState<TContext, TPayload>> OnAck { get; }
+    private protected abstract Func<SendState<TContext, TPayload>> OnNack { get; }
+    private protected abstract Func<SendState<TContext, TPayload>> OnInternalError { get; }
+    private protected abstract Func<SendState<TContext, TPayload>> OnConnectionClosed { get; }
     private protected abstract MessageTypesEnum ResponseMessageType { get; }
 
-    internal State(TContext context)
+    internal SendState(TContext context)
     {
         Context = context;
     }

@@ -6,12 +6,12 @@ namespace Domain.Services.Send.Publishing;
 
 internal sealed class PublishContext : SendStateHolder<PublishContext, SerializedPublishMessage>
 {
-    private protected override State<PublishContext, SerializedPublishMessage> State { get; set; }
+    private protected override SendState<PublishContext, SerializedPublishMessage> SendState { get; set; }
 
-    public PublishContext() { State = new CreatedPublishingState(this); }
+    public PublishContext() { SendState = new CreatedPublishingSendState(this); }
 
     internal override bool GetConnectionReady()
     {
-        return State is OpenedPublishingState;
+        return SendState is OpenedPublishingSendState;
     }
 }

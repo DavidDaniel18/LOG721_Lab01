@@ -4,7 +4,7 @@ namespace Domain.ProtoTransit.Entities.Messages.Data;
 
 internal sealed class Subscribe : Protocol
 {
-    private Subscribe() : base(MessageTypesEnum.Subscribe)
+    public Subscribe() : base(MessageTypesEnum.Subscribe)
     {
         AddProperty<RoutingKey>();
         AddProperty<PayloadType>();

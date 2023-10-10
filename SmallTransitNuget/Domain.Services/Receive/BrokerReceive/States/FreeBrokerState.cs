@@ -2,9 +2,9 @@
 using Domain.ProtoTransit;
 using Domain.ProtoTransit.Entities.Messages.Core;
 using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.Services.Common;
+using Domain.ProtoTransit.ValueObjects.Properties;
 using Domain.Services.Receive.States;
-using Domain.Services.Send.Push;
+using Domain.Services.Send.Subscribing.Dto;
 
 namespace Domain.Services.Receive.BrokerReceive.States;
 
@@ -30,10 +30,18 @@ internal sealed class FreeBrokerState : BrokerReceiveState
 
                     Context.SetState(new BrokerSubscribedState(Context));
 
-                    return Result.Success(new BrokerReceiveResult(returnProtocol)
-                    {
-                        ContextType = new ContextAlterationRequests(typeof(PushContext))
-                    });
+                    var routingKeyResult = payload.TryGetProperty<RoutingKey>();
+                    var payloadTypeResult = payload.TryGetProperty<PayloadType>();
+                    var queueNameResult = payload.TryGetProperty<QueueName>();
+
+                    return Result.From(routingKeyResult, payloadTypeResult, queueNameResult)
+                        .Bind(() => Result.Success(new BrokerReceiveResult(returnProtocol)
+                        {
+                            SubscriptionDto = new SubscriptionDto(
+                                routingKeyResult.Content!.Bytes,
+                                payloadTypeResult.Content!.Bytes,
+                                queueNameResult.Content!.Bytes)
+                        }));
                 }
             default:
                 return Result.Failure<BrokerReceiveResult>("Unexpected message type");

@@ -7,10 +7,10 @@ namespace Domain.Services.Send.Subscribing;
 
 internal sealed class SubscribeContext : SendStateHolder<SubscribeContext, SubscriptionDto>
 {
-    private protected override State<SubscribeContext, SubscriptionDto> State { get; set; }
+    private protected override SendState<SubscribeContext, SubscriptionDto> SendState { get; set; }
 
     internal override bool GetConnectionReady()
     {
-        return State is SubscribedState;
+        return SendState is SubscribedSendState;
     }
 }

@@ -3,12 +3,12 @@ using Domain.Services.Send.SeedWork.StateHolder;
 
 namespace Domain.Services.Send.SeedWork.States;
 
-internal sealed class ClosingSendState<TContext, TPayload> : State<TContext, TPayload> where TContext : SendStateHolder<TContext, TPayload>
+internal sealed class ClosingSendState<TContext, TPayload> : SendState<TContext, TPayload> where TContext : SendStateHolder<TContext, TPayload>
 {
-    private protected override Func<State<TContext, TPayload>> OnAck { get; }
-    private protected override Func<State<TContext, TPayload>> OnNack { get; }
-    private protected override Func<State<TContext, TPayload>> OnInternalError { get; }
-    private protected override Func<State<TContext, TPayload>> OnConnectionClosed { get; }
+    private protected override Func<SendState<TContext, TPayload>> OnAck { get; }
+    private protected override Func<SendState<TContext, TPayload>> OnNack { get; }
+    private protected override Func<SendState<TContext, TPayload>> OnInternalError { get; }
+    private protected override Func<SendState<TContext, TPayload>> OnConnectionClosed { get; }
     private protected override MessageTypesEnum ResponseMessageType => MessageTypesEnum.Close;
 
 

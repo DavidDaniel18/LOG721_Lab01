@@ -2,7 +2,7 @@
 
 internal sealed class Unsubscribe : Protocol
 {
-    private Unsubscribe() : base(MessageTypesEnum.Unsubscribe)
+    public Unsubscribe() : base(MessageTypesEnum.Unsubscribe)
     {
 
     }

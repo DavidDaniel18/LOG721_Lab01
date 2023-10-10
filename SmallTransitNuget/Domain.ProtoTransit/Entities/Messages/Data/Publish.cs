@@ -4,7 +4,7 @@ namespace Domain.ProtoTransit.Entities.Messages.Data;
 
 internal sealed class Publish : Protocol
 {
-    private Publish() : base(MessageTypesEnum.Publish)
+    public Publish() : base(MessageTypesEnum.Publish)
     {
         AddProperty<RoutingKey>();
         AddProperty<PayloadType>();

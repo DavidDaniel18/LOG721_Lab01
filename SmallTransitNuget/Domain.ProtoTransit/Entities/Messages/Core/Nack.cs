@@ -2,7 +2,7 @@
 
 internal sealed class Nack : Protocol
 {
-    private Nack() : base(MessageTypesEnum.Nack)
+    public Nack() : base(MessageTypesEnum.Nack)
     {
     }
 }

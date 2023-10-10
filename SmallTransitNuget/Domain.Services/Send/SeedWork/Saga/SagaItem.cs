@@ -5,7 +5,7 @@ namespace Domain.Services.Send.SeedWork.Saga;
 
 internal sealed record SagaItem<TContext, TPayload>(
     Protocol Message,
-    Func<State<TContext, TPayload>> OnAck,
-    Func<State<TContext, TPayload>> OnNack,
-    Func<State<TContext, TPayload>> OnInternalError,
-    Func<State<TContext, TPayload>> OnConnectionClosed);
+    Func<SendState<TContext, TPayload>> OnAck,
+    Func<SendState<TContext, TPayload>> OnNack,
+    Func<SendState<TContext, TPayload>> OnInternalError,
+    Func<SendState<TContext, TPayload>> OnConnectionClosed);

@@ -2,7 +2,7 @@
 
 namespace Domain.Services.Send.Publishing.States;
 
-internal abstract class PublishingState : State<PublishContext, SerializedPublishMessage>
+internal abstract class PublishingSendState : SendState<PublishContext, SerializedPublishMessage>
 {
-    protected PublishingState(PublishContext pushContext) : base(pushContext) { }
+    protected PublishingSendState(PublishContext pushContext) : base(pushContext) { }
 }

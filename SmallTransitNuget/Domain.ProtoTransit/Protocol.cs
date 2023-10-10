@@ -72,7 +72,9 @@ internal abstract partial class Protocol
 
             var generator = method.GetILGenerator();
 
-            generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+            var constructor = type.GetConstructor(Type.EmptyTypes);
+
+            generator.Emit(OpCodes.Newobj, constructor);
 
             generator.Emit(OpCodes.Ret);
 

@@ -2,7 +2,7 @@
 
 namespace Domain.ProtoTransit.ValueObjects.Header;
 
-internal abstract record ProtoHeaderItem(string Name, int HeaderLength, int Order = int.MaxValue)
+public abstract record ProtoHeaderItem(string Name, int HeaderLength, int Order = int.MaxValue)
 {
     internal byte[]? HeaderValue { get; set; }
 
@@ -36,7 +36,7 @@ internal abstract record ProtoHeaderItem(string Name, int HeaderLength, int Orde
             var currentType = typeof(ProtoHeaderItem);
 
             var types = assembly.GetTypes()
-                .Where(t => t.Namespace == namespaceToSearch && t != currentType)
+                .Where(t => t.Namespace == namespaceToSearch && t != currentType && t.DeclaringType is null)
                 .ToArray();
 
             return types;
@@ -48,7 +48,9 @@ internal abstract record ProtoHeaderItem(string Name, int HeaderLength, int Orde
 
             var generator = method.GetILGenerator();
 
-            generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+            var constructor = type.GetConstructor(Type.EmptyTypes) ?? type.GetConstructor(new []{typeof(int)});
+
+            generator.Emit(OpCodes.Newobj, constructor);
 
             generator.Emit(OpCodes.Ret);
 

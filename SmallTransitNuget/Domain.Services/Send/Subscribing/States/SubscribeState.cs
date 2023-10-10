@@ -3,9 +3,9 @@ using Domain.Services.Send.Subscribing.Dto;
 
 namespace Domain.Services.Send.Subscribing.States;
 
-internal abstract class SubscribeState : State<SubscribeContext, SubscriptionDto>
+internal abstract class SubscribeSendState : SendState<SubscribeContext, SubscriptionDto>
 {
-    protected SubscribeState(SubscribeContext context) : base(context)
+    protected SubscribeSendState(SubscribeContext context) : base(context)
     {
     }
 }

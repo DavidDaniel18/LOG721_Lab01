@@ -1,6 +1,6 @@
 ﻿namespace Domain.ProtoTransit.ValueObjects.Header;
 
-internal sealed record QueueNameItem(int Order = 5) : ProtoHeaderItem("QueueNameItem", StorageSizeInBytes, Order)
+public sealed record QueueNameItem() : ProtoHeaderItem("QueueNameItem", StorageSizeInBytes, 5)
 {
     internal static readonly int StorageSizeInBytes = 1;
 }

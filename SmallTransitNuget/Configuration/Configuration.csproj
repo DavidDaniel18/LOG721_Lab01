@@ -7,11 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Dispatcher\" />
     <Folder Include="Publisher\" />
     <Folder Include="Receiver\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Scrutor" Version="4.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
     <ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj" />
     <ProjectReference Include="..\Presentation.Controllers\Presentation.Controllers.csproj" />
   </ItemGroup>

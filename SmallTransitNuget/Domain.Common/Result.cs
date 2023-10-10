@@ -1,11 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Domain.Common;
+﻿namespace Domain.Common;
 
 public record Result(Exception? Exception)
 {
-    private static ILogger _logger;
-
     public bool IsSuccess()
     {
         return Exception is null;
@@ -33,8 +29,6 @@ public record Result(Exception? Exception)
 
     public static Result Failure(Exception exception)
     {
-        _logger.LogError(exception, "Failure result");
-
         return new Result(exception);
     }
 
@@ -50,8 +44,6 @@ public record Result(Exception? Exception)
 
     public static Result<TContent> Failure<TContent>(Exception exception)
     {
-        _logger.LogError(exception, "Failure result");
-
         return new Result<TContent>(default, exception);
     }
 

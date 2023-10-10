@@ -1,10 +1,9 @@
 ﻿using Domain.Common;
-using Domain.ProtoTransit.Extensions;
 using Domain.ProtoTransit.ValueObjects.Header;
 
 namespace Domain.ProtoTransit.Entities.Header;
 
-internal partial class ProtoHeader : IEncodeHeader
+internal partial class ProtoHeader
 {
     private byte[]? _bytes;
 
@@ -23,9 +22,9 @@ internal partial class ProtoHeader : IEncodeHeader
 
     private Result<byte[]> GetHeaderBytes()
     {
-        var totalHeaderLength = _headerItems.Values.Sum((a) => a.HeaderLength) + HeaderLengthItem.StorageSizeInBytes;
+        var totalHeaderLength = _headerItems.Values.Sum((a) => a.HeaderLength);
 
-        _headerItems[typeof(HeaderLengthItem)].HeaderValue = totalHeaderLength.ToBytes();
+        _headerItems[typeof(HeaderLengthItem)].HeaderValue = new []{ (byte)totalHeaderLength };
 
         var header = new byte[totalHeaderLength];
 

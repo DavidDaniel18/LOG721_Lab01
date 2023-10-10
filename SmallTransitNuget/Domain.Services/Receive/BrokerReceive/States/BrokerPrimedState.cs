@@ -9,9 +9,7 @@ namespace Domain.Services.Receive.BrokerReceive.States;
 
 internal sealed class BrokerPrimedState : BrokerReceiveState
 {
-    public BrokerPrimedState(BrokerReceiveContext context) : base(context)
-    {
-    }
+    public BrokerPrimedState(BrokerReceiveContext context) : base(context) { }
 
     internal override Result<BrokerReceiveResult> Handle(Protocol message)
     {
@@ -39,7 +37,7 @@ internal sealed class BrokerPrimedState : BrokerReceiveState
                 });
             }
             case Close:
-                Context.SetState(new BrokerClosedState(Context));
+                Context.SetState(new BrokerClosedState<BrokerReceiveContext, BrokerReceiveResult, ReceivePublishByteWrapper>(Context));
 
                 return Result.Success(new BrokerReceiveResult(ack));
             default:

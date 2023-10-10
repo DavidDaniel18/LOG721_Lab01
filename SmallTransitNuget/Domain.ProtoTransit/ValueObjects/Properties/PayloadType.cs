@@ -2,4 +2,4 @@
 
 namespace Domain.ProtoTransit.ValueObjects.Properties;
 
-internal record PayloadType() : ProtoProperty(typeof(PayloadTypeItem));
+public record PayloadType() : ProtoProperty(typeof(PayloadTypeItem));

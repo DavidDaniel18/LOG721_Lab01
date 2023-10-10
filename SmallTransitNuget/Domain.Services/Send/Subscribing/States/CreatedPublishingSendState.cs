@@ -7,17 +7,17 @@ using Domain.Services.Send.Subscribing.Dto;
 
 namespace Domain.Services.Send.Subscribing.States;
 
-internal sealed class CreatedSubscribingState : SubscribeState
+internal sealed class CreatedSubscribingSendState : SubscribeSendState
 {
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnAck { get; }
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnNack { get; }
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnInternalError { get; }
-    private protected override Func<State<SubscribeContext, SubscriptionDto>> OnConnectionClosed { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnAck { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnNack { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnInternalError { get; }
+    private protected override Func<SendState<SubscribeContext, SubscriptionDto>> OnConnectionClosed { get; }
     private protected override MessageTypesEnum ResponseMessageType => MessageTypesEnum.Subscribe;
 
-    public CreatedSubscribingState(SubscribeContext publishContext) : base(publishContext)
+    public CreatedSubscribingSendState(SubscribeContext publishContext) : base(publishContext)
     {
-        OnAck = () => new SubscribedState(Context);
+        OnAck = () => new SubscribedSendState(Context);
         OnNack = () => this;
         OnInternalError = () => new ClosingSendState<SubscribeContext, SubscriptionDto>(Context);
         OnConnectionClosed = () => new ClosedSendState<SubscribeContext, SubscriptionDto>(Context);

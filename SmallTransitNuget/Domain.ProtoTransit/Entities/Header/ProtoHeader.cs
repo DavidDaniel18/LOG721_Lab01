@@ -13,7 +13,7 @@ internal partial class ProtoHeader
 
     private MessageTypesEnum MessageType { get; }
 
-    internal ProtoHeader(MessageTypesEnum messageType)
+    public ProtoHeader(MessageTypesEnum messageType)
     {
         MessageType = messageType;
 
@@ -22,12 +22,12 @@ internal partial class ProtoHeader
             _headerItems.Add(defaultHeaderType, ProtoHeaderItem.Create(defaultHeaderType));
         }
 
-        _headerItems[typeof(MessageTypeItem)].HeaderValue = ((int)MessageType).ToBytes();
+        _headerItems[typeof(MessageTypeItem)].HeaderValue = new []{(byte)((int)MessageType)};
     }
 
     private void AddHeaderItem<THeaderItem>(THeaderItem headerItem) where THeaderItem : ProtoHeaderItem
     {
-        _headerItems.Add(typeof(THeaderItem), headerItem);
+        _headerItems.Add(headerItem.GetType(), headerItem);
     }
 
     private Result AddHeaderItem(Type type)

@@ -1,19 +1,17 @@
 ﻿using Domain.Common;
 using Domain.ProtoTransit;
 using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Common;
-using Domain.Services.Send.Push.Exceptions;
 using Domain.Services.Send.SeedWork.Saga;
 using Domain.Services.Send.SeedWork.States;
 
 namespace Domain.Services.Send.Push.States;
 
-internal sealed class OpenedSendState : PushState
+internal sealed class OpenedSendState : PushSendState
 {
-    private protected override Func<State<PushContext, byte[]>> OnAck { get; }
-    private protected override Func<State<PushContext, byte[]>> OnNack { get; }
-    private protected override Func<State<PushContext, byte[]>> OnInternalError { get; }
-    private protected override Func<State<PushContext, byte[]>> OnConnectionClosed { get; }
+    private protected override Func<SendState<PushContext, byte[]>> OnAck { get; }
+    private protected override Func<SendState<PushContext, byte[]>> OnNack { get; }
+    private protected override Func<SendState<PushContext, byte[]>> OnInternalError { get; }
+    private protected override Func<SendState<PushContext, byte[]>> OnConnectionClosed { get; }
     private protected override MessageTypesEnum ResponseMessageType => MessageTypesEnum.Push;
 
     public OpenedSendState(PushContext pushContext) : base(pushContext)
