@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Interfaces.Domain;
 
-namespace Interfaces
+namespace Interfaces.Handler
 {
-    public interface ISubsciptionHandler
+    public interface ISubscriptionHandler
     {
         void Subscribe(ISubscription subscription);
         void Unsubscribe(ISubscription subscription);
-        void Litsen(ISubscription subscription);
+        void Listen(ISubscription subscription);
     }
 }

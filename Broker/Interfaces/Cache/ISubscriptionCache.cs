@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Interfaces.Domain;
 
 namespace Interfaces.Cache
 {
     public interface ISubscriptionCache
     {
-        IMemoryCache<ConcurrentDictionary<string, ISubscription>> Subscriptions { get; }
+        IMemoryCache<ConcurrentDictionary<Guid, ISubscription>> Subscriptions { get; }
     }
 }

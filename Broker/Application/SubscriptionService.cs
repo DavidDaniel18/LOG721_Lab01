@@ -1,4 +1,6 @@
-﻿using Interfaces;
+﻿using Interfaces.Domain;
+using Interfaces.Repositories;
+using Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +11,21 @@ namespace Application
 {
     public class SubscriptionService : ISubscriptionService
     {
-        private readonly IChannelService _channelService;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public SubscriptionService(IChannelService channelService) 
+        public SubscriptionService(ISubscriptionRepository subscriptionRepository) 
         {
-            _channelService = channelService;
+            _subscriptionRepository = subscriptionRepository;
         }
 
         public void AddSubscription(ISubscription subscription)
         {
-            _channelService.AddChannel(subscription);
+            _subscriptionRepository.Subscriptions?.TryAdd(subscription.Id, subscription);
         }
 
         public void RemoveSubscription(ISubscription subscription)
         {
-            _channelService.RemoveChannel(subscription);
+            _subscriptionRepository.Subscriptions?.TryRemove(subscription.Id, out _);
         }
     }
 }

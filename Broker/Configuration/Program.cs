@@ -1,13 +1,15 @@
 
 using Application;
 using Configuration.Controllers;
-using Controllers.Controllers;
+using Controllers.Controllers.Tests;
 using Controllers.Repositories;
 using Entities.Cache;
-using Interfaces;
 using Interfaces.Cache;
+using Interfaces.Handler;
 using Interfaces.Repositories;
+using Interfaces.Services;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using IRouter = Interfaces.IRouter;
 
 namespace Configuration
 {
@@ -17,10 +19,7 @@ namespace Configuration
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -28,7 +27,6 @@ namespace Configuration
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -43,42 +41,40 @@ namespace Configuration
             };
 
             app.UseWebSockets(webSocketOptions);
-
             app.MapControllers();
-
             app.Run();
         }
 
         private static void ConfigurationSetup(IServiceCollection services)
         {
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherController).Assembly));
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(SubscriberController).Assembly));
+            ConfigureSmallMassTransit(services);
 
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherControllerTestEndpoint).Assembly));
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(SubscriberControllerTestEndpoint).Assembly));
+            // Domain
+            services.AddScoped<IRouter, Router>();
             // Handlers
             services.AddScoped<IPublisherHandler, PublisherHandler>();
-            services.AddScoped<ISubsciptionHandler, SubscriptionHandler>();
-
+            services.AddScoped<ISubscriptionHandler, SubscriptionHandler>();
             // Services
-            services.AddScoped<IQueueService, QueueService>();
-            services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IChannelService, ChannelService>();
             services.AddScoped<ISubscriptionService, SubscriptionService>();
-
-            services.AddScoped<IRouter, Router>();
-
+            services.AddScoped<IBrokerService, BrokerService>();
             // Repositories
-            services.AddScoped<IQueueRepository, QueueRepository>();
-            services.AddScoped<IMessageRepository, MessageRespository>();
             services.AddScoped<IChannelRepository, ChannelRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-
+            services.AddScoped<IBrokerRepository, BrokerRepository>();
             // Caches
-            services.AddSingleton<IQueueCache, QueueCache>();
-            services.AddSingleton<IMessageCache, MessageCache>();
             services.AddSingleton<ISubscriptionCache, SubscriptionCache>();
             services.AddSingleton<IChannelCache, ChannelCache>();
-            services.AddSingleton<ITopicCache, TopicCache>(); 
+            services.AddSingleton<ITopicCache, TopicCache>();
+            services.AddSingleton<IBrokerCache, BrokerCache>();
+        }
+
+        private static void ConfigureSmallMassTransit(IServiceCollection services)
+        {
+
         }
     }
 }

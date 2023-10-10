@@ -1,7 +1,10 @@
 ﻿using Interfaces;
+using Interfaces.Domain;
 using Interfaces.Repositories;
+using Interfaces.Services;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,22 +15,25 @@ namespace Application
 {
     public class ChannelService : IChannelService
     {
+        private readonly IRouter _router;
         private readonly IChannelRepository _channelRepository;
 
-        public ChannelService(IChannelRepository channelRepository)
+        public ChannelService(IChannelRepository channelRepository, IRouter router)
         {
             _channelRepository = channelRepository;
+            _router = router;
         }
 
-        public void AddChannel(ISubscription subscription)
+        public void AddChannel(string route)
         {
-            
+            _router.AddTopic(route);
+            _ = _channelRepository.Channels?.TryAdd(route, Channel.CreateUnbounded<IPublication>());
         }
 
-        public void AddMessage(string queueName, IPublication publication)
+        public void AddMessage(string route, IPublication publication)
         {
             Channel<IPublication>? channel = null;
-            _channelRepository.Channels?.TryGetValue(queueName, out channel);
+            _channelRepository.Channels?.TryGetValue(route, out channel);
             
             if (channel == null)
                 return;
@@ -38,12 +44,10 @@ namespace Application
             };
         }
 
-        public void RemoveChannel(ISubscription subscription)
+        public void RemoveChannel(string route)
         {
-            while (!(_channelRepository.Channels?.TryRemove(subscription.Topic, out _) ?? false))
-            {
-                Thread.Sleep(500);
-            }
+            _router.RemoveTopic(route);
+            _ = _channelRepository.Channels?.TryRemove(route, out _);
         }
     }
 }

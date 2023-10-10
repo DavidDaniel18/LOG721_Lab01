@@ -1,5 +1,5 @@
-﻿using Interfaces;
-using Interfaces.Cache;
+﻿using Interfaces.Cache;
+using Interfaces.Domain;
 using Interfaces.Repositories;
 using System;
 using System.Collections.Concurrent;

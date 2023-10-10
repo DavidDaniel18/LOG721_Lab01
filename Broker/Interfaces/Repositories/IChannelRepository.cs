@@ -1,4 +1,5 @@
 ﻿using Interfaces.Cache;
+using Interfaces.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

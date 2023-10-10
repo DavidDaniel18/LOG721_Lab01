@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Interfaces.Domain;
 
 namespace Interfaces
 {
-    public interface ITopic
-    {   
-        string Name { get; }
-        string Path { get; }
+    public interface IEndpoint
+    {
+        void Publish(IPublication publication);
     }
 }

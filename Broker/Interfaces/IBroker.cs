@@ -8,6 +8,6 @@ namespace Interfaces
 {
     public interface IBroker
     {
-        void ListenToQueue(string queueName);
+        void Listen();
     }
 }

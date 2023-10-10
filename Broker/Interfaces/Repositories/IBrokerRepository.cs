@@ -3,12 +3,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace Interfaces.Cache
+namespace Interfaces.Repositories
 {
-    public interface IQueueCache
+    public interface IBrokerRepository
     {
-        IMemoryCache<ConcurrentDictionary<string, ConcurrentQueue<IPublication>>> Queues { get; }
+        ConcurrentDictionary<Guid, IBroker>? Brokers { get; }
     }
 }

@@ -1,5 +1,4 @@
-using Interfaces;
-using Application;
+using Interfaces.Domain;
 
 namespace Application.Tests
 {
@@ -9,12 +8,6 @@ namespace Application.Tests
         public void Setup()
         {
         }
-
-        //[Test]
-        //public void Test1()
-        //{
-        //    Assert.Pass();
-        //}
 
         [Test]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Assertion", "NUnit2005:Consider using Assert.That(actual, Is.EqualTo(expected)) instead of Assert.AreEqual(expected, actual)", Justification = "<Pending>")]

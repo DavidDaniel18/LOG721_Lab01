@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using Interfaces.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,14 @@ namespace Entities
 {
     public class Subscription : ISubscription
     {
-        public required string Topic { get; set; }
-        public required string Message { get; set; }
-        public Format format { get; set; }
-        public DateTime Timestamp { get; set; }
+        public IEndpoint? Endpoint { get; set; }
+        public Guid Id { get; set; }
+        public string RoutingKey { get; set; }
+        public string Type { get; set; }
+
+        public Subscription()
+        {
+            
+        }
     }
 }

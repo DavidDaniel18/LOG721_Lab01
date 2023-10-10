@@ -5,6 +5,7 @@ using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Xml.Linq;
 using Interfaces;
+using Interfaces.Domain;
 
 namespace Application
 {
@@ -17,6 +18,10 @@ namespace Application
         public string Key { get; set; } = "default_root_should_never_appear_in_path";
         public ITopicNode? ParentTopicNode { get; set; }
         public Dictionary<string, ITopicNode> ChildrenTopicNodes { get; set; } = new Dictionary<string, ITopicNode>();
+
+        public List<IObserver> Observers => _observers;
+
+        private List<IObserver> _observers = new List<IObserver>();
 
         public static ITopicNode CreateRoot()
         {

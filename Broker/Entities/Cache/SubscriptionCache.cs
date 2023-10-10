@@ -1,5 +1,5 @@
-﻿using Interfaces;
-using Interfaces.Cache;
+﻿using Interfaces.Cache;
+using Interfaces.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Entities.Cache
 {
     public class SubscriptionCache : ISubscriptionCache
     {
-        private IMemoryCache<ConcurrentDictionary<string, ISubscription>> _subscriptions = new InMemoryCache<ConcurrentDictionary<string, ISubscription>>(new ConcurrentDictionary<string, ISubscription>());
-        public IMemoryCache<ConcurrentDictionary<string, ISubscription>> Subscriptions => _subscriptions;
+        private IMemoryCache<ConcurrentDictionary<Guid, ISubscription>> _subscriptions = new InMemoryCache<ConcurrentDictionary<Guid, ISubscription>>(new ConcurrentDictionary<Guid, ISubscription>());
+        public IMemoryCache<ConcurrentDictionary<Guid, ISubscription>> Subscriptions => _subscriptions;
     }
 }

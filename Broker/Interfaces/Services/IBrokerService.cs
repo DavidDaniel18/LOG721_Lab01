@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Interfaces.Domain;
 
-namespace Interfaces.Cache
+namespace Interfaces.Services
 {
-    public interface ITopicCache
+    public interface IBrokerService
     {
-        IMemoryCache<ITopicNode> Root { get; }
+        void AssignBroker(ISubscription subscription);
     }
 }

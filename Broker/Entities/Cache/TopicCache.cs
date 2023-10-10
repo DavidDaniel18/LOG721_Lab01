@@ -1,6 +1,6 @@
 ﻿using Application;
-using Interfaces;
 using Interfaces.Cache;
+using Interfaces.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;

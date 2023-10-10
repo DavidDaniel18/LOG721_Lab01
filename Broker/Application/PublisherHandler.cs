@@ -1,7 +1,10 @@
-﻿using Interfaces;
+﻿using Interfaces.Domain;
+using Interfaces.Handler;
+using Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,26 +12,26 @@ namespace Application
 {
     public class PublisherHandler : IPublisherHandler
     {
-        private readonly IQueueService _queueService;
+        private readonly IChannelService _channelService;
 
-        public PublisherHandler(IQueueService queueService)
+        public PublisherHandler(IChannelService channelService)
         {
-            _queueService = queueService;
+            _channelService = channelService;
         }
 
-        public bool Advertise(string topic, Format format)
+        public void Advertise(string route)
         {
-            return _queueService.AddQueue(topic, format);
+            _channelService.AddChannel(route);
         }
 
-        public bool Publish(IPublication publication)
+        public void Publish(IPublication publication)
         {
-            return _queueService.Publish(publication);
+            _channelService.AddMessage(publication.RoutingKey, publication);
         }
 
-        public bool UnAdvertise(string topic, Format format)
+        public void UnAdvertise(string route)
         {
-            return _queueService.RemoveQueue(topic, format);
+            _channelService.RemoveChannel(route);
         }
     }
 }

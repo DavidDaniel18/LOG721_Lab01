@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interfaces
+namespace Interfaces.Domain
 {
-    public interface IMessageService
+    public interface IPublication
     {
-        void AddMessageToQueue(string queueName, IPublication publication);
+        string RoutingKey { get; }
+        byte[] Message { get; }
     }
 }

@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.Text;
 
-namespace Interfaces
+namespace Interfaces.Domain
 {
     public interface ITopicNode
     {

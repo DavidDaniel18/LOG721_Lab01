@@ -1,34 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Interfaces;
+﻿using Application.Common.Broker;
+using Application.Common.Interfaces;
+using SmallTransit.Abstractions.Broker;
 
-namespace Controllers.Controllers
+internal sealed class BrokerControllerPublisher : IConsumer<BrokerReceiveWrapper>
 {
-    public class PublisherController
+    public Task Consume(BrokerReceiveWrapper contract)
     {
-        IPublisherHandler _publisherHandler;
-
-        public PublisherController(IPublisherHandler publisherHandler)
-        {
-            _publisherHandler = publisherHandler;
-        }
-
-        public void OnAdvertise()
-        {
-
-        }
-
-        public void OnUnAvertise()
-        {
-
-        }
-
-        public void OnPublish(IPublication publication)
-        {
-            _publisherHandler.Publish(publication);
-        }
+        throw new NotImplementedException();
     }
 }
