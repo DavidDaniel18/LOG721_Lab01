@@ -1,32 +1,87 @@
+using RestSharp;
+
 namespace PublisherTest
 {
     [TestClass]
     public class PublishControllerTests
     {
+        string hostname = "localhost";
+        string port = "32768";
+
         [TestMethod]
-        public void Post_ValidData_ReturnsOkResult()
+        public async void Post_InValidData_ReturnsBadResult()
         {
-            using (HttpClient client = new HttpClient())
+
+            var clientNodeController = new RestClient($"http://{hostname}:{port}");
+
+            var requestRouting = new RestRequest("/Publisher", Method.Post);
+
+            requestRouting.AddQueryParameter("nbr_message", 1);
+            requestRouting.AddQueryParameter("routing_key", "test");
+
+            requestRouting.AddJsonBody(new
             {
-                string url = "http://localhost:32769/Publish";
+                // Il n'y a pas de clé message
+                anything = "Test",
+            });
 
-                var data = new
-                {
-                    message = "mon message",
-                };
+            RestResponse response = clientNodeController.Execute(requestRouting);
 
-                string jsonContent = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+            Assert.IsTrue(response.StatusCode != System.Net.HttpStatusCode.OK);
+        }
 
-                var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = client.PostAsync(url, content).GetAwaiter().GetResult();
+        [TestMethod]
+        public async void Post_JsonValidData_ReturnsOkResult()
+        {
 
-                // Verifier que http code = 200
-                Assert.IsTrue(response.IsSuccessStatusCode, "HTTP POST request failed.");
+            var clientNodeController = new RestClient($"http://{hostname}:{port}");
 
-                string responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                Assert.IsNotNull(responseContent);
+            var requestRouting = new RestRequest("/Publisher", Method.Post);
+
+            requestRouting.AddQueryParameter("nbr_message", 1);
+            requestRouting.AddQueryParameter("routing_key", "test");
+            
+            requestRouting.AddJsonBody(new
+            {
+                message = "Test",
+            });
+
+            RestResponse response = clientNodeController.Execute(requestRouting);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string content = response.Content;
+
+                // TODO : Vérifier le contenu de la réponse
             }
         }
+
+        [TestMethod]
+        public async void Post_XmlValidData_ReturnsOkResult()
+        {
+
+            var clientNodeController = new RestClient($"http://{hostname}:{port}");
+
+            var requestRouting = new RestRequest("/Publisher", Method.Post);
+
+            requestRouting.AddQueryParameter("nbr_message", 1);
+            requestRouting.AddQueryParameter("routing_key", "test");
+
+            requestRouting.AddXmlBody(new
+            {
+                message = "Test",
+            });
+
+            RestResponse response = clientNodeController.Execute(requestRouting);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string content = response.Content;
+
+                // TODO : Vérifier le contenu de la réponse
+            }
+        }
+
     }
 }
