@@ -18,22 +18,18 @@ namespace Application
 
         public void Advertise(string routingKey)
         {
-            // Advertise routing key to the router. 
             _router.AddTopic(routingKey);
         }
 
         public void Publish(IPublication publication)
         {
-            // Get all queues routing key pattern matches publication routing key.
             List<string> queues = _queueService.GetQueues(publication.RoutingKey);
-            // Add publication to queue.
             foreach (var queue in queues)
                 _queueService.AddPublication(queue, publication);
         }
 
         public void UnAdvertise(string routingKey)
         {
-            // Un advertise routing key to the router
             _router.RemoveTopic(routingKey);
         }
     }

@@ -42,8 +42,6 @@ namespace Application
             IBrokerChannelListener listener = new BrokerChannelListener(_logger, channel, subscription.Endpoint);
 
             _ = ListenChannelAsync(subscription, listener);
-
-            // todo: if reach here remove from the hashmap?
         }
 
         private async Task ListenChannelAsync(ISubscription subscription, IBrokerChannelListener listener)

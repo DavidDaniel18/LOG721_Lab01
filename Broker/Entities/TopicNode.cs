@@ -1,9 +1,4 @@
 ﻿
-using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using System.Xml.Linq;
 using Interfaces.Domain;
 
 namespace Application
@@ -12,7 +7,7 @@ namespace Application
     {
         private const string AllSubsequentLayersPattern = "#";
         private const string SubsequentLayerPattern = "*";
-        private const char Separator = '.';
+        private const char Separator = '/';
 
         public string Key { get; set; } = "default_root_should_never_appear_in_path";
         public ITopicNode? ParentTopicNode { get; set; }
