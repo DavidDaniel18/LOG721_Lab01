@@ -29,12 +29,11 @@ namespace Application
 
             if (subscription == null) return;
 
-            // todo: uncomment this section when mismatch fixed.
-            //if (!string.Equals(subscription.Type, publication.Contract))
-            //{
-            //    _logger.LogInformation($"Contract mismatch: '{subscription.Type}' != '{publication.Contract}'");
-            //    return;
-            //}
+            if (!string.Equals(subscription.Type, publication.Contract))
+            {
+                _logger.LogInformation($"Contract mismatch: '{subscription.Type}' != '{publication.Contract}'");
+                return;
+            }
 
             Channel<IPublication>? queue = null;
             _queueRepository.Queues?.TryGetValue(queueName, out queue);
