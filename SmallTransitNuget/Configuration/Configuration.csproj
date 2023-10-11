@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.9.2</Version>
+	<Version>0.9.3</Version>
 	<PackageId>SmallTransit</PackageId>
   </PropertyGroup>
 
@@ -31,6 +31,12 @@
 		<ProjectReference Include="..\Domain.Services\Domain.Services.csproj">
 			<PrivateAssets>all</PrivateAssets>
 		</ProjectReference>
+		<ProjectReference Include="..\Domain.ProtoTransit\Domain.ProtoTransit.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Domain.Common\Domain.Common.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
 		<ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj">
 			<PrivateAssets>all</PrivateAssets>
 		</ProjectReference>
@@ -39,11 +45,12 @@
 		</ProjectReference>
 	</ItemGroup>
 
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<SmallTransitAbstractionsOutput Include="$(SolutionDir)Application.Common\bin\$(Configuration)\net7.0\SmallTransit.Abstractions.dll" />
 			<DomainServicesOutput Include="$(SolutionDir)Domain.Services\bin\$(Configuration)\net7.0\Domain.Services.dll" />
+			<DomainProtoTransitOutput Include="$(SolutionDir)Domain.ProtoTransit\bin\$(Configuration)\net7.0\Domain.ProtoTransit.dll" />
+			<DomainCommonOutput Include="$(SolutionDir)Domain.Common\bin\$(Configuration)\net7.0\Domain.Common.dll" />
 			<ApplicationServicesOutput Include="$(SolutionDir)Application.Services\bin\$(Configuration)\net7.0\Application.Services.dll" />
 			<ApplicationServicesOutput Include="$(SolutionDir)Application.Usecases\bin\$(Configuration)\net7.0\Application.UseCases.dll" />
 			<InfrastructureTcpClientOutput Include="$(SolutionDir)Infrastructure.TcpClient\bin\$(Configuration)\net7.0\Infrastructure.TcpClient.dll" />
@@ -55,6 +62,8 @@
 	<ItemGroup>
 		<None Include="$(OutDir)SmallTransit.Abstractions.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
 		<None Include="$(OutDir)Domain.Services.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Domain.ProtoTransit.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Domain.Common.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
 		<None Include="$(OutDir)Application.Services.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
 		<None Include="$(OutDir)Application.UseCases.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
 		<None Include="$(OutDir)Infrastructure.TcpClient.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
