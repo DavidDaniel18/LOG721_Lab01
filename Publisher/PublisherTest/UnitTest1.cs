@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+ï»¿using Newtonsoft.Json;
 using RestSharp;
 
 namespace PublisherTest
@@ -15,14 +15,14 @@ namespace PublisherTest
 
             var clientNodeController = new RestClient($"http://{hostname}:{port}");
 
-            var requestRouting = new RestRequest("/Publisher", Method.Post);
+            var requestRouting = new RestRequest("/Receiver1", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 1);
             requestRouting.AddQueryParameter("routing_key", "humidity/montreal");
 
             requestRouting.AddJsonBody(new
             {
-                // Il n'y a pas de clé message
+                // Il n'y a pas de clï¿½ message
                 anything = "Test",
             });
 
@@ -38,11 +38,11 @@ namespace PublisherTest
 
             var clientNodeController = new RestClient($"http://{hostname}:{port}");
 
-            var requestRouting = new RestRequest("/Publisher", Method.Post);
+            var requestRouting = new RestRequest("/Receiver2", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 1);
             requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
-            
+
             requestRouting.AddJsonBody(new
             {
                 message = "Test Json",
@@ -57,9 +57,9 @@ namespace PublisherTest
                 response = clientNodeController.Execute(requestRouting);
                 Assert.IsTrue(response.IsSuccessful);
 
-                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
 
-                Assert.Equals(jsonDict["message"], "Test Json");
+                Assert.Equals(metrics.message, "Test Json");
             }
         }
 
@@ -69,7 +69,7 @@ namespace PublisherTest
 
             var clientNodeController = new RestClient($"http://{hostname}:{port}");
 
-            var requestRouting = new RestRequest("/Publisher", Method.Post);
+            var requestRouting = new RestRequest("/Receiver3", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 1);
             requestRouting.AddQueryParameter("routing_key", "weather/montreal/humidity");
@@ -88,9 +88,9 @@ namespace PublisherTest
                 response = clientNodeController.Execute(requestRouting);
                 Assert.IsTrue(response.IsSuccessful);
 
-                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
 
-                Assert.Equals(jsonDict["message"], "Test xml");
+                Assert.Equals(metrics.message, "Test xml");
             }
         }
 
@@ -101,7 +101,7 @@ namespace PublisherTest
 
             var clientNodeController = new RestClient($"http://{hostname}:{port}");
 
-            var requestRouting = new RestRequest("/Publisher", Method.Post);
+            var requestRouting = new RestRequest("/Receiver2", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 20);
             requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
@@ -120,10 +120,10 @@ namespace PublisherTest
                 response = clientNodeController.Execute(requestRouting);
                 Assert.IsTrue(response.IsSuccessful);
 
-                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
 
-                Assert.Equals(jsonDict["numberOfMessagesSent"], 20);
-                Assert.Equals(jsonDict["message"], "Test Json");
+                Assert.Equals(metrics.NumberOfMessagesSent, 20);
+                Assert.Equals(metrics.message, "Test Json");
             }
         }
 
@@ -133,7 +133,7 @@ namespace PublisherTest
 
             var clientNodeController = new RestClient($"http://{hostname}:{port}");
 
-            var requestRouting = new RestRequest("/Publisher", Method.Post);
+            var requestRouting = new RestRequest("/Receiver2", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 20);
             requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
@@ -152,14 +152,12 @@ namespace PublisherTest
                 response = clientNodeController.Execute(requestRouting);
                 Assert.IsTrue(response.IsSuccessful);
 
-                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
 
-                Assert.Equals(jsonDict["numberOfMessagesSent"], 20);
-                Assert.Equals(jsonDict["message"], "Test Xml");
+                Assert.Equals(metrics.NumberOfMessagesSent, 20);
+                Assert.Equals(metrics.message, "Test Xml");
             }
         }
-
-
 
     }
 }
