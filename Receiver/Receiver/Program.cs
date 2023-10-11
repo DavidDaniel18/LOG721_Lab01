@@ -11,6 +11,8 @@ namespace Receiver
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            Task.Delay(10000).Wait();
+
             builder.Services.AddSingleton<Metrics>();
 
             builder.Services.AddSmallTransit(configuration =>
