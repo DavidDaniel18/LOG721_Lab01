@@ -1,4 +1,4 @@
-namespace Controlleur.Classe
+namespace PublisherTest
 {
     public class MessageLog721
     {

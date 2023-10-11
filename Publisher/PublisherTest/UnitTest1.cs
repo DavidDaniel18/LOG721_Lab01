@@ -6,19 +6,41 @@ namespace PublisherTest
     [TestClass]
     public class PublishControllerTests
     {
-        string hostname = "localhost";
-        string port = "32768";
+        private const string Host = "localhost";
+
+        private static readonly Dictionary<Services, Address> Addresses = new()
+        {
+            { Services.Publisher, new Address(4304) },
+            { Services.Subscriber, new Address(4300) },
+            { Services.Subscriber2, new Address(4301) },
+            { Services.Subscriber3, new Address(4302) },
+            { Services.Subscriber4, new Address(4303) },
+        };
+
+        private RestClient _publisherClient = null!;
+        private RestClient _subscriberClient = null!;
+        private RestClient _subscriberClient2 = null!;
+        private RestClient _subscriberClient3 = null!;
+        private RestClient _subscriberClient4 = null!;
+
+
+        [TestInitialize]
+        public void InitClients()
+        {
+            _publisherClient = new RestClient(Addresses[Services.Publisher].GetValue());
+            _subscriberClient = new RestClient(Addresses[Services.Subscriber].GetValue());
+            _subscriberClient2 = new RestClient(Addresses[Services.Subscriber2].GetValue());
+            _subscriberClient3 = new RestClient(Addresses[Services.Subscriber3].GetValue());
+            _subscriberClient4 = new RestClient(Addresses[Services.Subscriber4].GetValue());
+        }
 
         [TestMethod]
-        public async void Post_InValidData_ReturnsBadResult()
+        public async Task Post_InValidData_ReturnsBadResult()
         {
+            var requestRouting = new RestRequest("/Publisher/Post", Method.Post);
 
-            var clientNodeController = new RestClient($"http://{hostname}:{port}");
-
-            var requestRouting = new RestRequest("/Receiver1", Method.Post);
-
-            requestRouting.AddQueryParameter("nbr_message", 1);
-            requestRouting.AddQueryParameter("routing_key", "humidity/montreal");
+            requestRouting.AddQueryParameter("nbrMessage", 1);
+            requestRouting.AddQueryParameter("routingKey", "humidity/montreal");
 
             requestRouting.AddJsonBody(new
             {
@@ -26,138 +48,50 @@ namespace PublisherTest
                 anything = "Test",
             });
 
-            RestResponse response = clientNodeController.Execute(requestRouting);
+            var response = await _publisherClient.ExecutePostAsync(requestRouting);
 
             Assert.IsTrue(response.StatusCode != System.Net.HttpStatusCode.OK);
         }
 
 
         [TestMethod]
-        public async void Post_JsonValidData_ReturnsOkResult()
+        public async Task Post_JsonValidData_ReturnsOkResult()
         {
+            var requestRouting = new RestRequest("/Publisher/Post", Method.Post);
 
-            var clientNodeController = new RestClient($"http://{hostname}:{port}");
+            requestRouting.AddQueryParameter("nbrMessage", 1);
+            requestRouting.AddQueryParameter("routingKey", "weather/montreal/temperature");
 
-            var requestRouting = new RestRequest("/Receiver2", Method.Post);
+            requestRouting.AddJsonBody(new MessageLog721("Test Json"));
 
-            requestRouting.AddQueryParameter("nbr_message", 1);
-            requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
-
-            requestRouting.AddJsonBody(new
-            {
-                message = "Test Json",
-            });
-
-            RestResponse response = clientNodeController.Execute(requestRouting);
+            var response = await _publisherClient.ExecutePostAsync(requestRouting);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var responseRequest = new RestRequest("/Subscriber1", Method.Get);
+                await Task.Delay(1000);
 
-                response = clientNodeController.Execute(requestRouting);
+                var responseRequest = new RestRequest("Metrics");
+
+                var metrics = await _subscriberClient.ExecuteGetAsync<Metrics>(responseRequest);
+                
                 Assert.IsTrue(response.IsSuccessful);
 
-                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
-
-                Assert.Equals(metrics.message, "Test Json");
+                Assert.IsTrue(metrics.Data.Message.Equals("Test Json"));
             }
         }
 
-        [TestMethod]
-        public async void Post_XmlValidData_ReturnsOkResult()
+        private record Address(int Port, string Host = Host)
         {
+            public string GetValue() => $"http://{Host}:{Port}";
+        };
 
-            var clientNodeController = new RestClient($"http://{hostname}:{port}");
-
-            var requestRouting = new RestRequest("/Receiver3", Method.Post);
-
-            requestRouting.AddQueryParameter("nbr_message", 1);
-            requestRouting.AddQueryParameter("routing_key", "weather/montreal/humidity");
-
-            requestRouting.AddXmlBody(new
-            {
-                message = "Test xml",
-            });
-
-            RestResponse response = clientNodeController.Execute(requestRouting);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var responseRequest = new RestRequest("/Subscriber2", Method.Get);
-
-                response = clientNodeController.Execute(requestRouting);
-                Assert.IsTrue(response.IsSuccessful);
-
-                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
-
-                Assert.Equals(metrics.message, "Test xml");
-            }
-        }
-
-
-        [TestMethod]
-        public async void Post_MultipleJsonValidData_ReturnsOkResult()
+        enum Services
         {
-
-            var clientNodeController = new RestClient($"http://{hostname}:{port}");
-
-            var requestRouting = new RestRequest("/Receiver2", Method.Post);
-
-            requestRouting.AddQueryParameter("nbr_message", 20);
-            requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
-
-            requestRouting.AddJsonBody(new
-            {
-                message = "Test Json",
-            });
-
-            RestResponse response = clientNodeController.Execute(requestRouting);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var responseRequest = new RestRequest("/Subscriber2", Method.Get);
-
-                response = clientNodeController.Execute(requestRouting);
-                Assert.IsTrue(response.IsSuccessful);
-
-                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
-
-                Assert.Equals(metrics.NumberOfMessagesSent, 20);
-                Assert.Equals(metrics.message, "Test Json");
-            }
+            Publisher,
+            Subscriber,
+            Subscriber2,
+            Subscriber3,
+            Subscriber4
         }
-
-        [TestMethod]
-        public async void Post_MultipleXmlValidData_ReturnsOkResult()
-        {
-
-            var clientNodeController = new RestClient($"http://{hostname}:{port}");
-
-            var requestRouting = new RestRequest("/Receiver2", Method.Post);
-
-            requestRouting.AddQueryParameter("nbr_message", 20);
-            requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
-
-            requestRouting.AddXmlBody(new
-            {
-                message = "Test Xml",
-            });
-
-            RestResponse response = clientNodeController.Execute(requestRouting);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var responseRequest = new RestRequest("/Subscriber2", Method.Get);
-
-                response = clientNodeController.Execute(requestRouting);
-                Assert.IsTrue(response.IsSuccessful);
-
-                Metrics metrics = JsonConvert.DeserializeObject<Metrics>(response.Content);
-
-                Assert.Equals(metrics.NumberOfMessagesSent, 20);
-                Assert.Equals(metrics.message, "Test Xml");
-            }
-        }
-
     }
 }

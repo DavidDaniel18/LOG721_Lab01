@@ -3,22 +3,22 @@ using Receiver.Entities;
 
 namespace Receiver.Controllers
 {
-    [Route("api/metrics")]
     [ApiController]
+    [Route("[controller]")]
     public class MetricsController : ControllerBase
     {
-        private readonly Metrics metrics;
-        private readonly ILogger<MetricsController> _logger;
-        public MetricsController(Metrics metrics, ILogger<MetricsController> logger)
+        private readonly Metrics _metrics;
+
+        public MetricsController(Metrics metrics)
         {
-            this.metrics = metrics;
-            _logger = logger;
+            this._metrics = metrics;
 
         }
-        [HttpGet("gatherMetrics")]
+
+        [HttpGet]
         public ActionResult<Metrics> GetMetrics() {
             
-            return Ok(metrics);
+            return Ok(_metrics);
         }
     
     }

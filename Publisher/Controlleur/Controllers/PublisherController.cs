@@ -1,4 +1,5 @@
 using Controlleur.Classe;
+using Domain.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Interfaces;
@@ -18,56 +19,52 @@ namespace Controlleur.Controllers
             _publisher = publisher;
         }
 
-
         [HttpPost]
         [ActionName("Post")]
-        public async Task<ActionResult> Post([FromBody] MessageLog721 message, int nbr_message, string routing_key)
+        public async Task<ActionResult> Post([FromBody] MessageLog721 message, int nbrMessage, string routingKey)
         {
-            for (int i = 0; i < nbr_message; i++)
+            for (int i = 0; i < nbrMessage; i++)
             {
-                var result = await _publisher.Publish(message, routing_key);
+                var result = await _publisher.Publish(message, routingKey);
 
                 if (result.IsFailure())
                 {
-                    return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
-
+                    return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.Exception);
                 }
             }
 
-            return Ok("Votre message a été publié à " + routing_key);
+            return Ok("Votre message a été publié à " + routingKey);
+        }
+
+        [HttpPost]
+        [ActionName("Message")]
+        public async Task<ActionResult> Message(string message, int nbrMessage, string routingKey)
+        {
+            for (int i = 0; i < nbrMessage; i++)
+            {
+                var result = await _publisher.Publish(new MessageLog721(message), routingKey);
+
+                if (result.IsFailure())
+                {
+                    return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.Exception);
+                }
+            }
+
+            return Ok("Votre message a été publié à " + routingKey);
         }
 
         [HttpPost]
         [ActionName("SendTestMessage")]
         public async Task<ActionResult> SendTestMessage()
         {
-            var result = await _publisher.Publish(new MessageLog721("90%"), "humidity/montreal");
-            if (result.IsFailure())
-            {
-                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
-            }
+            var result = await _publisher.Publish(new MessageLog721("90%"), "humidity/montreal")
+                .BindAsync(async () => await _publisher.Publish(new MessageLog721("85%"), "humidity"))
+                .BindAsync(async () => await _publisher.Publish(new MessageLog721("35C"), "weather/montreal/temperature"))
+                .BindAsync(async () => await _publisher.Publish(new MessageLog721("-10C"), "weather/montreal/humidity"));
 
-            result = await _publisher.Publish(new MessageLog721("85%"), "humidity");
-            if (result.IsFailure())
-            {
-                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
-            }
-
-            result = await _publisher.Publish(new MessageLog721("35C"), "weather/montreal/temperature");
-            if (result.IsFailure())
-            {
-                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
-            }
-
-            result = await _publisher.Publish(new MessageLog721("-10C"), "weather/montreal/humidity");
-            if (result.IsFailure())
-            {
-                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
-            }
+            if (result.IsFailure()) return BadRequest($"Une erreur est survenu. {result.Exception!.Message}");
 
             return Ok("Vos messages de tests ont été publié" );
         }
-
-
     }
 }

@@ -19,41 +19,33 @@ namespace Receiver.Controllers
         {
             var startTime = DateTime.UtcNow;
 
-            try
+            var processingTime = DateTime.UtcNow - contract.DateTime;
+
+            _metrics.Message = contract.Message;
+
+            _metrics.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";
+
+            _metrics.ProcessingTimeMs = processingTime.TotalMilliseconds;
+
+            _metrics.NumberOfMessagesSent++;
+
+            if (_lastMessageTime.HasValue)
             {
-                var messageDateTime = contract.date_time;
-                var messageId = contract.id;
+                var timeBetweenMessages = startTime - _lastMessageTime.Value;
 
-                _metrics.message = contract.message;
-
-                _metrics.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";
-
-                var processingTime = DateTime.UtcNow - contract.date_time;
-                _metrics.ProcessingTime = processingTime;
-
-                _metrics.NumberOfMessagesSent++;
-
-                if (_lastMessageTime.HasValue)
-                {
-                    var timeBetweenMessages = startTime - _lastMessageTime.Value;
-                    _metrics.AverageTimeBetweenMessages = CalculateAverageTime(_metrics.AverageTimeBetweenMessages, timeBetweenMessages, _metrics.NumberOfMessagesSent);
-                }
-
-                _lastMessageTime = startTime;
-
-                _logger.LogInformation($"Message Processing Time: {processingTime.TotalMilliseconds} ms, btw the message is {contract.message}");
+                _metrics.AverageTimeBetweenMessagesMs = CalculateAverageTime(_metrics.AverageTimeBetweenMessagesMs, timeBetweenMessages, _metrics.NumberOfMessagesSent);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors du traitement du message : {@Message}", contract);
-            }
+
+            _lastMessageTime = startTime;
+
+            _logger.LogInformation($"Message Processing Time: {processingTime.TotalMilliseconds} ms, btw the message is {contract.Message}");
 
             return Task.CompletedTask;
         }
 
-        private TimeSpan CalculateAverageTime(TimeSpan currentAverage, TimeSpan newTime, int count)
+        private double CalculateAverageTime(double currentAverage, TimeSpan newTime, int count)
         {
-            return currentAverage + (newTime - currentAverage) / count;
+            return (currentAverage + (newTime.TotalMilliseconds - currentAverage) / count);
         }
     }
 }

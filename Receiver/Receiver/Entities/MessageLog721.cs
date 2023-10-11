@@ -2,8 +2,8 @@
 {
     public class MessageLog721
     {
-        public string message { get; set; }
-        public DateTime date_time { get; set; }
-        public Guid id { get; set; }
+        public string Message { get; set; }
+        public DateTime DateTime { get; set; }
+        public Guid Id { get; set; }
     }
 }
