@@ -1,5 +1,6 @@
 
 using Configuration.Controllers;
+using Controlleur;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace Configuration
@@ -16,6 +17,8 @@ namespace Configuration
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            ConfigurationSetup(builder.Services);
 
             var app = builder.Build();
 
@@ -38,6 +41,7 @@ namespace Configuration
         {
             services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
 
+            services.AddScoped<IJohny, Johny>();
         }
     }
 }

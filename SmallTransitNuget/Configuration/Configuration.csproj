@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>0.9.2</Version>
+	<PackageId>SmallTransit</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Dispatcher\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="MessagePack" Version="2.5.129" />
+    <PackageReference Include="Scrutor" Version="4.2.2" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Application.Common\SmallTransit.Abstractions.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Domain.Services\Domain.Services.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\Presentation.Controllers\Presentation.Controllers.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+	</ItemGroup>
+
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<SmallTransitAbstractionsOutput Include="$(SolutionDir)Application.Common\bin\$(Configuration)\net7.0\SmallTransit.Abstractions.dll" />
+			<DomainServicesOutput Include="$(SolutionDir)Domain.Services\bin\$(Configuration)\net7.0\Domain.Services.dll" />
+			<ApplicationServicesOutput Include="$(SolutionDir)Application.Services\bin\$(Configuration)\net7.0\Application.Services.dll" />
+			<ApplicationServicesOutput Include="$(SolutionDir)Application.Usecases\bin\$(Configuration)\net7.0\Application.UseCases.dll" />
+			<InfrastructureTcpClientOutput Include="$(SolutionDir)Infrastructure.TcpClient\bin\$(Configuration)\net7.0\Infrastructure.TcpClient.dll" />
+			<PresentationControllersOutput Include="$(SolutionDir)Presentation.Controllers\bin\$(Configuration)\net7.0\Presentation.Controllers.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SmallTransitAbstractionsOutput);@(DomainServicesOutput);@(InfrastructureTcpClientOutput);@(PresentationControllersOutput)" DestinationFolder="$(OutDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+	</Target>
+
+	<ItemGroup>
+		<None Include="$(OutDir)SmallTransit.Abstractions.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Domain.Services.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Application.Services.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Application.UseCases.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Infrastructure.TcpClient.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+		<None Include="$(OutDir)Presentation.Controllers.dll" Pack="true" PackagePath="lib/$(TargetFramework)" />
+	</ItemGroup>
+
+</Project>

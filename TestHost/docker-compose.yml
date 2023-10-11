@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  testhost:
+    image: ${DOCKER_REGISTRY-}testhost
+    ports:
+    - "32718:80"
+    - "32768:32768"
+    build:
+      context: .
+      dockerfile: TestHost/Dockerfile
