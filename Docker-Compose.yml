@@ -45,7 +45,7 @@ services:
     ports:
       - 4303:80
     environment:
-      RoutingKey: '*'
+      RoutingKey: 'humidity/#'
     depends_on:
       - broker
   publisher:

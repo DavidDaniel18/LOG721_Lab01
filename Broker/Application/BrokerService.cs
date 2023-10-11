@@ -9,14 +9,14 @@ namespace Application
 {
     public class BrokerService : IBrokerService
     {
-        ConcurrentDictionary<string, IBroker>? brokers => _brokerRepository.Brokers;
+        ConcurrentDictionary<string, IBroker>? _brokers => _brokerRepository.Brokers;
 
         private readonly IQueueRepository _queueRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IBrokerRepository _brokerRepository;
         private readonly ILogger<BrokerService> _logger;
 
-        public BrokerService(IQueueRepository queueRepository, ILogger<BrokerService> logger, IBrokerRepository brokerRepository, ISubscriptionRepository subscriptionRepository, IRouter router)
+        public BrokerService(IQueueRepository queueRepository, ILogger<BrokerService> logger, IBrokerRepository brokerRepository, ISubscriptionRepository subscriptionRepository)
         {
             _queueRepository = queueRepository;
             _subscriptionRepository = subscriptionRepository;
@@ -28,9 +28,9 @@ namespace Application
         {
             var broker = new Broker(_queueRepository, _logger, _subscriptionRepository, subscription);
 
-            if ((brokers?.ContainsKey(subscription.QueueName) ?? false)) return; // Already contains broker.
+            if (_brokers?.ContainsKey(subscription.QueueName) ?? true) return; // Already contains broker.
 
-            brokers.TryAdd(subscription.QueueName, broker);
+            _brokers.TryAdd(subscription.QueueName, broker);
             
             Task.Run(() => broker.Listen());
         }

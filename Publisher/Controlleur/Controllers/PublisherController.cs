@@ -47,13 +47,19 @@ namespace Controlleur.Controllers
                 return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
             }
 
-            result = await _publisher.Publish(new MessageLog721("20C"), "weather/montreal/temperature");
+            result = await _publisher.Publish(new MessageLog721("85%"), "humidity");
             if (result.IsFailure())
             {
                 return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
             }
 
-            result = await _publisher.Publish(new MessageLog721("20C"), "weather/montreal/humidity");
+            result = await _publisher.Publish(new MessageLog721("35C"), "weather/montreal/temperature");
+            if (result.IsFailure())
+            {
+                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
+            }
+
+            result = await _publisher.Publish(new MessageLog721("-10C"), "weather/montreal/humidity");
             if (result.IsFailure())
             {
                 return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());

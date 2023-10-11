@@ -10,7 +10,6 @@ namespace Interfaces.Services
 {
     public interface IQueueService
     {
-        string GetQueue(string routingKey);
         List<string> GetQueues(string routingKey);
         void AddPublication(string queueName, IPublication publication);
         void AddPublication(Channel<IPublication> queue, IPublication publication);
