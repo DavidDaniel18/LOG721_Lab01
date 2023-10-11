@@ -24,7 +24,7 @@ internal sealed class PublishingSendOrchestrator<TContract> : SendOrchestrator<P
             var options = MessagePackSerializerOptions.Standard.WithResolver(MessagePack.Resolvers.ContractlessStandardResolver.Instance);
 
             var serializedRoutingKey = MessagePackSerializer.Serialize(publishWrapper.RoutingKey);
-            var serializedPayloadType = MessagePackSerializer.Serialize(typeof(TContract));
+            var serializedPayloadType = MessagePackSerializer.Serialize(typeof(TContract).Name);
             var serializedPayload = MessagePackSerializer.Serialize(publishWrapper.Payload, options);
 
             return Result.Success(new SerializedPublishMessage(serializedRoutingKey, serializedPayloadType, serializedPayload));
