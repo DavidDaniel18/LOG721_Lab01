@@ -50,7 +50,7 @@ services:
     build:
       context: ./Broker/
       dockerfile: Configuration/Dockerfile
-    container_name: publisher
+    container_name: Broker
     restart: always
     ports:
       - 32769:32769

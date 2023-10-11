@@ -6,17 +6,17 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Configuration/Configuration.csproj", "Configuration/"]
+COPY ["Configuration/PublisherConfiguration.csproj", "Configuration/"]
 COPY ["Controlleur/Controlleur.csproj", "Controlleur/"]
-RUN dotnet restore "Configuration/Configuration.csproj"
+RUN dotnet restore "Configuration/PublisherConfiguration.csproj"
 COPY . .
 WORKDIR "/src/Configuration"
-RUN dotnet build "Configuration.csproj" -c Debug -o /app/build
+RUN dotnet build "PublisherConfiguration.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Configuration.csproj" -c Debug -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "PublisherConfiguration.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Configuration.dll"]
+ENTRYPOINT ["dotnet", "PublisherConfiguration.dll"]
