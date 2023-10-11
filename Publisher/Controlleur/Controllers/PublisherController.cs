@@ -1,12 +1,12 @@
 using Controlleur.Classe;
 using Microsoft.AspNetCore.Mvc;
-using Application.Common.Interfaces;
 using Microsoft.Extensions.Logging;
+using SmallTransit.Abstractions.Interfaces;
 
 namespace Configuration.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class PublisherController : ControllerBase
     {
         private readonly ILogger<PublisherController> _logger;
@@ -20,6 +20,7 @@ namespace Configuration.Controllers
 
 
         [HttpPost]
+        [ActionName("Post")]
         public async Task<ActionResult> Post([FromBody] MessageLog721 message, int nbr_message, string routing_key)
         {
             for (int i = 0; i < nbr_message; i++)
@@ -36,8 +37,8 @@ namespace Configuration.Controllers
             return Ok("Votre message a été publié à " + routing_key);
         }
 
-
         [HttpPost]
+        [ActionName("SendTestMessage")]
         public async Task<ActionResult> SendTestMessage()
         {
             var result = await _publisher.Publish(new MessageLog721("90%"), "humidity/montreal");
