@@ -4,7 +4,7 @@ using SmallTransit.Abstractions.Interfaces;
 
 namespace Receiver.Controllers
 {
-    public class MessageConsumerController : IConsumer<MessageLog721>
+    public class MessageConsumerController : IConsumer<WeatherForecast>
     {
         private readonly Metrics _metrics;
         private readonly ILogger<MessageConsumerController> _logger;
@@ -16,41 +16,41 @@ namespace Receiver.Controllers
             _logger = logger;
         }
 
-        public Task Consume(MessageLog721 contract)
+        public Task Consume(WeatherForecast contract)
         {
-            var startTime = DateTime.UtcNow;
+            //var startTime = DateTime.UtcNow;
 
-            try
-            {
-                _metrics.CpuUsage = GetCpuUsage();
-                _metrics.MemoryUsageMB = GetMemoryUsageMB();
+            //try
+            //{
+            //    _metrics.CpuUsage = GetCpuUsage();
+            //    _metrics.MemoryUsageMB = GetMemoryUsageMB();
 
-                var messageDateTime = contract.date_time;
-                var messageId = contract.id;
+            //    var messageDateTime = contract.date_time;
+            //    var messageId = contract.id;
 
-                _metrics.message = contract.message;
+            //    _metrics.message = contract.message;
 
-                _metrics.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";
+            //    _metrics.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";
 
-                var processingTime = DateTime.UtcNow - contract.date_time;
-                _metrics.ProcessingTime = processingTime;
+            //    var processingTime = DateTime.UtcNow - contract.date_time;
+            //    _metrics.ProcessingTime = processingTime;
 
-                _metrics.NumberOfMessagesSent++;
+            //    _metrics.NumberOfMessagesSent++;
 
-                if (_lastMessageTime.HasValue)
-                {
-                    var timeBetweenMessages = startTime - _lastMessageTime.Value;
-                    _metrics.AverageTimeBetweenMessages = CalculateAverageTime(_metrics.AverageTimeBetweenMessages, timeBetweenMessages, _metrics.NumberOfMessagesSent);
-                }
+            //    if (_lastMessageTime.HasValue)
+            //    {
+            //        var timeBetweenMessages = startTime - _lastMessageTime.Value;
+            //        _metrics.AverageTimeBetweenMessages = CalculateAverageTime(_metrics.AverageTimeBetweenMessages, timeBetweenMessages, _metrics.NumberOfMessagesSent);
+            //    }
 
-                _lastMessageTime = startTime;
+            //    _lastMessageTime = startTime;
 
-                _logger.LogInformation("Message Processing Time: {ProcessingTime} ms", processingTime);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors du traitement du message : {@Message}", contract);
-            }
+            //    _logger.LogInformation("Message Processing Time: {ProcessingTime} ms", processingTime);
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex, "Erreur lors du traitement du message : {@Message}", contract);
+            //}
 
             return Task.CompletedTask;
         }
