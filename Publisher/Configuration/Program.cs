@@ -16,6 +16,12 @@ namespace Configuration.Controllers
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddSmallTransit(configuration =>
+            {
+                configuration.Host = "localhost";
+                configuration.Port = 32769;
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -26,7 +32,6 @@ namespace Configuration.Controllers
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
