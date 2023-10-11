@@ -7,7 +7,10 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Configuration/Configuration.csproj", "Configuration/"]
-COPY ["Controlleur/Controlleur.csproj", "Controlleur/"]
+COPY ["Controlleur/Controllers.csproj", "Controlleur/"]
+COPY ["Application/Application.csproj", "Application/"]
+COPY ["Entities/Entities.csproj", "Entities/"]
+COPY ["Interfaces/Interfaces.csproj", "Interfaces/"]
 RUN dotnet restore "Configuration/Configuration.csproj"
 COPY . .
 WORKDIR "/src/Configuration"
