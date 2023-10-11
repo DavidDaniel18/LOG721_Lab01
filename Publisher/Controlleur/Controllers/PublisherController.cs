@@ -36,5 +36,32 @@ namespace Configuration.Controllers
             return Ok("Votre message a été publié à " + routing_key);
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> SendTestMessage()
+        {
+            var result = await _publisher.Publish(new MessageLog721("90%"), "humidity/montreal");
+            if (result.IsFailure())
+            {
+                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
+            }
+
+            result = await _publisher.Publish(new MessageLog721("20C"), "weather/montreal/temperature");
+            if (result.IsFailure())
+            {
+                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
+            }
+
+            result = await _publisher.Publish(new MessageLog721("20C"), "weather/montreal/humidity");
+            if (result.IsFailure())
+            {
+                return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
+
+            }
+
+            return Ok("Vos messages de tests ont été publié" );
+        }
+
+
     }
 }
