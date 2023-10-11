@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  receiver:
+    build:
+      context: ../Receiver/
+      dockerfile: Receiver/Dockerfile
+    container_name: Receiver1
+    restart: always
+    ports:
+      - 4300:80
+    environment:
+      RoutingKey: '${TEAM_NAME}'
+    depends_on:
+      - broker
+  receiver2:
+    build:
+      context: ../Receiver/
+      dockerfile: Receiver/Dockerfile
+    container_name: Receiver2
+    restart: always
+    ports:
+      - 4301:80
+    environment:
+      RoutingKey: '${TEAM_NAME}'
+    depends_on:
+      - broker
+  receive3:
+    build:
+      context: ../Receiver/
+      dockerfile: Receiver/Dockerfile
+    container_name: Receiver3
+    restart: always
+    ports:
+      - 4302:80
+    environment:
+      RoutingKey: '${TEAM_NAME}'
+    depends_on:
+      - broker
+  publisher:
+    build:
+      context: ../Receiver/
+      dockerfile: Receiver/Dockerfile
+    container_name: publisher
+    restart: always
+    ports:
+      - 4303:80
+    depends_on:
+      - broker
+  broker:
+    build:
+      context: ../Receiver/
+      dockerfile: Receiver/Dockerfile
+    container_name: publisher
+    restart: always
+    ports:
+      - 4304:80
+    
