@@ -36,6 +36,7 @@ namespace Configuration.Controllers
             app.MapControllers();
 
             app.Run();
+
         }
 
         private static void ConfigurationSetup(IServiceCollection services)
