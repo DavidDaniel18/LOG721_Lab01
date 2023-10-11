@@ -14,10 +14,10 @@ COPY ["Interfaces/Interfaces.csproj", "Interfaces/"]
 RUN dotnet restore "Configuration/ConfigurationBroker.csproj"
 COPY . .
 WORKDIR "/src/Configuration"
-RUN dotnet build "ConfigurationBroker.csproj" -c Release -o /app/build
+RUN dotnet build "ConfigurationBroker.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ConfigurationBroker.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ConfigurationBroker.csproj" -c Debug -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

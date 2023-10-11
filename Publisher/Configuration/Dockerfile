@@ -11,10 +11,10 @@ COPY ["Controlleur/Controlleur.csproj", "Controlleur/"]
 RUN dotnet restore "Configuration/PublisherConfiguration.csproj"
 COPY . .
 WORKDIR "/src/Configuration"
-RUN dotnet build "PublisherConfiguration.csproj" -c Release -o /app/build
+RUN dotnet build "PublisherConfiguration.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PublisherConfiguration.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "PublisherConfiguration.csproj" -c Debug -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
