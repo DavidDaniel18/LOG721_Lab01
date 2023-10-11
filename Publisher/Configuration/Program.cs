@@ -1,8 +1,8 @@
-using Configuration.Controllers;
-using Controlleur.Classe;
+using Configuration;
+using Controlleur.Controllers;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
-namespace Configuration.Controllers
+namespace PublisherConfiguration
 {
     public class Program
     {
@@ -28,12 +28,8 @@ namespace Configuration.Controllers
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseAuthorization();
 
@@ -46,7 +42,6 @@ namespace Configuration.Controllers
         private static void ConfigurationSetup(IServiceCollection services)
         {
             services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherController).Assembly));
-
         }
     }
 }

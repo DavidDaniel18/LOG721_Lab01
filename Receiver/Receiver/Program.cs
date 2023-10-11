@@ -16,7 +16,7 @@ namespace Receiver
             builder.Services.AddSmallTransit(configuration =>
             {
                 configuration.Host = "host.docker.internal";
-                configuration.Port = 1000;
+                configuration.Port = 32769;
                 configuration.AddReceiver<MessageConsumerController>($"queue{Guid.NewGuid()}", rcv =>
                 {
                     rcv.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";

@@ -38,8 +38,8 @@ services:
       - broker
   publisher:
     build:
-      context: ../Receiver/
-      dockerfile: Receiver/Dockerfile
+      context: ../Publisher/
+      dockerfile: Configuration/Dockerfile
     container_name: publisher
     restart: always
     ports:

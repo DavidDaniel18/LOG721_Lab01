@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Interfaces;
 
-namespace Configuration.Controllers
+namespace Controlleur.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
@@ -57,7 +57,6 @@ namespace Configuration.Controllers
             if (result.IsFailure())
             {
                 return BadRequest("Une erreur est survenu. Votre message n'a pas été posté. Erreur: " + result.ToString());
-
             }
 
             return Ok("Vos messages de tests ont été publié" );

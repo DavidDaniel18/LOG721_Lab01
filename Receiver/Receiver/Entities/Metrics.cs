@@ -8,5 +8,6 @@
         public int NumberOfMessagesSent { get; set; }
         public TimeSpan AverageTimeBetweenMessages { get;  set; }
         public string message { get; set; }
+        public string RoutingKey { get; set; }
     }
 }

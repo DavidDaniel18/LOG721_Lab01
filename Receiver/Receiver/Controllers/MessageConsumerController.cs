@@ -30,6 +30,8 @@ namespace Receiver.Controllers
 
                 _metrics.message = contract.message;
 
+                _metrics.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";
+
                 var processingTime = DateTime.UtcNow - contract.date_time;
                 _metrics.ProcessingTime = processingTime;
 
