@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controllers", "Controlleur\Controllers.csproj", "{8BC901DD-79EC-489B-BF86-309C853308BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configuration", "Configuration\Configuration.csproj", "{84CD8E85-0299-4980-9307-B4577CBFADAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationBroker", "Configuration\ConfigurationBroker.csproj", "{84CD8E85-0299-4980-9307-B4577CBFADAC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-FrameworkAndDrivers", "3-FrameworkAndDrivers", "{77531D58-F0C8-4772-A989-66C619F38C7F}"
 EndProject

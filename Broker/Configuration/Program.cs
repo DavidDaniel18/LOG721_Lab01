@@ -1,5 +1,6 @@
 
 using Application;
+using Configuration;
 using Configuration.Controllers;
 using Controllers.Controllers.Tests;
 using Controllers.Repositories;
@@ -11,7 +12,7 @@ using Interfaces.Services;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using IRouter = Interfaces.IRouter;
 
-namespace Configuration
+namespace ConfigurationBroker
 {
     public class Program
     {
