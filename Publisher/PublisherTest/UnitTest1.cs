@@ -40,7 +40,7 @@ namespace PublisherTest
             var requestRouting = new RestRequest("/Publisher", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 1);
-            requestRouting.AddQueryParameter("routing_key", "test");
+            requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
             
             requestRouting.AddJsonBody(new
             {
