@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace PublisherTest
@@ -17,7 +18,7 @@ namespace PublisherTest
             var requestRouting = new RestRequest("/Publisher", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 1);
-            requestRouting.AddQueryParameter("routing_key", "test");
+            requestRouting.AddQueryParameter("routing_key", "humidity/montreal");
 
             requestRouting.AddJsonBody(new
             {
@@ -44,16 +45,21 @@ namespace PublisherTest
             
             requestRouting.AddJsonBody(new
             {
-                message = "Test",
+                message = "Test Json",
             });
 
             RestResponse response = clientNodeController.Execute(requestRouting);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                string content = response.Content;
+                var responseRequest = new RestRequest("/Subscriber1", Method.Get);
 
-                // TODO : Vérifier le contenu de la réponse
+                response = clientNodeController.Execute(requestRouting);
+                Assert.IsTrue(response.IsSuccessful);
+
+                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+
+                Assert.Equals(jsonDict["message"], "Test Json");
             }
         }
 
@@ -66,20 +72,25 @@ namespace PublisherTest
             var requestRouting = new RestRequest("/Publisher", Method.Post);
 
             requestRouting.AddQueryParameter("nbr_message", 1);
-            requestRouting.AddQueryParameter("routing_key", "test");
+            requestRouting.AddQueryParameter("routing_key", "weather/montreal/humidity");
 
             requestRouting.AddXmlBody(new
             {
-                message = "Test",
+                message = "Test xml",
             });
 
             RestResponse response = clientNodeController.Execute(requestRouting);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                string content = response.Content;
+                var responseRequest = new RestRequest("/Subscriber2", Method.Get);
 
-                // TODO : Vérifier le contenu de la réponse
+                response = clientNodeController.Execute(requestRouting);
+                Assert.IsTrue(response.IsSuccessful);
+
+                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+
+                Assert.Equals(jsonDict["message"], "Test xml");
             }
         }
 
@@ -97,16 +108,22 @@ namespace PublisherTest
 
             requestRouting.AddJsonBody(new
             {
-                message = "Test",
+                message = "Test Json",
             });
 
             RestResponse response = clientNodeController.Execute(requestRouting);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                string content = response.Content;
+                var responseRequest = new RestRequest("/Subscriber2", Method.Get);
 
-                // TODO : Vérifier le contenu de la réponse et que les 20 messages ont été reçu
+                response = clientNodeController.Execute(requestRouting);
+                Assert.IsTrue(response.IsSuccessful);
+
+                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+
+                Assert.Equals(jsonDict["numberOfMessagesSent"], 20);
+                Assert.Equals(jsonDict["message"], "Test Json");
             }
         }
 
@@ -123,16 +140,22 @@ namespace PublisherTest
 
             requestRouting.AddXmlBody(new
             {
-                message = "Test",
+                message = "Test Xml",
             });
 
             RestResponse response = clientNodeController.Execute(requestRouting);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                string content = response.Content;
+                var responseRequest = new RestRequest("/Subscriber2", Method.Get);
 
-                // TODO : Vérifier le contenu de la réponse et que les 20 messages ont été reçu
+                response = clientNodeController.Execute(requestRouting);
+                Assert.IsTrue(response.IsSuccessful);
+
+                Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+
+                Assert.Equals(jsonDict["numberOfMessagesSent"], 20);
+                Assert.Equals(jsonDict["message"], "Test Xml");
             }
         }
 
