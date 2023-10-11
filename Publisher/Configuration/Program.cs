@@ -1,4 +1,5 @@
 using Configuration.Controllers;
+using Controlleur.Classe;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace Configuration.Controllers
@@ -18,9 +19,12 @@ namespace Configuration.Controllers
 
             builder.Services.AddSmallTransit(configuration =>
             {
-                configuration.Host = "localhost";
+                configuration.Host = "host.docker.internal";
                 configuration.Port = 32769;
             });
+
+            // builder.Services.AddScoped<MessageLog721>();
+            ConfigurationSetup(builder.Services);
 
             var app = builder.Build();
 
@@ -41,7 +45,7 @@ namespace Configuration.Controllers
 
         private static void ConfigurationSetup(IServiceCollection services)
         {
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Publish).Assembly));
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherController).Assembly));
 
         }
     }
