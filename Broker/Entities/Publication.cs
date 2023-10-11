@@ -1,10 +1,5 @@
 ﻿using Interfaces.Domain;
 using SmallTransit.Abstractions.Broker;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities
 {
@@ -12,7 +7,6 @@ namespace Entities
     {
         public string Contract { get; }
         public string RoutingKey { get; }
-
         public byte[] Message { get; }
 
         public Publication(string contract, string routingKey, byte[] message)

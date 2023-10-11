@@ -1,6 +1,4 @@
-﻿
-
-using Entities;
+﻿using Entities;
 using Interfaces.Domain;
 using Interfaces.Handler;
 using Microsoft.Extensions.Logging;
@@ -23,9 +21,7 @@ public sealed class BrokerControllerPublisher : IConsumer<BrokerReceiveWrapper>
         _logger.LogInformation($"Publication attempt for routing key {contract.RoutingKey}");
 
         IPublication publication = Publication.From(contract);
-        // Add the topic to the router.
         _publisherHandler.Advertise(publication.RoutingKey);
-        // Add the publication to all queues that match the routing key with their pattern.
         _publisherHandler.Publish(publication);
 
         return Task.CompletedTask;

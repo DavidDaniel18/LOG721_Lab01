@@ -1,7 +1,6 @@
-﻿
-using Interfaces.Domain;
+﻿using Interfaces.Domain;
 
-namespace Application
+namespace Entities
 {
     public class TopicNode : ITopicNode
     {
@@ -84,8 +83,8 @@ namespace Application
 
         public bool AddTopicNodes(string pattern)
         {
-            return IsRoot() 
-                ? AddTopicNodes(this, pattern.Split(Separator), 0) 
+            return IsRoot()
+                ? AddTopicNodes(this, pattern.Split(Separator), 0)
                 : GetRoot().AddTopicNodes(pattern);
         }
 
@@ -164,14 +163,14 @@ namespace Application
             if (index == patternKeys.Length - 1)
             {
                 ITopicNode? lastNode, parent;
-                
+
                 node.ChildrenTopicNodes.TryGetValue(key, out lastNode);
-                
+
                 if (!(lastNode?.IsLeaf() ?? false))
                     return false;
 
                 parent = node;
-                
+
                 if (!(parent?.ChildrenTopicNodes.Remove(key) ?? false))
                     return false;
 
@@ -179,7 +178,7 @@ namespace Application
                 {
                     if (parent.ChildrenTopicNodes.Count() == 0)
                         parent.ParentTopicNode?.ChildrenTopicNodes.Remove(parent.Key);
-                    
+
                     parent = parent.ParentTopicNode;
                 }
                 return true;

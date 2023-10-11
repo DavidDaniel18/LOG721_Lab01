@@ -1,6 +1,4 @@
-﻿using Domain.Common;
-using Entities;
-using Interfaces;
+﻿using Interfaces;
 using Interfaces.Domain;
 using Interfaces.Repositories;
 using Microsoft.Extensions.Logging;

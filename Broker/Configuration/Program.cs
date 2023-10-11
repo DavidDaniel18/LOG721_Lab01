@@ -1,15 +1,12 @@
 
 using Application;
 using Configuration;
-using Configuration.Controllers;
-using Controllers.Controllers.Tests;
 using Controllers.Repositories;
 using Entities.Cache;
 using Interfaces.Cache;
 using Interfaces.Handler;
 using Interfaces.Repositories;
 using Interfaces.Services;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using IRouter = Interfaces.IRouter;
 
 namespace ConfigurationBroker
@@ -49,10 +46,6 @@ namespace ConfigurationBroker
         private static void ConfigurationSetup(IServiceCollection services)
         {
             ConfigureSmallMassTransit(services);
-
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Subscribe).Assembly));
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherControllerTestEndpoint).Assembly));
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(SubscriberControllerTestEndpoint).Assembly));
             // Domain
             services.AddScoped<IRouter, Router>();
             // Handlers

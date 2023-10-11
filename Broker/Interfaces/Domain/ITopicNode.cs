@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Interfaces.Domain
+﻿namespace Interfaces.Domain
 {
     public interface ITopicNode
     {

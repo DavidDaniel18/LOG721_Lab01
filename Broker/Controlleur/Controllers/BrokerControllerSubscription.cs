@@ -1,6 +1,4 @@
-﻿
-using Application;
-using Entities;
+﻿using Entities;
 using Interfaces.Domain;
 using Interfaces.Handler;
 using Microsoft.Extensions.Logging;
@@ -23,10 +21,7 @@ public sealed class BrokerControllerSubscription : IConsumer<BrokerSubscriptionD
         _logger.LogInformation($"Subscription attempt of queue {contract.QueueName}");
 
         ISubscription subscription = Subscription.From(contract);
-        // creates subscription
-        // creates queue
         _subscriptionHandler.Subscribe(subscription);
-        // creates listener broker and adds it to the broker service.
         _subscriptionHandler.Listen(subscription);
 
         return Task.CompletedTask;

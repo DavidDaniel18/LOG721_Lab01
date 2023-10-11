@@ -1,5 +1,4 @@
-﻿using Application;
-using Interfaces.Cache;
+﻿using Interfaces.Cache;
 using Interfaces.Domain;
 
 namespace Entities.Cache

@@ -1,6 +1,6 @@
 ﻿using Interfaces.Domain;
 
-namespace Application
+namespace Entities
 {
     public class ConcurrentTopicNode : ITopicNode
     {
