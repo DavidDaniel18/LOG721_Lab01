@@ -11,7 +11,7 @@ namespace Receiver
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            Task.Delay(10000).Wait();
+            Task.Delay(5000).Wait();
 
             builder.Services.AddSingleton<Metrics>();
 

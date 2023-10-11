@@ -7,11 +7,11 @@ namespace Application
     {
         private const string AllSubsequentLayersPattern = "#";
         private const string SubsequentLayerPattern = "*";
-        private const char Separator = '.';
+        private const char Separator = '/';
 
         public string Key { get; set; } = "default_root_should_never_appear_in_path";
         public ITopicNode? ParentTopicNode { get; set; }
-        public Dictionary<string, ITopicNode> ChildrenTopicNodes { get; set; } = new Dictionary<string, ITopicNode>();
+        public Dictionary<string, ITopicNode> ChildrenTopicNodes { get; set; } = new();
 
         public List<IObserver> Observers => _observers;
 

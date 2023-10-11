@@ -41,20 +41,23 @@ namespace Application
 
             IBrokerChannelListener listener = new BrokerChannelListener(_logger, channel, subscription.Endpoint);
 
-            Task.Run(async () => {
-                _logger.LogInformation($"Listen {subscription.QueueName}");
-                
-                Result result = await listener.Listen();
-
-                if (result.IsFailure())
-                {
-                    _logger.LogInformation($"Listen Failure {subscription.QueueName}");
-                }
-
-                _logger.LogInformation($"Listen End {subscription.QueueName}");
-            });
+            _ = ListenChannelAsync(subscription, listener);
 
             // todo: if reach here remove from the hashmap?
+        }
+
+        private async Task ListenChannelAsync(ISubscription subscription, IBrokerChannelListener listener)
+        {
+            _logger.LogInformation($"Listen {subscription.QueueName}");
+
+            var result = await listener.Listen();
+
+            if (result.IsFailure())
+            {
+                _logger.LogInformation($"Listen Failure {subscription.QueueName}");
+            }
+
+            _logger.LogInformation($"Listen End {subscription.QueueName}");
         }
     }
 }

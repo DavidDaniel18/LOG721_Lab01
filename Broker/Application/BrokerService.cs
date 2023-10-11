@@ -28,7 +28,7 @@ namespace Application
         {
             var broker = new Broker(_queueRepository, _logger, _subscriptionRepository, subscription);
 
-            if (!(brokers?.ContainsKey(subscription.QueueName) ?? false)) return; // Already contains broker.
+            if ((brokers?.ContainsKey(subscription.QueueName) ?? false)) return; // Already contains broker.
 
             brokers.TryAdd(subscription.QueueName, broker);
             

@@ -46,6 +46,7 @@ namespace Application
                     return result;
                 }
             }
+
             return Result.Failure("Stopped waiting for message within the broker");
         }
     }
