@@ -9,7 +9,7 @@ services:
     ports:
       - 4300:80
     environment:
-      RoutingKey: '${TEAM_NAME}'
+      RoutingKey: weather/montreal/temperature
     depends_on:
       - broker
   receiver2:
@@ -21,7 +21,7 @@ services:
     ports:
       - 4301:80
     environment:
-      RoutingKey: '${TEAM_NAME}'
+      RoutingKey: weather/montreal/*
     depends_on:
       - broker
   receive3:
@@ -33,7 +33,7 @@ services:
     ports:
       - 4302:80
     environment:
-      RoutingKey: '${TEAM_NAME}'
+      RoutingKey: weather/montreal/humidity
     depends_on:
       - broker
   publisher:
