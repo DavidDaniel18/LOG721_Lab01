@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controlleur", "Controlleur\Controlleur.csproj", "{8BC901DD-79EC-489B-BF86-309C853308BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configuration", "Configuration\Configuration.csproj", "{84CD8E85-0299-4980-9307-B4577CBFADAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublisherConfiguration", "Configuration\PublisherConfiguration.csproj", "{84CD8E85-0299-4980-9307-B4577CBFADAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublisherTest", "PublisherTest\PublisherTest.csproj", "{30B57FA7-A91E-4D83-987A-B1823277A632}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublisherTest", "PublisherTest\PublisherTest.csproj", "{30B57FA7-A91E-4D83-987A-B1823277A632}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
