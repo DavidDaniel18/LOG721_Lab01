@@ -10,7 +10,7 @@ using SmallTransit.Abstractions.Broker;
 
 namespace Application.UseCases;
 
-internal sealed class Broker
+public sealed class Broker
 {
     private BrokerReceiveOrchestrator? _brokerReceiveOrchestrator;
     private PushingSendOrchestrator? _pushingSendOrchestrator;
@@ -18,7 +18,7 @@ internal sealed class Broker
     private readonly IComHandler _comHandler;
     private readonly IControllerDelegate<BrokerReceiveWrapper> _controllerDelegate;
 
-    internal Broker(ITcpBridge tcpBridge, IComHandler comHandler, IControllerDelegate<BrokerReceiveWrapper> controllerDelegate)
+    public Broker(ITcpBridge tcpBridge, IComHandler comHandler, IControllerDelegate<BrokerReceiveWrapper> controllerDelegate)
     {
         _tcpBridge = tcpBridge;
         _comHandler = comHandler;
@@ -29,17 +29,20 @@ internal sealed class Broker
     {
         if (_brokerReceiveOrchestrator is not null) return Result.Failure<SubscriptionWrapper>("Broker is already listening");
 
-        var tcpBridgeTask = _tcpBridge.RunAsync(inputStream, outputStream, cancellationTokenSource);
+        _tcpBridge.RunAsync(inputStream, outputStream, cancellationTokenSource);
 
         _brokerReceiveOrchestrator = new BrokerReceiveOrchestrator(new BrokerReceiveContext(), _comHandler, _controllerDelegate);
 
-        var brokerReceiveOrchestratorTask = _brokerReceiveOrchestrator.Execute();
+        try
+        {
+            var brokerReceiveOrchestrator = await _brokerReceiveOrchestrator.Execute().WaitAsync(cancellationTokenSource.Token);
 
-        var finishedTask = await Task.WhenAny(tcpBridgeTask, brokerReceiveOrchestratorTask);
-
-        if (finishedTask == brokerReceiveOrchestratorTask) return brokerReceiveOrchestratorTask.Result;
-
-        return Result.Failure<SubscriptionWrapper>("Tcp Bridge Task has finished");
+            return brokerReceiveOrchestrator;
+        }
+        catch (Exception)
+        {
+            return Result.Failure<SubscriptionWrapper>("Tcp Bridge Task has finished");
+        }
     }
 
     internal async Task<Result> Push(byte[] message)
@@ -50,5 +53,4 @@ internal sealed class Broker
 
         return await _pushingSendOrchestrator.Execute(new PushWrapper(message));
     }
-
 }

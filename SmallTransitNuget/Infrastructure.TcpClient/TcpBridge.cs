@@ -4,7 +4,7 @@ using Infrastructure.TcpClient.L4LinkBuffers;
 
 namespace Infrastructure.TcpClient;
 
-internal sealed class TcpBridge : ITcpBridge
+public sealed class TcpBridge : ITcpBridge
 {
     private readonly ChannelTunnel _readShore = new();
 
@@ -12,17 +12,17 @@ internal sealed class TcpBridge : ITcpBridge
 
     private const int TransferredBites = 1024;
 
-    public async Task RunAsync(Stream inputStream, Stream outputStream, CancellationTokenSource cancellationTokenSource)
+    private Task _readTask = Task.CompletedTask;
+
+    private Task _writeTask = Task.CompletedTask;
+
+    public void RunAsync(Stream inputStream, Stream outputStream, CancellationTokenSource cancellationTokenSource)
     {
         var writeTunnel = new StreamTunnel(outputStream);
         var readTunnel = new StreamTunnel(inputStream);
 
-        await Task.WhenAny(ReadAsync(readTunnel, cancellationTokenSource), WriteAsync(writeTunnel, cancellationTokenSource));
-
-        if (cancellationTokenSource.Token.IsCancellationRequested)
-        {
-            cancellationTokenSource.Cancel();
-        }
+        _readTask = Task.Run(() => ReadAsync(readTunnel, cancellationTokenSource));
+        _writeTask = Task.Run(() => WriteAsync(writeTunnel, cancellationTokenSource));
     }
 
     private async Task ReadAsync(ITunnel tunnel, CancellationTokenSource cancellationTokenSource)
@@ -35,9 +35,10 @@ internal sealed class TcpBridge : ITcpBridge
             {
                 var bytesRead = await tunnel.ReadAsync(buffer, cancellationTokenSource.Token);
 
-                if (bytesRead == 0) break;
-
-                await _readShore.WriteAsync(buffer[..bytesRead], cancellationTokenSource.Token);
+                if (bytesRead > 0)
+                {
+                    await _readShore.WriteAsync(buffer[..bytesRead], cancellationTokenSource.Token);
+                }
             }
         }
         finally
@@ -77,8 +78,8 @@ internal sealed class TcpBridge : ITcpBridge
         return _readShore.GetAccumulator(CancellationToken.None);
     }
 
-    public Task<Result> SendMessage(byte[] value)
+    public async Task<Result> SendMessage(byte[] value)
     {
-        return _writeShore.SendMessage(value);
+        return await _writeShore.SendMessage(value);
     }
 }

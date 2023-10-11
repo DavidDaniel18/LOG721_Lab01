@@ -66,7 +66,6 @@ internal sealed class BrokerReceiveOrchestrator : ReceiveOrchestrator<BrokerRece
         catch (Exception e)
         {
             return Result.Failure<SubscriptionWrapper>(e);
-
         }
     }
 
@@ -77,7 +76,7 @@ internal sealed class BrokerReceiveOrchestrator : ReceiveOrchestrator<BrokerRece
             return await DeserializeAndSendToController(publishByteWrapper);
         }
 
-        return Result.Failure("The broker received a null result");
+        return Result.Success();
     }
 
     private async Task<Result> DeserializeAndSendToController(ReceivePublishByteWrapper receivePublishByteWrapper)

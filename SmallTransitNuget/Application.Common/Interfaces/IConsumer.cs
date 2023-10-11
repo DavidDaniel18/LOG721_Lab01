@@ -1,4 +1,4 @@
-﻿namespace Application.Common.Interfaces;
+﻿namespace SmallTransit.Abstractions.Interfaces;
 
 public interface IConsumer<in TContract> : IConsumer where TContract : class
 {

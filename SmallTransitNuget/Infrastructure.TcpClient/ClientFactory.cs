@@ -1,10 +1,39 @@
-﻿using Domain.Common;
+﻿using Application.Services.InfrastructureInterfaces;
+using Domain.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.TcpClient;
 
-internal sealed class ClientFactory
+public sealed class ClientFactory
 {
-    internal static Result<INetworkStream> GetDestinationClient(string host, int port)
+    private readonly ILogger<ClientFactory> _logger;
+
+    public ClientFactory(ILogger<ClientFactory> logger)
+    {
+        _logger = logger;
+    }
+
+    public Result<INetworkStream> RetryCreateClient(string host, int port)
+    {
+        do
+        {
+            var connectionResult = GetDestinationClient(host, port);
+
+            if (connectionResult.IsFailure())
+            {
+                Task.Delay(1000).Wait();
+
+                continue;
+            }
+
+            _logger.LogInformation("bus created");
+
+            return connectionResult;
+
+        } while (true);
+    }
+
+    private Result<INetworkStream> GetDestinationClient(string host, int port)
     {
         try
         {
@@ -12,9 +41,11 @@ internal sealed class ClientFactory
 
             return Result.Success((INetworkStream)new NetworkClient(destinationClient));
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return Result.Failure<INetworkStream>("Failed to connect to the server");
+            _logger.LogError(e, "Client creation error");
+
+            return Result.Failure<INetworkStream>(e);
         }
     }
 }

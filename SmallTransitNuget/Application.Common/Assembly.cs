@@ -2,4 +2,4 @@
 
 [assembly: InternalsVisibleTo("Configuration")]
 [assembly: InternalsVisibleTo("Infrastructure.TcpClient")]
-namespace Application.Common;
+namespace SmallTransit.Abstractions;

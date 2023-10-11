@@ -9,6 +9,11 @@ internal sealed class SubscribeContext : SendStateHolder<SubscribeContext, Subsc
 {
     private protected override SendState<SubscribeContext, SubscriptionDto> SendState { get; set; }
 
+    internal SubscribeContext()
+    {
+        SendState = new CreatedSubscribingSendState(this);
+    }
+
     internal override bool GetConnectionReady()
     {
         return SendState is SubscribedSendState;

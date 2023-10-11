@@ -1,26 +1,21 @@
-﻿using Application.Common.Broker;
-using Application.Common.Interfaces;
-using Application.UseCases;
+﻿using Application.UseCases;
 using Domain.Common;
 using Domain.Services.Receive;
 using Microsoft.AspNetCore.Connections;
+using SmallTransit.Abstractions.Broker;
+using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.BrokerReceiver;
 
-public sealed class BrokerReceiver : ConnectionHandler, IBrokerPushEndpoint
+public sealed class BrokerReceiver : IBrokerPushEndpoint
 {
     private readonly Broker _broker;
     private readonly IControllerDelegate<BrokerSubscriptionDto> _controllerDelegate;
 
-    internal BrokerReceiver(Broker broker, IControllerDelegate<BrokerSubscriptionDto> controllerDelegate)
+    public BrokerReceiver(Broker broker, IControllerDelegate<BrokerSubscriptionDto> controllerDelegate)
     {
         _broker = broker;
         _controllerDelegate = controllerDelegate;
-    }
-
-    public override async Task OnConnectedAsync(ConnectionContext connection)
-    {
-        await Receive(connection, new CancellationTokenSource());
     }
 
     public async Task<Result> Receive(ConnectionContext connectionContext, CancellationTokenSource cancellationTokenSource)

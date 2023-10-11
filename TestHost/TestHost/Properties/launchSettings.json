@@ -20,6 +20,7 @@
     },
     "Docker": {
       "commandName": "Docker",
+      "commandLineArgs": "\r\n",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {

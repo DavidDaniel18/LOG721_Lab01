@@ -41,7 +41,7 @@ internal abstract class SendOrchestrator<TContext, TStateParameter> where TConte
 
     private protected async Task<Result> Wire(ISaga<TStateParameter> saga)
     {
-        while (saga.GetMessage() is { } message)
+        if (saga.GetMessage() is { } message)
         {
             var result = await Serialize(message).BindAsync(_comHandler.SendMessage).BindAsync(() => WaitForValidResponse(saga));
 

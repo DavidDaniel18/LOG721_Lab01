@@ -15,14 +15,6 @@ internal sealed class ChannelTunnel
         SingleWriter = true,
     });
 
-    private MemoryStream _memoryStream = new();
-
-    public void Dispose()
-    {
-        _channel.Writer.TryComplete();
-        _memoryStream.Dispose();
-    }
-
     public IAsyncEnumerable<byte[]> GetAccumulator(CancellationToken cancellationToken) => _channel.Reader.ReadAllAsync(cancellationToken);
 
     public async Task WriteAsync(byte[] buffer, CancellationToken cancellationToken)

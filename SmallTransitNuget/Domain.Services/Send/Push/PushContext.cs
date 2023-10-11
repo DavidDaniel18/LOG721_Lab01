@@ -8,7 +8,7 @@ internal sealed class PushContext : SendStateHolder<PushContext, byte[]>
 {
     private protected override SendState<PushContext, byte[]> SendState { get; set; }
 
-    public PushContext() { SendState = new CreatedSendState(this); }
+    public PushContext() { SendState = new OpenedSendState(this); }
 
     internal override bool GetConnectionReady() => SendState is OpenedSendState;
 }

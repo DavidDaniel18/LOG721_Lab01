@@ -24,6 +24,14 @@ internal sealed class StreamTunnel : ITunnel
 
     public ValueTask WriteAsync(byte[] buffer, CancellationToken cancellationToken)
     {
-        return _stream.WriteAsync(buffer, cancellationToken);
+        try
+        {
+            return _stream.WriteAsync(buffer, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

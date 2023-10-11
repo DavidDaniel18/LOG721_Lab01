@@ -1,6 +1,6 @@
 ﻿using Domain.Common;
 
-namespace Application.Common.Interfaces;
+namespace SmallTransit.Abstractions.Interfaces;
 
 public interface IBrokerPushEndpoint
 {

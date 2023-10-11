@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SmallTransit.Abstractions.Interfaces;
 
 namespace TestHost.Controllers
 {
@@ -12,22 +13,31 @@ namespace TestHost.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IPublisher<WeatherForecast> _publisher;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IPublisher<WeatherForecast> publisher)
         {
             _logger = logger;
+            _publisher = publisher;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<ActionResult> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var wfc = new WeatherForecast
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(0)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            };
+
+            _logger.LogInformation("Publishing: {0}", wfc.Summary);
+
+            await _publisher.Publish(wfc, "*");
+
+            _logger.LogInformation("Published: {0}", wfc.Summary);
+
+            return Ok(wfc);
         }
     }
 }

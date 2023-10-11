@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace Infrastructure.TcpClient;
+namespace Application.Services.InfrastructureInterfaces;
 
 public interface INetworkStream
 {

@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Services\Application.Services.csproj" />
-    <ProjectReference Include="..\Infrastructure.TcpClient\Infrastructure.TcpClient.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,14 @@
 ﻿using Domain.Services.Receive;
 using Microsoft.Extensions.DependencyInjection;
-using Application.Common.Interfaces;
+using SmallTransit.Abstractions.Interfaces;
 
 namespace Configuration.Dispatcher;
 
-internal sealed class ControllerDispatcher<TContract> : IControllerDelegate<TContract> where TContract : class
+public sealed class ControllerDispatcher<TContract> : IControllerDelegate<TContract> where TContract : class
 {
     private readonly IServiceProvider _serviceProvider;
 
-    internal ControllerDispatcher(IServiceProvider serviceProvider)
+    public ControllerDispatcher(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }

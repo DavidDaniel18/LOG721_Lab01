@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.7.3</Version>
+	<Version>0.9.0</Version>
 	<PackageId>SmallTransit.Abstractions</PackageId>
   </PropertyGroup>
 
@@ -23,7 +23,7 @@
 		<ItemGroup>
 			<DomainCommonOutput Include="$(SolutionDir)Domain.Common\bin\$(Configuration)\net7.0\Domain.Common.dll" />
 		</ItemGroup>
-		<Copy SourceFiles="@(DomainCommonOutput)" DestinationFolder="$(OutDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+		<!--<Copy SourceFiles="@(DomainCommonOutput)" DestinationFolder="$(OutDir)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />-->
 	</Target>
 
 	<ItemGroup>
