@@ -13,7 +13,7 @@ namespace Application
 {
     public class BrokerService : IBrokerService
     {
-        ConcurrentDictionary<Guid, IBroker>? brokers => _brokerRepository.Brokers;
+        ConcurrentDictionary<string, IBroker>? brokers => _brokerRepository.Brokers;
 
         private readonly IChannelRepository _channelRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
@@ -30,11 +30,11 @@ namespace Application
 
         public void AssignBroker(ISubscription subscription)
         {
-            var broker = new Broker(_channelRepository, _router, _subscriptionRepository, subscription.RoutingKey, subscription.Id);
+            var broker = new Broker(_channelRepository, _router, _subscriptionRepository, subscription);
 
-            if (!(brokers?.ContainsKey(subscription.Id) ?? false)) return; // Already contains broker.
+            if (!(brokers?.ContainsKey(subscription.QueueName) ?? false)) return; // Already contains broker.
 
-            brokers.TryAdd(subscription.Id, broker);
+            brokers.TryAdd(subscription.QueueName, broker);
             
             Task.Run(() => broker.Listen());
         }

@@ -1,8 +1,12 @@
-﻿using Interfaces;
+﻿using Domain.Common;
+using Interfaces;
 using Interfaces.Domain;
 using Interfaces.Repositories;
+using MessagePack;
+using SmallTransit.Abstractions.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
@@ -17,25 +21,29 @@ namespace Application
     public class BrokerChannelListener : IBrokerChannelListener
     {
         private readonly Channel<IPublication> _channel;
-        private readonly IEndpoint _endPoint;
+        private readonly IBrokerPushEndpoint _endPoint;
 
-        public BrokerChannelListener(Channel<IPublication> channel, IEndpoint endPoint) 
+        public BrokerChannelListener(Channel<IPublication> channel, IBrokerPushEndpoint endPoint) 
         { 
             _channel = channel;
             _endPoint = endPoint;
         }
 
-        public async void Listen()
+        public async Task<Result> Listen()
         {
             while (await _channel.Reader.WaitToReadAsync())
             {
                 while (_channel.Reader.TryRead(out var publication))
                 {
-                    _endPoint.Publish(publication);
+                    Result result = await _endPoint.Push(publication.Message);
+
+                    if (result.IsFailure())
+                    {
+                        return result;
+                    }
                 }
             }
+            return Result.Failure("Stopped waiting for message within the broker");
         }
-
-        // todo: validate error handling.
     }
 }

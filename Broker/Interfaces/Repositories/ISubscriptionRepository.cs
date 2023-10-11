@@ -10,6 +10,6 @@ namespace Interfaces.Repositories
 {
     public interface ISubscriptionRepository
     {
-        ConcurrentDictionary<Guid, ISubscription>? Subscriptions { get; }
+        ConcurrentDictionary<string, ISubscription>? Subscriptions { get; }
     }
 }

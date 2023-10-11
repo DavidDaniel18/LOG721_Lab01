@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Interfaces.Domain;
 
 namespace Interfaces.Cache
 {
-    public interface IBrokerCache
+    public interface IQueueCache
     {
-        IMemoryCache<ConcurrentDictionary<string, IBroker>> Brokers { get; }
+        IMemoryCache<ConcurrentDictionary<string, Channel<IPublication>>> Queues { get; }
     }
 }

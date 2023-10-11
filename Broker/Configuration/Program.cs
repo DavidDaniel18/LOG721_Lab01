@@ -65,16 +65,25 @@ namespace Configuration
             services.AddScoped<IChannelRepository, ChannelRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
             services.AddScoped<IBrokerRepository, BrokerRepository>();
+            services.AddScoped<IQueueRepository, QueueRepository>();
             // Caches
             services.AddSingleton<ISubscriptionCache, SubscriptionCache>();
             services.AddSingleton<IChannelCache, ChannelCache>();
             services.AddSingleton<ITopicCache, TopicCache>();
             services.AddSingleton<IBrokerCache, BrokerCache>();
+            services.AddSingleton<IQueueCache, QueueCache>();
         }
 
         private static void ConfigureSmallMassTransit(IServiceCollection services)
         {
+            services.AddSmallTransit();
+            services.AddSmallTransitBroker(configurator => 
+            {
+                configurator.TcpPort = 32769;
 
+                configurator.AddPublishReceiver<BrokerControllerPublisher>();
+                configurator.AddSubscriptionReceiver<BrokerControllerSubscription>();
+            });
         }
     }
 }

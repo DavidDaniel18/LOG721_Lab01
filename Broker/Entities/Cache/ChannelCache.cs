@@ -12,7 +12,7 @@ namespace Entities.Cache
 {
     public class ChannelCache : IChannelCache
     {
-        IMemoryCache<ConcurrentDictionary<string, Channel<IPublication>>> _channels = new InMemoryCache<ConcurrentDictionary<string, Channel<IPublication>>>(new ConcurrentDictionary<string, Channel<IPublication>>());
+        private IMemoryCache<ConcurrentDictionary<string, Channel<IPublication>>> _channels = new InMemoryCache<ConcurrentDictionary<string, Channel<IPublication>>>(new ConcurrentDictionary<string, Channel<IPublication>>());
         public IMemoryCache<ConcurrentDictionary<string, Channel<IPublication>>> Channels => _channels;
     }
 }

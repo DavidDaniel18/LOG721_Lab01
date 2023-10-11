@@ -1,10 +1,4 @@
-﻿
-using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using System.Xml.Linq;
-using Interfaces;
+﻿using Interfaces;
 using Interfaces.Domain;
 
 namespace Application

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Interfaces.Domain;
 
 namespace Interfaces.Cache
 {
     public interface ISubscriptionCache
     {
-        IMemoryCache<ConcurrentDictionary<Guid, ISubscription>> Subscriptions { get; }
+        IMemoryCache<ConcurrentDictionary<string, ISubscription>> Subscriptions { get; }
     }
 }

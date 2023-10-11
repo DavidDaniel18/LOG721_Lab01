@@ -1,16 +1,9 @@
-﻿using Entities;
+﻿using Domain.Common;
+using Entities;
 using Interfaces;
 using Interfaces.Domain;
 using Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection.PortableExecutable;
-using System.Text;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace Application
 {
@@ -22,25 +15,27 @@ namespace Application
         
         private readonly IRouter _router;
 
+        private readonly ISubscription _subscription;
         private readonly Guid _subscriptionGuid;
 
         private readonly string _routePattern;
 
         private Dictionary<string, IBrokerChannelListener> _brokerChannelListeners = new Dictionary<string, IBrokerChannelListener>();
 
-        public Broker(IChannelRepository channelRepository, IRouter router, ISubscriptionRepository subscriptionRepository, string routePattern, Guid subscriptionId) 
+        public Broker(IChannelRepository channelRepository, IRouter router, ISubscriptionRepository subscriptionRepository, ISubscription subscription) 
         { 
             _channelRepository = channelRepository;
             _router = router;
-            _routePattern = routePattern;
+            _routePattern = subscription.RoutingKey;
             _subscriptionRepository = subscriptionRepository;
-            _subscriptionGuid = subscriptionId;
+            _subscriptionGuid = subscription.Id;
+            _subscription = subscription;
         }
 
         public void Listen()
         {
             ISubscription? subscription = null;
-            _ = _subscriptionRepository.Subscriptions?.TryGetValue(_subscriptionGuid, out subscription);
+            _ = _subscriptionRepository.Subscriptions?.TryGetValue(subscription.QueueName, out subscription);
 
             if (subscription == null) return; // No more subscriptions return.
 
@@ -59,7 +54,14 @@ namespace Application
 
                 _brokerChannelListeners.Add(route, listener);
 
-                Task.Run(() => listener.Listen());
+                Task.Run(async () => {
+                    Result result = await listener.Listen();
+
+                    if (result.IsFailure())
+                    {
+                        // todo : remove subscription.. and all..
+                    }
+                });
             }
         }
 

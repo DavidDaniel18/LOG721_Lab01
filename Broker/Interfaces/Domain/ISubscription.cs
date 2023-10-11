@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmallTransit.Abstractions.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ namespace Interfaces.Domain
 {
     public interface ISubscription
     {
-        Guid Id { get; set; }
-        string RoutingKey { get; set; }
-        string Type { get; set; }
-        IEndpoint Endpoint { get; set; }
+        Guid Id { get; }
+        string RoutingKey { get; }
+        string QueueName { get; }
+        string Type { get; }
+        IBrokerPushEndpoint Endpoint { get; }
     }
 }

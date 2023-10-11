@@ -15,6 +15,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     <PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
     <PackageReference Include="coverlet.collector" Version="3.2.0" />
+    <PackageReference Include="SmallTransit" Version="0.9.0" />
+    <PackageReference Include="SmallTransit.Abstractions" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup>

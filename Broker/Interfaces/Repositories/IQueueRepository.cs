@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Interfaces.Cache;
+using Interfaces.Domain;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace Interfaces.Repositories
 {
-    public interface IBrokerRepository
+    public interface IQueueRepository
     {
-        ConcurrentDictionary<string, IBroker>? Brokers { get; }
+        ConcurrentDictionary<string, Channel<IPublication>>? Queues { get; }
     }
 }
