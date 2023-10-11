@@ -83,5 +83,33 @@ namespace PublisherTest
             }
         }
 
+
+        [TestMethod]
+        public async void Post_MultipleJsonValidData_ReturnsOkResult()
+        {
+
+            var clientNodeController = new RestClient($"http://{hostname}:{port}");
+
+            var requestRouting = new RestRequest("/Publisher", Method.Post);
+
+            requestRouting.AddQueryParameter("nbr_message", 20);
+            requestRouting.AddQueryParameter("routing_key", "weather/montreal/temperature");
+
+            requestRouting.AddJsonBody(new
+            {
+                message = "Test",
+            });
+
+            RestResponse response = clientNodeController.Execute(requestRouting);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string content = response.Content;
+
+                // TODO : Vérifier le contenu de la réponse et que les 20 messages ont été reçu
+            }
+        }
+
+
     }
 }
