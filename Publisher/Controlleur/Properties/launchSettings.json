@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Controlleur": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

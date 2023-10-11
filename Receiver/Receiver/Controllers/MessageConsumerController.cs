@@ -1,19 +1,18 @@
-﻿using SubscriberClient.Class;
-using System.Diagnostics;
-using Serilog;
+﻿using System.Diagnostics;
+using Receiver.Entities;
 using SmallTransit.Abstractions.Interfaces;
 
-namespace SubscriberClient.Controllers
+namespace Receiver.Controllers
 {
     public class MessageConsumerController : IConsumer<MessageLog721>
     {
-        private readonly Metrics metrics;
+        private readonly Metrics _metrics;
         private readonly ILogger<MessageConsumerController> _logger;
         private DateTime? _lastMessageTime;
 
         public MessageConsumerController(Metrics metrics, ILogger<MessageConsumerController> logger)
         {
-            this.metrics = metrics;
+            this._metrics = metrics;
             _logger = logger;
         }
 
@@ -23,22 +22,25 @@ namespace SubscriberClient.Controllers
 
             try
             {
-                metrics.CpuUsage = GetCpuUsage();
-                metrics.MemoryUsageMB = GetMemoryUsageMB();
+                _metrics.CpuUsage = GetCpuUsage();
+                _metrics.MemoryUsageMB = GetMemoryUsageMB();
+
                 var messageDateTime = contract.date_time;
                 var messageId = contract.id;
 
-                metrics.message = contract.message;
+                _metrics.message = contract.message;
+
+                _metrics.RoutingKey = Environment.GetEnvironmentVariable("RoutingKey") ?? "*";
 
                 var processingTime = DateTime.UtcNow - contract.date_time;
-                metrics.ProcessingTime = processingTime;
+                _metrics.ProcessingTime = processingTime;
 
-                metrics.NumberOfMessagesSent++;
+                _metrics.NumberOfMessagesSent++;
 
                 if (_lastMessageTime.HasValue)
                 {
                     var timeBetweenMessages = startTime - _lastMessageTime.Value;
-                    metrics.AverageTimeBetweenMessages = CalculateAverageTime(metrics.AverageTimeBetweenMessages, timeBetweenMessages, metrics.NumberOfMessagesSent);
+                    _metrics.AverageTimeBetweenMessages = CalculateAverageTime(_metrics.AverageTimeBetweenMessages, timeBetweenMessages, _metrics.NumberOfMessagesSent);
                 }
 
                 _lastMessageTime = startTime;

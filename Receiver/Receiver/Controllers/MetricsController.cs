@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SubscriberClient.Class;
+using Receiver.Entities;
 
-namespace SubscriberClient.Controllers
+namespace Receiver.Controllers
 {
     [Route("api/metrics")]
     [ApiController]
