@@ -2,12 +2,8 @@
 using Interfaces.Domain;
 using Interfaces.Repositories;
 using Interfaces.Services;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application
 {
@@ -15,22 +11,22 @@ namespace Application
     {
         ConcurrentDictionary<string, IBroker>? brokers => _brokerRepository.Brokers;
 
-        private readonly IChannelRepository _channelRepository;
+        private readonly IQueueRepository _queueRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IBrokerRepository _brokerRepository;
-        private readonly IRouter _router;
+        private readonly ILogger<BrokerService> _logger;
 
-        public BrokerService(IBrokerRepository brokerRepository, IChannelRepository channelRepository, ISubscriptionRepository subscriptionRepository, IRouter router)
+        public BrokerService(IQueueRepository queueRepository, ILogger<BrokerService> logger, IBrokerRepository brokerRepository, ISubscriptionRepository subscriptionRepository, IRouter router)
         {
-            _channelRepository = channelRepository;
+            _queueRepository = queueRepository;
             _subscriptionRepository = subscriptionRepository;
-            _router = router;
             _brokerRepository = brokerRepository;
+            _logger = logger;
         }
 
         public void AssignBroker(ISubscription subscription)
         {
-            var broker = new Broker(_channelRepository, _router, _subscriptionRepository, subscription);
+            var broker = new Broker(_queueRepository, _logger, _subscriptionRepository, subscription);
 
             if (!(brokers?.ContainsKey(subscription.QueueName) ?? false)) return; // Already contains broker.
 

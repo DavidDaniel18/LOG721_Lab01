@@ -1,6 +1,7 @@
 ﻿
 
 using Entities;
+using Interfaces.Domain;
 using Interfaces.Handler;
 using SmallTransit.Abstractions.Broker;
 using SmallTransit.Abstractions.Interfaces;
@@ -16,8 +17,11 @@ public sealed class BrokerControllerPublisher : IConsumer<BrokerReceiveWrapper>
 
     public Task Consume(BrokerReceiveWrapper contract)
     {
-        _publisherHandler.Advertise(contract.RoutingKey);
-        _publisherHandler.Publish(new Publication(contract.Contract, contract.RoutingKey, contract.Payload));
+        IPublication publication = Publication.From(contract);
+        // Add the topic to the router.
+        _publisherHandler.Advertise(publication.RoutingKey);
+        // Add the publication to all queues that match the routing key with their pattern.
+        _publisherHandler.Publish(publication);
 
         return Task.CompletedTask;
     }

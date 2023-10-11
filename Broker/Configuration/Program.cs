@@ -58,17 +58,15 @@ namespace Configuration
             services.AddScoped<IPublisherHandler, PublisherHandler>();
             services.AddScoped<ISubscriptionHandler, SubscriptionHandler>();
             // Services
-            services.AddScoped<IChannelService, ChannelService>();
             services.AddScoped<ISubscriptionService, SubscriptionService>();
             services.AddScoped<IBrokerService, BrokerService>();
+            services.AddScoped<IQueueService, QueueService>();
             // Repositories
-            services.AddScoped<IChannelRepository, ChannelRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
             services.AddScoped<IBrokerRepository, BrokerRepository>();
             services.AddScoped<IQueueRepository, QueueRepository>();
             // Caches
             services.AddSingleton<ISubscriptionCache, SubscriptionCache>();
-            services.AddSingleton<IChannelCache, ChannelCache>();
             services.AddSingleton<ITopicCache, TopicCache>();
             services.AddSingleton<IBrokerCache, BrokerCache>();
             services.AddSingleton<IQueueCache, QueueCache>();

@@ -1,4 +1,5 @@
 ﻿using Interfaces.Domain;
+using SmallTransit.Abstractions.Broker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,11 @@ namespace Entities
             Contract = contract;
             RoutingKey = routingKey;
             Message = message;
+        }
+
+        public static IPublication From(BrokerReceiveWrapper brokerReceiveWrapper)
+        {
+            return new Publication(brokerReceiveWrapper.Contract, brokerReceiveWrapper.RoutingKey, brokerReceiveWrapper.Payload);
         }
     }
 }

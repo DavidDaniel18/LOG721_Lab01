@@ -3,11 +3,13 @@ using Interfaces;
 using Interfaces.Domain;
 using Interfaces.Repositories;
 using MessagePack;
+using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -22,25 +24,26 @@ namespace Application
     {
         private readonly Channel<IPublication> _channel;
         private readonly IBrokerPushEndpoint _endPoint;
+        private readonly ILogger _logger;
 
-        public BrokerChannelListener(Channel<IPublication> channel, IBrokerPushEndpoint endPoint) 
+        public BrokerChannelListener(ILogger logger, Channel<IPublication> channel, IBrokerPushEndpoint endPoint) 
         { 
+            _logger = logger;
             _channel = channel;
             _endPoint = endPoint;
         }
 
         public async Task<Result> Listen()
         {
-            while (await _channel.Reader.WaitToReadAsync())
+            await foreach (var publication in _channel.Reader.ReadAllAsync())
             {
-                while (_channel.Reader.TryRead(out var publication))
-                {
-                    Result result = await _endPoint.Push(publication.Message);
+                _logger.LogInformation("Listened {0}: {1}, now pushing", publication.Contract, publication.Message);
 
-                    if (result.IsFailure())
-                    {
-                        return result;
-                    }
+                Result result = await _endPoint.Push(publication.Message);
+
+                if (result.IsFailure())
+                {
+                    return result;
                 }
             }
             return Result.Failure("Stopped waiting for message within the broker");

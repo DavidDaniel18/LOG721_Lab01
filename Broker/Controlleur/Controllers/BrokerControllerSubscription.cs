@@ -15,13 +15,15 @@ public sealed class BrokerControllerSubscription : IConsumer<BrokerSubscriptionD
         _subscriptionHandler = subscriptionHandler;
     }
 
-    public async Task Consume(BrokerSubscriptionDto contract)
+    public Task Consume(BrokerSubscriptionDto contract)
     {
-        await Task.Run(() =>
-        {
-            ISubscription subscription = Subscription.From(contract);
-            _subscriptionHandler.Subscribe(subscription);
-            _subscriptionHandler.Listen(subscription);
-        });
+        ISubscription subscription = Subscription.From(contract);
+        // creates subscription
+        // creates queue
+        _subscriptionHandler.Subscribe(subscription);
+        // creates listener broker and adds it to the broker service.
+        _subscriptionHandler.Listen(subscription);
+
+        return Task.CompletedTask;
     }
 }

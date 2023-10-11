@@ -3,71 +3,58 @@ using Entities;
 using Interfaces;
 using Interfaces.Domain;
 using Interfaces.Repositories;
+using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
 
 namespace Application
 {
-    public class Broker : IBroker, IObserver
+    public class Broker : IBroker
     {
-        private readonly IChannelRepository _channelRepository;
-
+        private readonly IQueueRepository _queueRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
-        
-        private readonly IRouter _router;
-
         private readonly ISubscription _subscription;
-        private readonly Guid _subscriptionGuid;
+        private readonly ILogger<BrokerService> _logger;
 
-        private readonly string _routePattern;
-
-        private Dictionary<string, IBrokerChannelListener> _brokerChannelListeners = new Dictionary<string, IBrokerChannelListener>();
-
-        public Broker(IChannelRepository channelRepository, IRouter router, ISubscriptionRepository subscriptionRepository, ISubscription subscription) 
+        public Broker(IQueueRepository queueRepository, ILogger<BrokerService> logger, ISubscriptionRepository subscriptionRepository, ISubscription subscription) 
         { 
-            _channelRepository = channelRepository;
-            _router = router;
-            _routePattern = subscription.RoutingKey;
+            _queueRepository = queueRepository;
             _subscriptionRepository = subscriptionRepository;
-            _subscriptionGuid = subscription.Id;
             _subscription = subscription;
+            _logger = logger;
         }
 
         public void Listen()
         {
             ISubscription? subscription = null;
-            _ = _subscriptionRepository.Subscriptions?.TryGetValue(subscription.QueueName, out subscription);
+            _ = _subscriptionRepository.Subscriptions?.TryGetValue(_subscription.QueueName, out subscription);
 
             if (subscription == null) return; // No more subscriptions return.
 
-            foreach (var route in _router.GetTopics(_routePattern))
-            {
-                bool isAlreadyAdded = _brokerChannelListeners.ContainsKey(route);
+            _logger.LogInformation($"subscription exists for {subscription.QueueName}");
+
+            Channel<IPublication>? channel = null;
+            _queueRepository.Queues?.TryGetValue(subscription.QueueName, out channel);
+
+            if (channel == null) return; // The channel does not exists.
+
+            _logger.LogInformation($"Channel exists for {subscription.QueueName}");
+
+            IBrokerChannelListener listener = new BrokerChannelListener(_logger, channel, subscription.Endpoint);
+
+            Task.Run(async () => {
+                _logger.LogInformation($"Listen {subscription.QueueName}");
                 
-                if (isAlreadyAdded) continue; // No need to add listener.
+                Result result = await listener.Listen();
 
-                Channel<IPublication>? channel = null;
-                _channelRepository.Channels?.TryGetValue(route, out channel);
+                if (result.IsFailure())
+                {
+                    _logger.LogInformation($"Listen Failure {subscription.QueueName}");
+                }
 
-                if (channel == null) continue; // No channel, no need to add listener.
+                _logger.LogInformation($"Listen End {subscription.QueueName}");
+            });
 
-                IBrokerChannelListener listener = new BrokerChannelListener(channel, subscription.Endpoint);
-
-                _brokerChannelListeners.Add(route, listener);
-
-                Task.Run(async () => {
-                    Result result = await listener.Listen();
-
-                    if (result.IsFailure())
-                    {
-                        // todo : remove subscription.. and all..
-                    }
-                });
-            }
-        }
-
-        public void OnUpdate()
-        {
-            Listen();
+            // todo: if reach here remove from the hashmap?
         }
     }
 }

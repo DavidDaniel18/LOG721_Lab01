@@ -1,37 +1,40 @@
-﻿using Interfaces.Domain;
+﻿using Interfaces;
+using Interfaces.Domain;
 using Interfaces.Handler;
 using Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application
 {
     public class PublisherHandler : IPublisherHandler
     {
-        private readonly IChannelService _channelService;
+        private readonly IRouter _router;
+        private readonly IQueueService _queueService;
 
-        public PublisherHandler(IChannelService channelService)
+        public PublisherHandler(IQueueService queueService, IRouter router)
         {
-            _channelService = channelService;
+            _queueService = queueService;
+            _router = router;
         }
 
-        public void Advertise(string route)
+        public void Advertise(string routingKey)
         {
-            _channelService.AddChannel(route);
+            // Advertise routing key to the router. 
+            _router.AddTopic(routingKey);
         }
 
         public void Publish(IPublication publication)
         {
-            _channelService.AddMessage(publication.RoutingKey, publication);
+            // Get all queues routing key pattern matches publication routing key.
+            List<string> queues = _queueService.GetQueues(publication.RoutingKey);
+            // Add publication to queue.
+            foreach (var queue in queues)
+                _queueService.AddPublication(queue, publication);
         }
 
-        public void UnAdvertise(string route)
+        public void UnAdvertise(string routingKey)
         {
-            _channelService.RemoveChannel(route);
+            // Un advertise routing key to the router
+            _router.RemoveTopic(routingKey);
         }
     }
 }
