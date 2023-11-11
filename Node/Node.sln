@@ -65,6 +65,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Commands.Reduce
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Queries", "Queries", "{BFDC9BA9-BE52-49C6-AE79-34C2F4752B3B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Write.Repositories", "Infrastructure.Write.Repositories\Infrastructure.Write.Repositories.csproj", "{FC92FB62-C526-4FD0-9C43-6E4770AE08A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{8E34F48D-66E0-49F7-9AFC-678718A8A523}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E34F48D-66E0-49F7-9AFC-678718A8A523}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E34F48D-66E0-49F7-9AFC-678718A8A523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC92FB62-C526-4FD0-9C43-6E4770AE08A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC92FB62-C526-4FD0-9C43-6E4770AE08A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC92FB62-C526-4FD0-9C43-6E4770AE08A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC92FB62-C526-4FD0-9C43-6E4770AE08A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +196,7 @@ Global
 		{0DF32EF1-F2AB-4685-8D20-0EFD22552E20} = {A712C7FB-4571-435F-8BA7-E6E249AB704C}
 		{8E34F48D-66E0-49F7-9AFC-678718A8A523} = {A712C7FB-4571-435F-8BA7-E6E249AB704C}
 		{BFDC9BA9-BE52-49C6-AE79-34C2F4752B3B} = {439DB870-8429-46B0-A3DB-53462A31BA06}
+		{FC92FB62-C526-4FD0-9C43-6E4770AE08A1} = {D9CD5E60-E315-4436-8361-C7CD31BC67B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {478C2AF6-3860-46B3-A8D0-0A67B7C23B66}
