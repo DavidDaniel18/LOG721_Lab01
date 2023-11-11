@@ -17,10 +17,10 @@ internal sealed class MapSpaceToGroupHandler : ICommandHandler<MapSpaceToGroup>
 
     public Task Handle(MapSpaceToGroup command, CancellationToken cancellation)
     {
-        //foreach (var space in command.SpaceDtos.Select(_spaceMapper.MapFrom))
-        //{
-        //    GroupServices.GetClosestBarycentre(space, )
-        //}
+        foreach (var space in command.SpaceDtos.Select(_spaceMapper.MapFrom))
+        {
+            GroupServices.GetClosestBarycentre(space,);
+        }
 
         throw new NotImplementedException();
     }
