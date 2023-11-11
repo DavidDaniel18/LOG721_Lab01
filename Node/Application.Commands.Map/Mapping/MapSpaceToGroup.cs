@@ -1,8 +1,7 @@
-﻿
-using Application.Commands.Seedwork;
+﻿using Application.Commands.Seedwork;
 using Application.Dtos;
 
-namespace Application.Map;
+namespace Application.Commands.Map.Mapping;
 
 public sealed record MapSpaceToGroup(List<SpaceDto> SpaceDtos, List<GroupDto> GroupDtos) : ICommand
 {

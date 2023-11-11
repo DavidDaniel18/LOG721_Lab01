@@ -1,10 +1,10 @@
-﻿using Application.Commands.Seedwork;
+﻿using Application.Commands.Mappers.Interfaces;
+using Application.Commands.Seedwork;
 using Application.Dtos;
-using Application.Mappers.Interfaces;
 using Domain.Publicity;
 using Domain.Services;
 
-namespace Application.Map;
+namespace Application.Commands.Map.Mapping;
 
 internal sealed class MapSpaceToGroupHandler : ICommandHandler<MapSpaceToGroup>
 {
@@ -19,7 +19,7 @@ internal sealed class MapSpaceToGroupHandler : ICommandHandler<MapSpaceToGroup>
     {
         foreach (var space in command.SpaceDtos.Select(_spaceMapper.MapFrom))
         {
-            GroupServices.GetClosestBarycentre(space,);
+            GroupServices.GetClosestBarycentre(space, );
         }
 
         throw new NotImplementedException();

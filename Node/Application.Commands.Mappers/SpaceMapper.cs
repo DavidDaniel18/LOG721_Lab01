@@ -1,9 +1,9 @@
-﻿using Application.Dtos;
-using Application.Mappers.Interfaces;
+﻿using Application.Commands.Mappers.Interfaces;
+using Application.Dtos;
 using Domain.Factories;
 using Domain.Publicity;
 
-namespace Application.Mappers;
+namespace Application.Commands.Mappers;
 
 public sealed class SpaceMapper : IMappingTo<SpaceDto, Space>, IMappingTo<DataDto, Space>
 {

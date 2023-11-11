@@ -1,4 +1,4 @@
-﻿namespace Application.Mappers.Interfaces;
+﻿namespace Application.Commands.Mappers.Interfaces;
 
 public interface IMappingTo<in TDto, out TAggregate> where TDto : class where TAggregate : class
 {

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.FileHandlers;
+﻿namespace Application.Commands.Interfaces;
 
 public interface ICsvHandler
 {

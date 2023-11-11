@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.OpenApi.Models;
 using SmallTransit.Abstractions.Interfaces;
 using System.Resources;
-using Application.Mappers.Interfaces;
+using Application.Commands.Mappers.Interfaces;
 using Configuration.Properties;
 using Infrastructure.Clients.Tcp;
 using Infrastructure.FileHandlers.Interfaces;

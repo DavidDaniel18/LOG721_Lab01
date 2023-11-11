@@ -1,4 +1,6 @@
-﻿namespace Configuration;
+﻿using Application.Common.Interfaces;
+
+namespace Configuration;
 
 internal sealed class HostInfo : IHostInfo
 {
