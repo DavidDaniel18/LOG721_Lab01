@@ -19,7 +19,8 @@ internal sealed class MapSpaceToGroupHandler : ICommandHandler<MapSpaceToGroup>
     {
         foreach (var space in command.SpaceDtos.Select(_spaceMapper.MapFrom))
         {
-            GroupServices.GetClosestBarycentre(space, );
+            // todo: replace list of barycenter with real list
+            GroupServices.GetClosestBarycentre(space, new List<double>());
         }
 
         throw new NotImplementedException();

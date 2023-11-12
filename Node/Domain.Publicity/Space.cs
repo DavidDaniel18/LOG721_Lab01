@@ -8,10 +8,13 @@ public sealed class Space : Aggregate<Space>
 
     public int Price { get; }
 
-    internal Space(string id, int width, int price) : base(id)
+    public string? GroupId { get; set; }
+
+    internal Space(string id, int width, int price, string? groupId = null) : base(id)
     {
         Width = width;
         Price = price;
+        GroupId = groupId;
     }
 
     public double GetNormalizedValue()

@@ -6,6 +6,9 @@ using Application.Commands.Mappers.Interfaces;
 using Configuration.Properties;
 using Infrastructure.Clients.Tcp;
 using Infrastructure.FileHandlers.Interfaces;
+using Application.Common.Interfaces;
+using Application.Commands.Orchestrator.Service;
+using Application.Commands.Orchestrator.Interfaces;
 
 namespace Configuration
 {
@@ -78,12 +81,14 @@ namespace Configuration
 
         private static void InfrastructureSetup(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped(typeof(IPublisher<>), typeof(SmallTransitPublisher<>));
+            services.AddScoped(typeof(IMessagePublisher<>), typeof(SmallTransitPublisher<>));
         }
 
         private static void ApplicationSetup(IServiceCollection services)
         {
             ScrutorScanForType(services, typeof(IMappingTo<,>), assemblyNames: "Application.Mapping");
+
+            services.AddScoped<IGroupAttributionService, GroupAttributionService>();
         }
 
         private static void DomainSetup(IServiceCollection services)

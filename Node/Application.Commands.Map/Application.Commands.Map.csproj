@@ -15,7 +15,7 @@
     <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
     <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
     <ProjectReference Include="..\Application.Dtos\Application.Dtos.csproj" />
-    <ProjectReference Include="..\Application.Mappers\Application.Commands.Mappers.csproj" />
+    <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
     <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
     <ProjectReference Include="..\Domain.Services\Domain.Services.csproj" />
   </ItemGroup>
