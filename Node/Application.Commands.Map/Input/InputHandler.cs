@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Algorithm;
 using Application.Commands.Interfaces;
+using Application.Commands.Map.Mapping;
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
 using Domain.Grouping;
@@ -7,11 +8,11 @@ using Domain.Publicity;
 
 namespace Application.Commands.Map.Input;
 
-internal sealed class InputHandler : ICommandHandler<Input>
+public sealed class InputHandler : ICommandHandler<InputCommand>
 {
     private readonly ICsvHandler _csvHandler;
 
-    private readonly IMessagePublisher<Space> _publisher;
+    private readonly IMessagePublisher<MapCommand> _publisher;
 
     // DI data cache
     // _spaceCache
@@ -23,14 +24,14 @@ internal sealed class InputHandler : ICommandHandler<Input>
 
     private readonly RoundRobinAlgorithm _algorithm;
 
-    internal InputHandler(IHostInfo hostInfo, ICsvHandler csvHandler, IMessagePublisher<Space> publisher)
+    public InputHandler(IHostInfo hostInfo, ICsvHandler csvHandler, IMessagePublisher<MapCommand> publisher)
     {
         _csvHandler = csvHandler;
         _publisher = publisher;
         _algorithm = new RoundRobinAlgorithm(hostInfo.MapRoutingKeys.Split(',').ToList());
     }
 
-    public Task Handle(Input command, CancellationToken cancellation)
+    public Task Handle(InputCommand command, CancellationToken cancellation)
     {
         if (!_spacesCache.Any() || !_groupsCache.Any()) // If not empty we continue (next iteration). Not super clean but could work.
         {
@@ -41,7 +42,7 @@ internal sealed class InputHandler : ICommandHandler<Input>
         }
 
         foreach (var space in _spacesCache)
-            _publisher.PublishAsync(space, _algorithm.GetNextElement());
+            _publisher.PublishAsync(new MapCommand(space), _algorithm.GetNextElement());
 
         return Task.CompletedTask;
 

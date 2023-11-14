@@ -1,12 +1,23 @@
-﻿using Domain.Publicity;
+﻿using Application.Commands.Seedwork;
 using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.Tcp;
 
-public class MapFinishedEventController : IConsumer<Space>
+public class MapFinishedEventController : IConsumer<MapFinishedEvent>
 {
-    public Task Consume(Space contract)
+    private readonly ICommandHandler<MapFinishedEvent> _handler;
+
+    public MapFinishedEventController(ICommandHandler<MapFinishedEvent> handler)
     {
-        throw new NotImplementedException();
+        _handler = handler;
+    }
+
+    public Task Consume(MapFinishedEvent contract)
+    {
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        _handler.Handle(contract, cancellationTokenSource.Token);
+
+        return Task.CompletedTask;
     }
 }

@@ -48,6 +48,10 @@ internal sealed class HostInfo : IHostInfo
 
     private static readonly string InputRoutingKeyEnv = Environment.GetEnvironmentVariable(InputRoutingKeyName) ?? "";
 
+    private const string MapShuffleRoutinKeyName = "MAP_SHUFFLE_ROUTING_KEY";
+
+    private static readonly string MapShuffleRoutingKeyEnv = Environment.GetEnvironmentVariable(MapShuffleRoutinKeyName) ?? "";
+
     public string Host => "host.docker.internal";
 
     public int BrokerPort => BrokerPortEnv;
@@ -69,6 +73,8 @@ internal sealed class HostInfo : IHostInfo
     public string ReduceRoutingKeys => ReduceRoutingKeysEnv;
 
     public string InputRoutingKey => InputRoutingKeyEnv;
+
+    public string MapShuffleRoutingKey => MapShuffleRoutingKeyEnv;
 
     public int NbOfIteration => NbOfIterationEnv;
 

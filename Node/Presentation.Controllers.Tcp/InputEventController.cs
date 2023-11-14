@@ -4,16 +4,16 @@ using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.Tcp;
 
-public class InputEventController : IConsumer<Input>
+public class InputEventController : IConsumer<InputCommand>
 {
-    private readonly ICommandHandler<Input> _inputHandler;
+    private readonly ICommandHandler<InputCommand> _inputHandler;
 
-    public InputEventController(ICommandHandler<Input> inputHandler)
+    public InputEventController(ICommandHandler<InputCommand> inputHandler)
     {
         _inputHandler = inputHandler;
     }
 
-    public Task Consume(Input contract)
+    public Task Consume(InputCommand contract)
     {
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 

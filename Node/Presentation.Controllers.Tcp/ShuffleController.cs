@@ -1,20 +1,19 @@
-﻿using Application.Commands.Map.Mapping;
+﻿using Application.Commands.Orchestrator.Shuffle;
 using Application.Commands.Seedwork;
-using Domain.Publicity;
 using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.Tcp;
 
-public class MapController : IConsumer<MapCommand>
+public class ShuffleController : IConsumer<Shuffle>
 {
-    private readonly ICommandHandler<MapCommand> _handler;
-    
-    public MapController(ICommandHandler<MapCommand> handler)
+    private readonly ICommandHandler<Shuffle> _handler;
+
+    public ShuffleController(ICommandHandler<Shuffle> handler)
     {
         _handler = handler;
     }
 
-    public Task Consume(MapCommand contract)
+    public Task Consume(Shuffle contract)
     {
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 

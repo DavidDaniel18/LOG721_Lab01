@@ -1,17 +1,23 @@
-﻿using SmallTransit.Abstractions.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using Application.Commands.Seedwork;
+using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.Tcp;
 
-public class ReduceController : IConsumer<Group>
+public class ReduceController : IConsumer<Reduce>
 {
-    public Task Consume(Group contract)
+    private readonly ICommandHandler<Reduce> _handler;
+
+    public ReduceController(ICommandHandler<Reduce> handler)
     {
-        throw new NotImplementedException();
+        _handler = handler;
+    }
+
+    public Task Consume(Reduce contract)
+    {
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        _handler.Handle(contract, cancellationTokenSource.Token);
+
+        return Task.CompletedTask;
     }
 }

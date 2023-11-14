@@ -5,7 +5,7 @@ using Domain.Publicity;
 
 namespace Application.Commands.Orchestrator.Shuffle;
 
-internal sealed class ShuffleHander : ICommandHandler<Shuffle>
+public sealed class ShuffleHander : ICommandHandler<Shuffle>
 {
     private IMessagePublisher<Space> _publisher;
 

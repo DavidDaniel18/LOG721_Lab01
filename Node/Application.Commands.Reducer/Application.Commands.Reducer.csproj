@@ -11,4 +11,11 @@
     <Folder Include="Usecases\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Commands.Map\Application.Commands.Map.csproj" />
+    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
+    <ProjectReference Include="..\Domain.Barycentre\Domain.Grouping.csproj" />
+  </ItemGroup>
+
 </Project>

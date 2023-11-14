@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Commands.Map\Application.Commands.Map.csproj" />
+    <ProjectReference Include="..\Application.Commands.Orchestrator\Application.Commands.Orchestrator.csproj" />
+    <ProjectReference Include="..\Application.Commands.Reducer\Application.Commands.Reducer.csproj" />
     <ProjectReference Include="..\Domain.Publicity\Domain.Publicity.csproj" />
   </ItemGroup>
 

@@ -12,6 +12,11 @@ using Application.Commands.Orchestrator.Interfaces;
 using Application.Commands.Interfaces;
 using Infrastructure.FileHandlers;
 using Presentation.Controllers.Tcp;
+using Application.Commands.Seedwork;
+using Application.Commands.Orchestrator.Shuffle;
+using Application.Commands.Map.Mapping;
+using Application.Commands.Map.Input;
+using Application.Commands.Map.Event;
 
 namespace Configuration
 {
@@ -70,6 +75,11 @@ namespace Configuration
                         {
                             rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
                         });
+
+                        configuration.AddReceiver<ShuffleController>($"queue-event-shuffle.{Guid.NewGuid()}", rcv =>
+                        {
+                            rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
+                        });
                     }
                 }
 
@@ -117,7 +127,25 @@ namespace Configuration
 
         private static void PresentationSetup(IServiceCollection services)
         {
-            //services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(PublisherController).Assembly));
+            // Map Section
+
+            services.AddScoped<ICommandHandler<InputCommand>, InputHandler>();
+
+            services.AddScoped<ICommandHandler<MapCommand>, MapHandler>();
+
+            services.AddScoped<ICommandHandler<MapFinishedEvent>, MapFinishedEventHandler>();
+
+            services.AddScoped<ICommandHandler<Shuffle>, ShuffleHander>();
+
+            // Reduce Section
+
+            services.AddScoped<ICommandHandler<Reduce>, ReduceHandler>();
+
+            services.AddScoped<ICommandHandler<ReduceFinishedEvent>, ReduceFinishedEventHandler>();
+
+            // other
+
+            services.AddScoped<IGroupAttributionService, GroupAttributionService>();
         }
 
         private static void InfrastructureSetup(IServiceCollection services, IConfiguration configuration)
@@ -125,6 +153,8 @@ namespace Configuration
             services.AddScoped(typeof(IMessagePublisher<>), typeof(SmallTransitPublisher<>));
 
             services.AddScoped<ICsvHandler, CsvHandler>();
+
+            services.AddScoped<IHostInfo, HostInfo>();
         }
 
         private static void ApplicationSetup(IServiceCollection services)

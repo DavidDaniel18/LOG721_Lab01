@@ -2,7 +2,7 @@
 
 namespace Application.Commands.Map.Input;
 
-public sealed record Input(string dataCsvFileName, string groupCsvFileName) : ICommand
+public sealed record InputCommand(string dataCsvFileName, string groupCsvFileName) : ICommand
 {
     public string GetCommandName()
     {
