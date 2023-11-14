@@ -14,9 +14,19 @@ public interface IHostInfo
     
     string NodeType { get; }
     
-    string ListenTopics { get; }
+    string MapRoutingKey { get; }
     
-    string PublishTopics { get; }
-    
+    string ReduceRoutingKey { get; }
+
+    string MapFinishedEventRoutingKey { get; }
+
+    string ReduceFinishedEventRoutingKey { get; }
+
+    string MapRoutingKeys { get; }
+
+    string ReduceRoutingKeys { get; }
+
+    string InputRoutingKey { get; }
+
     int NbOfIteration { get; }
 }

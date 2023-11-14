@@ -20,13 +20,33 @@ internal sealed class HostInfo : IHostInfo
 
     private static readonly string NodeTypeEnv = Environment.GetEnvironmentVariable(NodeTypeName) ?? throw new Exception($"{NodeTypeName} env variable is not set");
 
-    private const string ListenTopicsName = "LISTEN_TOPICS";
+    private const string MapRoutingKeysName = "MAP_ROUTING_KEYS";
 
-    private static readonly string ListenTopicsEnv = Environment.GetEnvironmentVariable(ListenTopicsName) ?? "";
+    private static readonly string MapRoutingKeysEnv = Environment.GetEnvironmentVariable(MapRoutingKeysName) ?? "";
 
-    private const string PublishTopicsName = "PUBLISH_TOPICS";
+    private const string ReduceRouginKeysName = "REDUCE_ROUTING_KEYS";
 
-    private static readonly string PublishTopicsEnv = Environment.GetEnvironmentVariable(PublishTopicsName) ?? "";
+    private static readonly string ReduceRoutingKeysEnv = Environment.GetEnvironmentVariable(ReduceRouginKeysName) ?? "";
+
+    private const string MapRoutingKeyName = "MAP_ROUTING_KEY";
+
+    private static readonly string MapRoutingKeyEnv = Environment.GetEnvironmentVariable(MapRoutingKeyName) ?? "";
+
+    private const string ReduceRoutingKeyName = "REDUCE_ROUTING_KEY";
+
+    private static readonly string ReduceRoutingKeyEnv = Environment.GetEnvironmentVariable(ReduceRoutingKeyName) ?? "";
+
+    private const string MapFinishedEventRoutingKeyName = "MAP_FINISHED_EVENT_ROUTING_KEY";
+
+    private static readonly string MapFinishedEventRoutingKeyEnv = Environment.GetEnvironmentVariable(MapFinishedEventRoutingKeyName) ?? "";
+
+    private const string ReduceFinishedEventRoutingKeyName = "REDUCE_FINISHED_EVENT_ROUTING_KEY";
+
+    private static readonly string ReduceFinishedEventRoutingKeyEnv = Environment.GetEnvironmentVariable(ReduceFinishedEventRoutingKeyName) ?? "";
+
+    private const string InputRoutingKeyName = "INPUT_ROUTING_KEY";
+
+    private static readonly string InputRoutingKeyEnv = Environment.GetEnvironmentVariable(InputRoutingKeyName) ?? "";
 
     public string Host => "host.docker.internal";
 
@@ -36,9 +56,19 @@ internal sealed class HostInfo : IHostInfo
 
     public string NodeType => NodeTypeEnv;
 
-    public string ListenTopics => ListenTopicsEnv;
+    public string MapRoutingKey => MapRoutingKeyEnv;
 
-    public string PublishTopics => PublishTopicsEnv;
+    public string ReduceRoutingKey => ReduceRoutingKeyEnv;
+
+    public string MapFinishedEventRoutingKey => MapFinishedEventRoutingKeyEnv;
+
+    public string ReduceFinishedEventRoutingKey => ReduceFinishedEventRoutingKeyEnv;
+
+    public string MapRoutingKeys => MapRoutingKeysEnv;
+
+    public string ReduceRoutingKeys => ReduceRoutingKeysEnv;
+
+    public string InputRoutingKey => InputRoutingKeyEnv;
 
     public int NbOfIteration => NbOfIterationEnv;
 

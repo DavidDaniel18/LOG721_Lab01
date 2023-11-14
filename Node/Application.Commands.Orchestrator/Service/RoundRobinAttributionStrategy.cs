@@ -8,11 +8,7 @@ internal class RoundRobinAttributionStrategy : IAttributionStrategy
 {
     private readonly IHostInfo _hostInfo;
 
-    private readonly List<string> _publishTopics;
-
-    private int _roundRobinIndex = 0;
-
-    private readonly int _topicsSize;
+    private readonly RoundRobinAlgorithm _algorithm;
 
     // todo: get from cache...
     private IDictionary<string, string> _groupIdTopicDict = new Dictionary<string, string>();
@@ -20,21 +16,14 @@ internal class RoundRobinAttributionStrategy : IAttributionStrategy
     internal RoundRobinAttributionStrategy(IHostInfo hostInfo)
     {
         _hostInfo = hostInfo;
-        _publishTopics = _hostInfo.PublishTopics.Split(',').ToList();
-        _topicsSize = _publishTopics.Count();
+        _algorithm = new RoundRobinAlgorithm(_hostInfo.ReduceRoutingKeys.Split(',').ToList());
     }
-
-    private void IncrementRoundRobinIndex() => _roundRobinIndex = (_roundRobinIndex + 1) % _topicsSize;
 
     public string GetTopicFrom(Space space)
     {
-        string? topic;
-        if (_groupIdTopicDict.TryGetValue(space.GroupId ?? "", out topic))
+        if (_groupIdTopicDict.TryGetValue(space.GroupId ?? "", out var topic))
             return topic;
 
-        topic = _publishTopics.ElementAt(_roundRobinIndex);
-        IncrementRoundRobinIndex();
-
-        return topic;
+        return _algorithm.GetNextElement();
     }
 }

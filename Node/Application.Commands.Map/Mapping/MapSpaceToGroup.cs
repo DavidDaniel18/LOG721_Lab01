@@ -1,9 +1,10 @@
 ﻿using Application.Commands.Seedwork;
 using Application.Dtos;
+using Domain.Publicity;
 
 namespace Application.Commands.Map.Mapping;
 
-public sealed record MapSpaceToGroup(List<SpaceDto> SpaceDtos, List<GroupDto> GroupDtos) : ICommand
+public sealed record Map(Space space) : ICommand
 {
     public string GetCommandName()
     {

@@ -1,11 +1,12 @@
-﻿using Domain.Publicity;
+﻿using Domain.Grouping;
+using Domain.Publicity;
 
 namespace Domain.Services;
 
 public static class GroupServices
 {
-    public static double GetClosestBarycentre(Space space, List<double> barycentres)
+    public static Group GetClosestGroupByBarycentre(Space space, List<Group> groups)
     {
-        throw new NotImplementedException();
+        return groups.OrderBy(g => Math.Abs(g.Barycentre - space.GetNormalizedValue())).First();
     }
 }

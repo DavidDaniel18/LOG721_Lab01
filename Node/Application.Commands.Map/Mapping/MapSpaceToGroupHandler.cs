@@ -1,28 +1,35 @@
-﻿using Application.Commands.Mappers.Interfaces;
-using Application.Commands.Seedwork;
-using Application.Dtos;
+﻿using Application.Commands.Seedwork;
+using Application.Common.Interfaces;
+using Domain.Grouping;
 using Domain.Publicity;
 using Domain.Services;
 
 namespace Application.Commands.Map.Mapping;
 
-internal sealed class MapSpaceToGroupHandler : ICommandHandler<MapSpaceToGroup>
+internal sealed class MapHandler : ICommandHandler<Map>
 {
-    private readonly IMappingTo<SpaceDto, Space> _spaceMapper;
+    private readonly IHostInfo _hostInfo;
 
-    internal MapSpaceToGroupHandler(IMappingTo<SpaceDto, Space> spaceMapper)
+    private readonly IMessagePublisher<Space> _publisher;
+
+    // todo: link cache...
+    private readonly List<Group> _groupsCache = new List<Group>();
+
+    public MapHandler(IMessagePublisher<Space> publisher, IHostInfo hostInfo)
     {
-        _spaceMapper = spaceMapper;
+        _hostInfo = hostInfo;
+        _publisher = publisher;
     }
 
-    public Task Handle(MapSpaceToGroup command, CancellationToken cancellation)
+    public Task Handle(Map command, CancellationToken cancellation)
     {
-        foreach (var space in command.SpaceDtos.Select(_spaceMapper.MapFrom))
-        {
-            // todo: replace list of barycenter with real list
-            GroupServices.GetClosestBarycentre(space, new List<double>());
-        }
+        Space space = command.space;
 
-        throw new NotImplementedException();
+        var groupId = GroupServices.GetClosestGroupByBarycentre(space, _groupsCache).Id;
+        space.GroupId = groupId;
+
+        _publisher.PublishAsync(space, _hostInfo.MapFinishedEventRoutingKey);
+
+        return Task.CompletedTask;
     }
 }

@@ -28,6 +28,16 @@ public sealed class CsvHandler : ICsvHandler
         return ReadAsync<GroupDto>(_dataReader.GetString(_hostInfo.GroupCsvName));
     }
 
+    public IEnumerable<DataDto> ReadDatas()
+    {
+        return Read<DataDto>(_dataReader.GetString(_hostInfo.GroupCsvName));
+    }
+
+    public IEnumerable<GroupDto> ReadGroups()
+    {
+        return Read<GroupDto>(_dataReader.GetString(_hostInfo.GroupCsvName));
+    }
+
     private static async IAsyncEnumerable<TResult> ReadAsync<TResult>(string filePath)
     {
         using var reader = new StreamReader(filePath);
@@ -37,5 +47,13 @@ public sealed class CsvHandler : ICsvHandler
         {
             yield return record;
         }
+    }
+
+    private static IEnumerable<TResult> Read<TResult>(string filePath)
+    {
+        using var reader = new StreamReader(filePath);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+
+        return csv.GetRecords<TResult>();
     }
 }

@@ -26,6 +26,7 @@
 	  <ProjectReference Include="..\Infrastructure.FileHandlers\Infrastructure.FileHandlers.csproj" />
 	  <ProjectReference Include="..\Infrastructure.Clients.Tcp\Infrastructure.Clients.Tcp.csproj" />
 	  <ProjectReference Include="..\Presentation.Controllers.Rest\Presentation.Controllers.Rest.csproj" />
+	  <ProjectReference Include="..\Presentation.Controllers.Tcp\Presentation.Controllers.Tcp.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
