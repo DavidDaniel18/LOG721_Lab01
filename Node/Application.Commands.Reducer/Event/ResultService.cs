@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Common.Interfaces;
 using Domain.Common;
+using Domain.Common.Monads;
 using Domain.Grouping;
 using Domain.Publicity;
 using SyncStore.Abstractions;
@@ -75,8 +76,8 @@ public class ResultService : IResultService
         var t1 = _groupResultReceived.Query(q => q.Where(s => s.Value));
         var t2 = _spaceResultReceived.Query(q => q.Where(s => s.Value));
 
-        t1.Result.ForEach(e => _groupResultReceived.Remove(e.Id));
-        t2.Result.ForEach(e => _spaceResultReceived.Remove(e.Id));
+        t1.Result.ForEach(r => _groupResultReceived.AddOrUpdate(r.Id, new ReduceFinishedBool { Value = false, Id = r.Id }));
+        t2.Result.ForEach(r => _spaceResultReceived.AddOrUpdate(r.Id, new MapFinishedBool { Value = false, Id = r.Id }));
 
         Task.WaitAll(new Task[] {
             Task.Run(_groupResultReceived.SaveChangesAsync),

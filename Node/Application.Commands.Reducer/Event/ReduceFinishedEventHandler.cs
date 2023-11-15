@@ -4,6 +4,7 @@ using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
 using Application.Commands.Map.Input;
 using Application.Commands.Interfaces;
+using Domain.Common.Monads;
 
 namespace Application.Commands.Map.Event;
 

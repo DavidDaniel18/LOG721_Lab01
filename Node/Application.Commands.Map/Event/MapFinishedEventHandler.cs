@@ -37,12 +37,15 @@ public sealed class MapFinishedEventHandler : ICommandHandler<MapFinishedEvent>
         await _spaceFinishedSyncStore.SaveChangesAsync();
 
         var spaces = await _spaceSyncStore.Query(query => query.Where(space => true));
-        var result = await _spaceFinishedSyncStore.Query(query => query.Where(space => true));
+        var result = await _spaceFinishedSyncStore.Query(query => query.Where(space => space.Value));
 
         bool isFinished = result.All(s => s.Value) && result.Count() == spaces.Count();
 
         if (isFinished)
         {
+            //result.ForEach(r => _spaceFinishedSyncStore.AddOrUpdate(r.Id, new MapFinishedBool { Value = false, Id = r.Id }));
+            //await _spaceFinishedSyncStore.SaveChangesAsync();
+
             await _publisher.PublishAsync(new Shuffle(), _hostInfo.MapShuffleRoutingKey);
         }
     }
