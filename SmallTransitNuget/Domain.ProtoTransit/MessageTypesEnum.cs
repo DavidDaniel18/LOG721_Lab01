@@ -24,5 +24,9 @@ public enum MessageTypesEnum
     [MessageTypeAttribute<Heartbeat>]
     Heartbeat,
     [MessageTypeAttribute<Close>]
-    Close
+    Close,
+    [MessageTypeAttribute<Send>]
+    Send,
+    [MessageTypeAttribute<PayloadResponse>]
+    PayloadResponse
 }

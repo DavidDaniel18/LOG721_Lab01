@@ -1,12 +1,10 @@
 ﻿using System.Threading.Channels;
-using Domain.Common;
+using Domain.Common.Monads;
 
 namespace Infrastructure.TcpClient.L4LinkBuffers;
 
 internal sealed class ChannelTunnel
 {
-    private const int TransferredBites = 1024;
-
     byte[] _bytesStorage = Array.Empty<byte>();
 
     private readonly Channel<byte[]> _channel = Channel.CreateUnbounded<byte[]>(new UnboundedChannelOptions

@@ -4,13 +4,9 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.9.5</Version>
+	<Version>1.1.0</Version>
 	<PackageId>SmallTransit</PackageId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Dispatcher\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.12" />

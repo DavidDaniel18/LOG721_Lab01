@@ -3,89 +3,118 @@ using Application.UseCases;
 using Configuration.Dispatcher;
 using Configuration.Options;
 using Domain.Services.Common;
-using Domain.Services.Receive;
+using Domain.Services.Receiving;
 using Infrastructure.TcpClient;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Presentation.Controllers.BrokerReceiver;
-using Presentation.Controllers.Dto;
+using Presentation.Controllers.Client;
+using Presentation.Controllers.Dto.Configurator;
 using Presentation.Controllers.Publish;
 using Presentation.Controllers.SubscriptionJob;
 using SmallTransit.Abstractions.Broker;
 using SmallTransit.Abstractions.Configurator;
 using SmallTransit.Abstractions.Interfaces;
+using SmallTransit.Abstractions.Receiver;
 
 namespace Configuration;
 
 public static class ServiceRegistration
 {
-    public static IServiceCollection AddSmallTransit(this IServiceCollection collection, Action<ISmallTransitConfigurator>? configure = null)
+    public static IServiceCollection AddSmallTransit(this IServiceCollection collection, Action<IConfigurator> configurator)
     {
-        var configuration = new SmallTransitConfigurator();
-
-        configure?.Invoke(configuration);
-
-        foreach (var receiverConfiguration in configuration.ReceiverConfigurator)
-        {
-            collection.AddScoped(receiverConfiguration.IConsumerInterface, receiverConfiguration.ReceivingController);
-        }
-
-        if (configuration.ReceiverConfigurator.Any())
-        {
-            collection.AddHostedService<SubscriptionController>();
-
-            collection.AddSingleton(_ => configuration);
-        }
-
-        collection.AddSingleton(typeof(IControllerDelegate<>), typeof(ControllerDispatcher<>));
-
-        collection.AddSingleton<ClientFactory>();
-
-        collection.AddScoped(services =>
-        {
-            var factory = services.GetRequiredService<ClientFactory>();
-
-            var clientFactory = factory.RetryCreateClient(configuration.Host, configuration.Port);
-
-            clientFactory.ThrowIfException();
-
-            return clientFactory.Content!;
-        });
-
         Infrastructure(collection);
         Presentation(collection);
         Application(collection);
 
+        collection.AddSingleton(typeof(IControllerDelegate<>), typeof(ControllerDispatcher<>));
+        collection.AddSingleton(typeof(IReceiveControllerDelegate), typeof(ReceiveControllerDispatcher));
+
+        collection.AddSingleton<ClientFactory>();
+
+        var configuration = new Configurator();
+
+        configurator?.Invoke(configuration);
+
+        List<TargetConfiguration> targetConfigurations = new();
+
+        targetConfigurations.AddRange(configuration.TargetPointConfigurators);
+
+        LoadQueueConfigurations(collection, configuration, targetConfigurations);
+
+        LoadPointConfigurations(collection, configuration);
+
+        collection.AddSingleton(typeof(INetworkStreamCache), services =>
+        {
+            var cache = new NetworkStreamCache();
+
+            foreach (var targetConfiguration in targetConfigurations)
+            {
+                var factory = services.GetRequiredService<ClientFactory>();
+
+                var clientFactory = factory.RetryCreateClient(
+                    targetConfiguration.Host, 
+                    targetConfiguration.Port, 
+                    targetConfiguration.TargetKey);
+
+                clientFactory.ThrowIfException();
+
+                cache.Add(clientFactory.Content!);
+            }
+
+            return cache;
+
+        });
+
+        collection.AddSingleton(_ => configuration);
+
         return collection;
     }
 
-    private static void Infrastructure(IServiceCollection collection)
+    private static void LoadPointConfigurations(IServiceCollection collection, Configurator configuration)
     {
-        collection.AddScoped<TcpBridge>();
+        if (configuration.ReceiverPointConfigurators.Any())
+        {
+            collection.AddSingleton<ReceiverConnectionHandler, ReceiverFactory>();
 
-        collection.AddScoped<ITcpBridge>(serviceProvider => serviceProvider.GetRequiredService<TcpBridge>());
-        collection.AddScoped<IComHandler>(serviceProvider => serviceProvider.GetRequiredService<TcpBridge>());
+            foreach (var receiverConfiguration in configuration.ReceiverPointConfigurators)
+            {
+                collection.AddScoped(receiverConfiguration.IConsumerInterface, receiverConfiguration.ReceivingController);
+            }
+        }
     }
 
-    private static void Presentation(IServiceCollection collection)
+    private static void LoadQueueConfigurations(IServiceCollection collection, Configurator configuration,
+        List<TargetConfiguration> targetConfigurations)
     {
-        collection.AddScoped(typeof(IPublisher<>), typeof(Publisher<>));
+        if (configuration.QueueConfigurators.Any())
+        {
+            if (configuration.QueueConfigurators.Select(qc => qc.ReceiverConfigurator.Any()).Any())
+            {
+                collection.AddHostedService<SubscriptionController>();
+            }
 
-        collection.AddSingleton<BrokerConnectionHandler, BrokerageFactory>();
+            foreach (var queueConfigurator in configuration.QueueConfigurators)
+            {
+                targetConfigurations.Add(queueConfigurator.TargetConfiguration);
+
+                foreach (var receiverConfiguration in queueConfigurator.ReceiverConfigurator)
+                {
+                    collection.AddScoped(receiverConfiguration.IConsumerInterface,
+                        receiverConfiguration.ReceivingController);
+                }
+            }
+        }
     }
 
-    private static void Application(IServiceCollection collection)
-    {
-        collection.AddScoped(typeof(PublishClient<>));
-        collection.AddScoped(typeof(ReceiveClient<>));
-    }
-
-    public static IServiceCollection AddSmallTransitBroker(this IServiceCollection collection, Action<ISmallTransitBrokerConfigurator> configure)
+    public static IServiceCollection AddSmallTransitBroker(this IServiceCollection collection, Action<ISBrokerConfigurator> configure)
     {
         var brokerOptions = new BrokerOptions();
 
         configure(brokerOptions);
+
+        collection.AddSingleton<BrokerConnectionHandler, BrokerageFactory>();
 
         collection.AddScoped(typeof(IConsumer<BrokerSubscriptionDto>), brokerOptions.SubscriptionReceiver);
 
@@ -106,5 +135,26 @@ public static class ServiceRegistration
         collection.AddScoped<IBrokerPushEndpoint>(serviceProvider => serviceProvider.GetRequiredService<BrokerReceiver>());
 
         return collection;
+    }
+
+    private static void Infrastructure(IServiceCollection collection)
+    {
+        collection.AddTransient<TcpBridge>();
+
+        collection.AddSingleton<INetworkStreamCache>(serviceProvider => serviceProvider.GetRequiredService<NetworkStreamCache>());
+
+        collection.AddTransient<ITcpBridge>(serviceProvider => serviceProvider.GetRequiredService<TcpBridge>());
+        collection.AddTransient<IComHandler>(serviceProvider => serviceProvider.GetRequiredService<TcpBridge>());
+    }
+
+    private static void Presentation(IServiceCollection collection)
+    {
+        collection.AddScoped(typeof(IPublisher<>), typeof(Publisher<>));
+    }
+
+    private static void Application(IServiceCollection collection)
+    {
+        collection.AddScoped(typeof(PublishClient<>));
+        collection.AddScoped(typeof(ReceiveSubscriber<>));
     }
 }

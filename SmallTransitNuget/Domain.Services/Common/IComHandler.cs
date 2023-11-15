@@ -1,8 +1,8 @@
-﻿using Domain.Common;
+﻿using Domain.Common.Monads;
 
 namespace Domain.Services.Common;
 
-public interface IComHandler
+public interface IComHandler : IDisposable
 {
     Task<Result> SendMessage(byte[] value);
 

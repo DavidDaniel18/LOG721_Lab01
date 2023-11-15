@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
-using Domain.Common;
+using Domain.Common.Monads;
 using Domain.ProtoTransit.Entities.Header;
 using Domain.ProtoTransit.Seedwork;
 using Domain.ProtoTransit.ValueObjects.Properties;

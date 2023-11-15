@@ -1,7 +1,9 @@
-﻿namespace Presentation.Controllers.Dto;
+﻿using Presentation.Controllers.Dto.Configurator;
+
+namespace Presentation.Controllers.Dto;
 
 public sealed class ReceiverConfiguration
-{
+{ 
     public Type ContractType { get; }
 
     public Type IConsumerInterface { get; }

@@ -1,6 +1,6 @@
 ﻿using Application.UseCases;
-using Domain.Common;
-using Domain.Services.Receive;
+using Domain.Common.Monads;
+using Domain.Services.Receiving;
 using Microsoft.AspNetCore.Connections;
 using SmallTransit.Abstractions.Broker;
 using SmallTransit.Abstractions.Interfaces;

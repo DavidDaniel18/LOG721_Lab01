@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Domain.Common.Monads;
 using Domain.ProtoTransit.ValueObjects.Header;
 
 namespace Domain.ProtoTransit.Entities.Header;

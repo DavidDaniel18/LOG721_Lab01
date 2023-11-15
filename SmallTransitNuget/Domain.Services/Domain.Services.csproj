@@ -11,12 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.Common\SmallTransit.Abstractions.csproj" />
     <ProjectReference Include="..\Domain.ProtoTransit\Domain.ProtoTransit.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
-    <Folder Include="Receive\Exceptions\" />
   </ItemGroup>
 
 </Project>

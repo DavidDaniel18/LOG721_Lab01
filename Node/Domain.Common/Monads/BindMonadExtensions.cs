@@ -188,6 +188,34 @@ public static class BindMonadExtensions
         }
     }
 
+    public static async Task<Result> BindAsync(
+        this Result result,
+        Func<Task> bindFunc)
+    {
+        if (result.IsFailure()) return Result.FromFailure(result);
+
+        try
+        {
+            await bindFunc();
+
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            return Result.Failure(e);
+        }
+    }
+
+    public static async Task<Result<TResult>> BindAsync<TResult>(
+        this Result result,
+        Func<Task<Result<TResult>>> bindFunc)
+    {
+        if (result.IsFailure()) return Result.FromFailure<TResult>(result);
+
+        return await bindFunc();
+    }
+
+
     public static async Task<Result<TResult>> BindAsync<T, TResult>(
         this Task<Result<T>> resultTask,
         Func<T, Result<TResult>> bindFunc)

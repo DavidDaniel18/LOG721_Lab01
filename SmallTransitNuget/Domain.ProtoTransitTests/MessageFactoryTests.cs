@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Domain.Common.Monads;
 using Domain.ProtoTransit;
 using Domain.ProtoTransit.Entities.Messages.Core;
 using Domain.ProtoTransit.Entities.Messages.Data;
@@ -258,6 +258,130 @@ namespace Domain.ProtoTransitTests
 
             var newPayload = MessagePackSerializer.Deserialize<TestPayload>(payloadResult.Content!.Bytes, options);
 
+            Assert.IsTrue(newPayload.Equals(payload));
+        }
+
+        [TestMethod()]
+        public void SendProtocol()
+        {
+            var message = MessageFactory.Create(MessageTypesEnum.Send);
+
+            var payload = new TestPayload()
+            {
+                Message = "John Doe",
+                DateTime = DateTime.UtcNow,
+                Id = Guid.NewGuid()
+
+            };
+
+            var options = MessagePackSerializerOptions.Standard.WithResolver(MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+
+            var senderId = MessagePackSerializer.Serialize("Client1");
+            var payloadType = MessagePackSerializer.Serialize(nameof(TestPayload));
+            var serializedPayload = MessagePackSerializer.Serialize(payload, options);
+
+            Result.From(
+                    message.TrySetProperty<SenderId>(senderId),
+                    message.TrySetProperty<PayloadType>(payloadType),
+                    message.TrySetProperty<Payload>(serializedPayload))
+                .ThrowIfException();
+
+
+            Assert.IsTrue(message is Send);
+
+            var bytesResult = message.GetBytes();
+
+            Assert.IsTrue(bytesResult.IsSuccess());
+            Assert.IsTrue(bytesResult.Content!.Length > 0);
+
+            var conversionResult = Protocol.TryParseMessage(bytesResult.Content!);
+
+            Assert.IsTrue(conversionResult.IsSuccess());
+            Assert.IsTrue(conversionResult.Content.Protocol is Send);
+
+            var newBytesResult = conversionResult.Content.Protocol.GetBytes();
+
+            Assert.IsTrue(newBytesResult.IsSuccess());
+            Assert.IsTrue(newBytesResult.Content!.SequenceEqual(bytesResult.Content!));
+            Assert.IsTrue(conversionResult.Content.Reminder.Length == 0);
+
+            var deserializedProtocol = conversionResult.Content.Protocol;
+
+            var senderIdResult = deserializedProtocol.TryGetProperty<SenderId>();
+            var payloadTypeResult = deserializedProtocol.TryGetProperty<PayloadType>();
+            var payloadResult = deserializedProtocol.TryGetProperty<Payload>();
+
+            Result.From(
+                    senderIdResult,
+                    payloadTypeResult,
+                    payloadResult)
+                .ThrowIfException();
+
+            var newSenderId = MessagePackSerializer.Deserialize<string>(senderIdResult.Content!.Bytes);
+            var newPayloadType = MessagePackSerializer.Deserialize<string>(payloadTypeResult.Content!.Bytes);
+            var newPayload = MessagePackSerializer.Deserialize<TestPayload>(payloadResult.Content!.Bytes, options);
+
+            Assert.IsTrue(newSenderId.Equals("Client1"));
+            Assert.IsTrue(newPayloadType.Equals(nameof(TestPayload)));
+            Assert.IsTrue(newPayload.Equals(payload));
+        }
+
+        [TestMethod()]
+        public void PayloadResponseProtocol()
+        {
+            var message = MessageFactory.Create(MessageTypesEnum.PayloadResponse);
+
+            var payload = new TestPayload()
+            {
+                Message = "John Doe",
+                DateTime = DateTime.UtcNow,
+                Id = Guid.NewGuid()
+
+            };
+
+            var options = MessagePackSerializerOptions.Standard.WithResolver(MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+
+            var payloadType = MessagePackSerializer.Serialize(nameof(TestPayload));
+            var serializedPayload = MessagePackSerializer.Serialize(payload, options);
+
+            Result.From(
+                    message.TrySetProperty<PayloadType>(payloadType),
+                    message.TrySetProperty<Payload>(serializedPayload))
+                .ThrowIfException();
+
+
+            Assert.IsTrue(message is PayloadResponse);
+
+            var bytesResult = message.GetBytes();
+
+            Assert.IsTrue(bytesResult.IsSuccess());
+            Assert.IsTrue(bytesResult.Content!.Length > 0);
+
+            var conversionResult = Protocol.TryParseMessage(bytesResult.Content!);
+
+            Assert.IsTrue(conversionResult.IsSuccess());
+            Assert.IsTrue(conversionResult.Content.Protocol is PayloadResponse);
+
+            var newBytesResult = conversionResult.Content.Protocol.GetBytes();
+
+            Assert.IsTrue(newBytesResult.IsSuccess());
+            Assert.IsTrue(newBytesResult.Content!.SequenceEqual(bytesResult.Content!));
+            Assert.IsTrue(conversionResult.Content.Reminder.Length == 0);
+
+            var deserializedProtocol = conversionResult.Content.Protocol;
+
+            var payloadTypeResult = deserializedProtocol.TryGetProperty<PayloadType>();
+            var payloadResult = deserializedProtocol.TryGetProperty<Payload>();
+
+            Result.From(
+                    payloadTypeResult,
+                    payloadResult)
+                .ThrowIfException();
+
+            var newPayloadType = MessagePackSerializer.Deserialize<string>(payloadTypeResult.Content!.Bytes);
+            var newPayload = MessagePackSerializer.Deserialize<TestPayload>(payloadResult.Content!.Bytes, options);
+
+            Assert.IsTrue(newPayloadType.Equals(nameof(TestPayload)));
             Assert.IsTrue(newPayload.Equals(payload));
         }
 

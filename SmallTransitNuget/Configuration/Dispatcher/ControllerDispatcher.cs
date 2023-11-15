@@ -1,4 +1,4 @@
-﻿using Domain.Services.Receive;
+﻿using Domain.Services.Receiving;
 using Microsoft.Extensions.DependencyInjection;
 using SmallTransit.Abstractions.Interfaces;
 

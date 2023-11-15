@@ -1,5 +1,5 @@
 ﻿using Application.Services.InfrastructureInterfaces;
-using Domain.Common;
+using Domain.Common.Monads;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.TcpClient;
@@ -13,11 +13,11 @@ public sealed class ClientFactory
         _logger = logger;
     }
 
-    public Result<INetworkStream> RetryCreateClient(string host, int port)
+    public Result<INetworkStream> RetryCreateClient(string host, int port, string key)
     {
         do
         {
-            var connectionResult = GetDestinationClient(host, port);
+            var connectionResult = GetDestinationClient(host, port, key);
 
             if (connectionResult.IsFailure())
             {
@@ -33,13 +33,13 @@ public sealed class ClientFactory
         } while (true);
     }
 
-    private Result<INetworkStream> GetDestinationClient(string host, int port)
+    private Result<INetworkStream> GetDestinationClient(string host, int port, string key)
     {
         try
         {
             var destinationClient = new System.Net.Sockets.TcpClient(host, port);
 
-            return Result.Success((INetworkStream)new NetworkClient(destinationClient));
+            return Result.Success((INetworkStream)new NetworkClient(destinationClient, key));
         }
         catch (Exception e)
         {

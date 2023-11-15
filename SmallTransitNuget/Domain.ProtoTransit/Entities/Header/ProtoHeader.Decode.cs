@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Domain.Common.Monads;
 using Domain.ProtoTransit.Extensions;
 using Domain.ProtoTransit.Seedwork;
 using Domain.ProtoTransit.ValueObjects.Header;
@@ -84,6 +84,7 @@ internal partial class ProtoHeader
     {
         return _headerItems
             .Where(kv => _defaultHeaderTypes.Contains(kv.Key) is false)
+            .OrderBy(kv => kv.Value.Order)
             .Select(kv => kv.Key)
             .ToArray();
     }

@@ -1,5 +1,5 @@
 ﻿using Application.Services.InfrastructureInterfaces;
-using Domain.Common;
+using Domain.Common.Monads;
 using Infrastructure.TcpClient.L4LinkBuffers;
 
 namespace Infrastructure.TcpClient;
@@ -16,13 +16,25 @@ public sealed class TcpBridge : ITcpBridge
 
     private Task _writeTask = Task.CompletedTask;
 
+    private CancellationTokenSource? _cancellationTokenSource;
+
+    public bool IsCompleted() => ((_readTask.IsCompleted || _writeTask.IsCompleted) && _cancellationTokenSource is not null) ||
+                                 (_cancellationTokenSource?.IsCancellationRequested ?? false);
+
+    public bool IsNotStarted() => _readTask.IsCompleted && _writeTask.IsCompleted && _cancellationTokenSource is null;
+
     public void RunAsync(Stream inputStream, Stream outputStream, CancellationTokenSource cancellationTokenSource)
     {
-        var writeTunnel = new StreamTunnel(outputStream);
-        var readTunnel = new StreamTunnel(inputStream);
+        if (IsCompleted() is false)
+        {
+            var writeTunnel = new StreamTunnel(outputStream);
+            var readTunnel = new StreamTunnel(inputStream);
 
-        _readTask = Task.Run(() => ReadAsync(readTunnel, cancellationTokenSource));
-        _writeTask = Task.Run(() => WriteAsync(writeTunnel, cancellationTokenSource));
+            _readTask = Task.Run(() => ReadAsync(readTunnel, cancellationTokenSource));
+            _writeTask = Task.Run(() => WriteAsync(writeTunnel, cancellationTokenSource));
+
+            _cancellationTokenSource = cancellationTokenSource;
+        }
     }
 
     private async Task ReadAsync(ITunnel tunnel, CancellationTokenSource cancellationTokenSource)
@@ -81,5 +93,12 @@ public sealed class TcpBridge : ITcpBridge
     public async Task<Result> SendMessage(byte[] value)
     {
         return await _writeShore.SendMessage(value);
+    }
+
+    public void Dispose()
+    {
+        _readTask.Dispose();
+        _writeTask.Dispose();
+        _cancellationTokenSource?.Dispose();
     }
 }

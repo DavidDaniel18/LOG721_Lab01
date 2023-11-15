@@ -4,7 +4,7 @@ using SmallTransit.Abstractions.Interfaces;
 
 namespace Configuration.Options;
 
-internal sealed class BrokerOptions : ISmallTransitBrokerConfigurator
+internal sealed class BrokerOptions : ISBrokerConfigurator
 {
     public int TcpPort { get; set; }
 
