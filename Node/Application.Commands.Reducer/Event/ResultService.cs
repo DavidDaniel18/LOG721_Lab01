@@ -1,7 +1,9 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Grouping;
 using Domain.Publicity;
+using SyncStore.Abstractions;
 
 namespace Application.Commands.Reducer.Event;
 
@@ -11,42 +13,56 @@ public class ResultService : IResultService
 
     private readonly IHostInfo _hostInfo;
 
-    private Dictionary<string, Group> _groupCache = new Dictionary<string, Group>();
-    private Dictionary<string, Space> _spaceCache = new Dictionary<string, Space>();
-    private Dictionary<string, bool> _groupResultReceived = new Dictionary<string, bool>();
+    private ISyncStore<string, Group> _groupCache;
+    private ISyncStore<string, MapFinishedBool> _spaceResultReceived;
+    private ISyncStore<string, ReduceFinishedBool> _groupResultReceived;
 
-    public ResultService(IHostInfo hostInfo) // todo: inject caches
-    {
+    public ResultService(ISyncStore<string, Group> groupCache, ISyncStore<string, Space> spaceCache, ISyncStore<string, ReduceFinishedBool> groupResultReceived, ISyncStore<string, MapFinishedBool> spaceResultReceived, IHostInfo hostInfo)
+    {                    
+        _groupCache = groupCache;
+        _groupResultReceived = groupResultReceived;
+        _spaceResultReceived = spaceResultReceived;
         _hostInfo = hostInfo;
     }
 
     public void DisplayResults()
     {
-        foreach (var kvp in _groupCache.ToList())
+        var t1 = _groupCache.Query(q => q.Where(g => true));
+
+        Task.WaitAll(t1);
+
+        foreach (var kvp in t1.Result)
         {
-            string groupId = kvp.Key;
-            IEnumerable<Space> spaces = kvp.Value.Spaces;
+            string groupId = kvp.Id;
 
-            Console.WriteLine($"Group ID: {groupId}");
+            // todo: this
+            //IEnumerable<Space> spaces = kvp.Value.Spaces;
 
+            Console.WriteLine(kvp);
 
-            foreach (var space in spaces)
-            {
-                Console.WriteLine($"  Space ID: {space.Id}, Width: {space.Width}, Price: {space.Price}");
-            }
+            //foreach (var space in spaces)
+            //{
+            //    Console.WriteLine($"  Space ID: {space.Id}, Width: {space.Width}, Price: {space.Price}");
+            //}
 
-            Console.WriteLine();
+            //Console.WriteLine();
         }
     }
 
     public void ReceiveResult(string groupId) 
     {
-        _groupResultReceived.Add(groupId, true);
+        Task.WaitAll(_groupResultReceived.AddOrUpdate(groupId, new ReduceFinishedBool { Value = true, Id = groupId }));
+        Task.WaitAll(_groupResultReceived.SaveChangesAsync());
     }
 
     public bool HasFinishedCollectedResults()
     {
-        return _groupResultReceived.Values.Count() == _groupCache.Count();
+        var t1 = _groupResultReceived.Query(q => q.Where(s => s.Value));
+        var t2 = _groupCache.Query(q => q.Where(s => true));
+
+        Task.WaitAll(t1, t2);
+
+        return t1.Result.Count() == t2.Result.Count();
     }
 
     public bool HasMoreIterations()
@@ -56,7 +72,16 @@ public class ResultService : IResultService
 
     public void IncrementIteration()
     {
-        _groupResultReceived.Clear(); // ish
+        var t1 = _groupResultReceived.Query(q => q.Where(s => s.Value));
+        var t2 = _spaceResultReceived.Query(q => q.Where(s => s.Value));
+
+        t1.Result.ForEach(e => _groupResultReceived.Remove(e.Id));
+        t2.Result.ForEach(e => _spaceResultReceived.Remove(e.Id));
+
+        Task.WaitAll(new Task[] {
+            Task.Run(_groupResultReceived.SaveChangesAsync),
+            Task.Run(_spaceResultReceived.SaveChangesAsync)
+        });
 
         Interlocked.Increment(ref iteration);
     }

@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Domain.Grouping;
 using Domain.Publicity;
 using Domain.Services;
+using SyncStore.Abstractions;
 
 namespace Application.Commands.Map.Mapping;
 
@@ -12,24 +13,36 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
 
     private readonly IMessagePublisher<MapFinishedEvent> _publisher;
 
-    // todo: link cache...
-    private readonly List<Group> _groupsCache = new List<Group>();
+    private readonly ISyncStore<string, Group> _groupsCache;
 
-    public MapHandler(IMessagePublisher<MapFinishedEvent> publisher, IHostInfo hostInfo)
+    private readonly ISyncStore<string, Space> _spaceCache;
+
+    public MapHandler(
+        ISyncStore<string, Group> groupSyncStore, 
+        ISyncStore<string, Space> spaceSyncStore, 
+        IMessagePublisher<MapFinishedEvent> publisher, 
+        IHostInfo hostInfo)
     {
         _hostInfo = hostInfo;
         _publisher = publisher;
+        _groupsCache = groupSyncStore;
+        _spaceCache = spaceSyncStore;
     }
 
-    public Task Handle(MapCommand command, CancellationToken cancellation)
+    public async Task Handle(MapCommand command, CancellationToken cancellation)
     {
         Space space = command.space;
 
-        var groupId = GroupServices.GetClosestGroupByBarycentre(space, _groupsCache).Id;
+        var groups = await _groupsCache.Query(query => query.Where(g => true));
+
+        var groupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id;
+
         space.GroupId = groupId;
 
-        _publisher.PublishAsync(new MapFinishedEvent(space), _hostInfo.MapFinishedEventRoutingKey);
+        await _spaceCache.AddOrUpdate(space.Id, space);
 
-        return Task.CompletedTask;
+        await _spaceCache.SaveChangesAsync();
+
+        await _publisher.PublishAsync(new MapFinishedEvent(space), _hostInfo.MapFinishedEventRoutingKey);
     }
 }

@@ -8,6 +8,7 @@ namespace Domain.Common
 {
     public class ReduceFinishedBool
     {
-        public bool value = true;
+        public string Id = "";
+        public bool Value = true;
     }
 }

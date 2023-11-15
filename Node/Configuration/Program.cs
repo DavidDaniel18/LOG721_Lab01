@@ -19,9 +19,9 @@ using Configuration;
 using Node.Properties;
 using Application.Commands.Reducer.Event;
 using SyncStore;
-using Domain.Common;
 using Domain.Publicity;
 using Domain.Grouping;
+using Domain.Common;
 
 namespace Node
 {

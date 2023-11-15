@@ -2,6 +2,7 @@
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
 using Domain.Publicity;
+using SyncStore.Abstractions;
 
 namespace Application.Commands.Orchestrator.Shuffle;
 
@@ -11,20 +12,21 @@ public sealed class ShuffleHander : ICommandHandler<Shuffle>
 
     private IGroupAttributionService _groupAttributionService;
 
-    private IEnumerable<Space> _spaces = new List<Space>(); // todo: use cache.
+    private ISyncStore<string, Space> _spaceSyncStore;
 
-    internal ShuffleHander(IMessagePublisher<Space> publisher, IGroupAttributionService groupAttributionService)
+    internal ShuffleHander(ISyncStore<string, Space> spaceSyncStore, IMessagePublisher<Space> publisher, IGroupAttributionService groupAttributionService)
     {
+        _spaceSyncStore = spaceSyncStore;
         _groupAttributionService = groupAttributionService;
         _publisher = publisher;
     }
 
-    public Task Handle(Shuffle command, CancellationToken cancellation)
+    public async Task Handle(Shuffle command, CancellationToken cancellation)
     {
-        _spaces.Where(s => s.GroupId != null).ToList().ForEach(space => {
+        var spaces = await _spaceSyncStore.Query(query => query.Where(s => s.GroupId != null));
+
+        spaces.ForEach(space => {
             Task.Run(() => _publisher.PublishAsync(space, _groupAttributionService.GetAttributedKeyFromSpace(space)), cancellation);
         });
-
-        return Task.CompletedTask;
     }
 }

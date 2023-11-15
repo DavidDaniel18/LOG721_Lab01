@@ -24,6 +24,7 @@
 	  <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
 	  <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
 	  <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
+	  <ProjectReference Include="..\Domain.Common\Domain.Common.csproj" />
 	  <ProjectReference Include="..\Infrastructure.Clients.Tcp\Infrastructure.Clients.Tcp.csproj" />
 	  <ProjectReference Include="..\Infrastructure.FileHandlers\Infrastructure.FileHandlers.csproj" />
 	  <ProjectReference Include="..\Infrastructure.Clients.Tcp\Infrastructure.Clients.Tcp.csproj" />

@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SyncStore.Abstractions" Version="0.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
     <ProjectReference Include="..\Application.Commands.Orchestrator\Application.Commands.Orchestrator.csproj" />
     <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
