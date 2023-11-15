@@ -8,9 +8,9 @@ public sealed class Group : Aggregate<Group>
 {
     public double Barycentre { get; }
 
-    public ImmutableList<Space> Spaces { get; }
+    public List<Space> Spaces { get; }
 
-    public Group(string id, double barycentre, ImmutableList<Space> spaces) : base(id)
+    public Group(string id, double barycentre, List<Space> spaces) : base(id)
     {
         Barycentre = barycentre;
         Spaces = spaces;

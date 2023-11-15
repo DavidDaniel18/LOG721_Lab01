@@ -1,10 +1,9 @@
-﻿using Application.Commands.Orchestrator.Shuffle;
-using Application.Commands.Seedwork;
+﻿using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
 using Domain.Common;
 using Domain.Grouping;
 using Domain.Publicity;
-using SyncStore.Abstractions;
+using Application.Commands.Orchestrator.Shuffle;
 
 namespace Application.Commands.Map.Event;
 
@@ -14,36 +13,47 @@ public sealed class MapFinishedEventHandler : ICommandHandler<MapFinishedEvent>
 
     private readonly IMessagePublisher<Shuffle> _publisher;
 
-    private ISyncStore<string, Space> _spaceSyncStore;
-
-    private ISyncStore<string, MapFinishedBool> _spaceFinishedSyncStore;
+    private ISingletonCache<Space> _spaceCache;
+    private ISingletonCache<Group> _groupCache;
+    private ISingletonCache<MapFinishedBool> _spaceFinishedCache;
 
     public MapFinishedEventHandler(
-        ISyncStore<string, Space> spaceSyncStore,
-        ISyncStore<string, MapFinishedBool> spaceFinishedSyncStore,
+        ISingletonCache<Space> spaceCache,
+        ISingletonCache<Group> groupCache,
+        ISingletonCache<MapFinishedBool> spaceFinishedCache,
         IHostInfo hostInfo, 
         IMessagePublisher<Shuffle> publisher)
     {
-        _spaceFinishedSyncStore = spaceFinishedSyncStore;
-        _spaceSyncStore = spaceSyncStore;  
+        _spaceCache = spaceCache;
+        _groupCache = groupCache;
+        _spaceFinishedCache = spaceFinishedCache;
         _hostInfo = hostInfo;
         _publisher = publisher;
     }
 
-    public async Task Handle(MapFinishedEvent command, CancellationToken cancellation)
+    public Task Handle(MapFinishedEvent command, CancellationToken cancellation)
     {
-        await _spaceFinishedSyncStore.AddOrUpdate(command.space.Id, new MapFinishedBool { Value = true, Id = command.space.Id });
+        _spaceFinishedCache.Value.TryAdd(command.space.Id, new MapFinishedBool { Value = true, Id = command.space.Id });
 
-        await _spaceFinishedSyncStore.SaveChangesAsync();
+        // Add space to groups cache.
+        if (_groupCache.Value.TryGetValue(command.space.GroupId ?? "", out var group))
+        {
+            var groupSpaces = group.Spaces;
+            groupSpaces.Add(command.space);
 
-        var spaces = await _spaceSyncStore.Query(query => query.Where(space => true));
-        var result = await _spaceFinishedSyncStore.Query(query => query.Where(space => true));
+            _groupCache.Value.TryUpdate(group.Id, new Group(group.Id, group.Barycentre, groupSpaces), group);
+        }
+
+        var spaces = _spaceCache.Value.Values;
+        var result = _spaceFinishedCache.Value.Values;
 
         bool isFinished = result.All(s => s.Value) && result.Count() == spaces.Count();
 
         if (isFinished)
         {
-            await _publisher.PublishAsync(new Shuffle(), _hostInfo.MapShuffleRoutingKey);
+            _publisher.PublishAsync(new Shuffle(), _hostInfo.MapShuffleRoutingKey);
         }
+
+        return Task.CompletedTask;
     }
 }

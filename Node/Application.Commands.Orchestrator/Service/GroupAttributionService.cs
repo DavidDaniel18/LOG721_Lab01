@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Orchestrator.Interfaces;
 using Application.Common.Interfaces;
+using Domain.Grouping;
 using Domain.Publicity;
 
 namespace Application.Commands.Orchestrator.Service;
@@ -13,8 +14,8 @@ public class GroupAttributionService : IGroupAttributionService
         _attributionStrategy = new RoundRobinAttributionStrategy(hostInfo);
     }
 
-    public string GetAttributedKeyFromSpace(Space space)
+    public string GetAttributedKeyFromGroup(Group group)
     {
-        return _attributionStrategy.GetTopicFrom(space);
+        return _attributionStrategy.GetTopicFrom(group);
     }
 }

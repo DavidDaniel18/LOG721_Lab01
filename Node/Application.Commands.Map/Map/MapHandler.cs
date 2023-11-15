@@ -13,36 +13,25 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
 
     private readonly IMessagePublisher<MapFinishedEvent> _publisher;
 
-    private readonly ISyncStore<string, Group> _groupsCache;
-
-    private readonly ISyncStore<string, Space> _spaceCache;
-
     public MapHandler(
-        ISyncStore<string, Group> groupSyncStore, 
-        ISyncStore<string, Space> spaceSyncStore, 
         IMessagePublisher<MapFinishedEvent> publisher, 
         IHostInfo hostInfo)
     {
         _hostInfo = hostInfo;
         _publisher = publisher;
-        _groupsCache = groupSyncStore;
-        _spaceCache = spaceSyncStore;
     }
 
-    public async Task Handle(MapCommand command, CancellationToken cancellation)
+    public Task Handle(MapCommand command, CancellationToken cancellation)
     {
         Space space = command.space;
-
-        var groups = await _groupsCache.Query(query => query.Where(g => true));
+        List<Group> groups = command.groups;
 
         var groupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id;
 
         space.GroupId = groupId;
 
-        await _spaceCache.AddOrUpdate(space.Id, space);
+        _publisher.PublishAsync(new MapFinishedEvent(space, groups), _hostInfo.MapFinishedEventRoutingKey);
 
-        await _spaceCache.SaveChangesAsync();
-
-        await _publisher.PublishAsync(new MapFinishedEvent(space), _hostInfo.MapFinishedEventRoutingKey);
+        return Task.CompletedTask;
     }
 }

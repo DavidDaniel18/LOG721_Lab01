@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
     <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
+    <ProjectReference Include="..\Domain.Barycentre\Domain.Grouping.csproj" />
     <ProjectReference Include="..\Domain.Publicity\Domain.Publicity.csproj" />
   </ItemGroup>
 

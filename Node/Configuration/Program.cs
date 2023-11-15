@@ -22,6 +22,9 @@ using SyncStore;
 using Domain.Publicity;
 using Domain.Grouping;
 using Domain.Common;
+using Application.Common.Cache;
+using Application.Commands.Reducer;
+using Application.Commands;
 
 namespace Node
 {
@@ -47,7 +50,7 @@ namespace Node
 
             ConfigureSmallTransit(builder.Services, hostInfo);
 
-            ConfigureSyncStore(builder.Services, hostInfo);
+            //ConfigureSyncStore(builder.Services, hostInfo);
 
             ConfigureServices(builder.Services, builder.Configuration);
 
@@ -64,18 +67,18 @@ namespace Node
             app.Run();
         }
 
-        public static void ConfigureSyncStore(IServiceCollection services, IHostInfo hostInfo)
-        {
-            services.AddSyncStore(configure =>
-            {
-                configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
-
-                configure.AddStore<string, Space>();
-                configure.AddStore<string, Group>();
-                configure.AddStore<string, MapFinishedBool>();
-                configure.AddStore<string, ReduceFinishedBool>();
-            });
-        }
+       //public static void ConfigureSyncStore(IServiceCollection services, IHostInfo hostInfo)
+       //{
+       //    services.AddSyncStore(configure =>
+       //    {
+       //        configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
+       //
+       //        configure.AddStore<string, Space>();
+       //        configure.AddStore<string, Group>();
+       //        configure.AddStore<string, MapFinishedBool>();
+       //        configure.AddStore<string, ReduceFinishedBool>();
+       //    });
+       //}
 
         public static void ConfigureSmallTransit(IServiceCollection services, IHostInfo hostInfo)
         {
@@ -178,6 +181,12 @@ namespace Node
             services.AddScoped<ICsvHandler, CsvHandler>();
 
             services.AddScoped<IHostInfo, HostInfo>();
+
+            // todo: dynamically allocate cache depends on role.
+            services.AddSingleton<ISingletonCache<Group>, SingletonCache<Group>>();
+            services.AddSingleton<ISingletonCache<Space>, SingletonCache<Space>>();
+            services.AddSingleton<ISingletonCache<MapFinishedBool>, SingletonCache<MapFinishedBool>>();
+            services.AddSingleton<ISingletonCache<ReduceFinishedBool>, SingletonCache<ReduceFinishedBool>>();
         }
 
         private static void ApplicationSetup(IServiceCollection services)
