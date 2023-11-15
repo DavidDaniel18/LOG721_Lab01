@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Configuration.Properties {
+namespace Node.Properties {
     using System;
     
     

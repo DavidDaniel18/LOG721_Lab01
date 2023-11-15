@@ -1,61 +1,116 @@
 version: '3.8'
 services:
-  receiver:
+  map0:
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver0
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map0
     restart: always
     ports:
       - 4300:80
     environment:
-      RoutingKey: weather/montreal/temperature
+      TYPE: map
+      BROKER_PORT: 32769
+      MASTER: true
+      MAP_ROUTING_KEYS: 'map0,map1,map2,map3'
+      MAP_ROUTING_KEY: map0
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
+      MAP_SHUFFLE_ROUTING_KEY: comman/shuffle
+      REDUCE_ROUTING_KEYS: 'reduce0,reduce1,reduce2'
+      INPUT_ROUTING_KEY: command/input
     depends_on:
       - broker
-  receiver1:
+  map1:
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver1
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map1
     restart: always
     ports:
       - 4301:80
     environment:
-      RoutingKey: weather/montreal/temperature
+      TYPE: map
+      BROKER_PORT: 32769
+      MAP_ROUTING_KEY: map1
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
     depends_on:
       - broker
-  receiver2:
+  map2:
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver2
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map2
     restart: always
     ports:
       - 4302:80
     environment:
-      RoutingKey: weather/montreal/*
+      TYPE: map
+      BROKER_PORT: 32769
+      MAP_ROUTING_KEY: map2
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
     depends_on:
       - broker
-  receive3:
+  map3:
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver3
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map3
     restart: always
     ports:
       - 4303:80
     environment:
-      RoutingKey: 'humidity/#'
+      TYPE: map
+      BROKER_PORT: 32769
+      MAP_ROUTING_KEY: map3
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
     depends_on:
       - broker
-  publisher:
+  reducer0:
     build:
-      context: ./Publisher/
+      context: ./Node/
       dockerfile: Configuration/Dockerfile
-    container_name: publisher
+    container_name: Reducer0
     restart: always
+    environment:
+      MASTER: true
+      TYPE: reduce
+      BROKER_PORT: 32769
+      INPUT_ROUTING_KEY: command/input
+      REDUCE_ROUTING_KEY: reduce0
+      REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
+      NB_OF_ITERATION: 1
     ports:
       - 4304:80
+    depends_on:
+      - broker
+  reducer1:
+    build:
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Reducer1
+    restart: always
+    environment:
+      TYPE: reduce
+      BROKER_PORT: 32769
+      REDUCE_ROUTING_KEY: reduce1
+      REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
+    ports:
+      - 4305:80
+    depends_on:
+      - broker
+  reducer2:
+    build:
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Reducer2
+    restart: always
+    environment:
+      TYPE: reduce
+      BROKER_PORT: 32769
+      REDUCE_ROUTING_KEY: reduce1
+      REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
+    ports:
+      - 4306:80
     depends_on:
       - broker
   broker:

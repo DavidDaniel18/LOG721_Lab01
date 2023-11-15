@@ -1,9 +1,7 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
-using SmallTransit.Abstractions.Interfaces;
 using System.Resources;
 using Application.Commands.Mappers.Interfaces;
-using Configuration.Properties;
 using Infrastructure.Clients.Tcp;
 using Infrastructure.FileHandlers.Interfaces;
 using Application.Common.Interfaces;
@@ -17,8 +15,10 @@ using Application.Commands.Orchestrator.Shuffle;
 using Application.Commands.Map.Mapping;
 using Application.Commands.Map.Input;
 using Application.Commands.Map.Event;
+using Configuration;
+using Node.Properties;
 
-namespace Configuration
+namespace Node
 {
     public class Program
     {
@@ -37,6 +37,10 @@ namespace Configuration
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen();
+
+            Task.Delay(5000).Wait();
+
+            Console.WriteLine("Configure Small Transit");
 
             ConfigureSmallTransit(builder.Services, hostInfo);
 
@@ -61,9 +65,14 @@ namespace Configuration
             {
                 configuration.Host = hostInfo.Host;
                 configuration.Port = hostInfo.BrokerPort;
-                
+
+                Console.WriteLine("AddSmallTransit");
+
                 if (string.Equals(hostInfo.NodeType, "map"))
                 {
+                    Console.WriteLine("It is an map");
+
+                    Console.WriteLine("sub 1");
                     configuration.AddReceiver<MapController>($"queue-map.{Guid.NewGuid()}", rcv =>
                     {
                         rcv.RoutingKey = hostInfo.MapRoutingKey;
@@ -71,11 +80,15 @@ namespace Configuration
 
                     if (hostInfo.IsMaster)
                     {
+                        Console.WriteLine("It is master");
+
+                        Console.WriteLine("sub 2");
                         configuration.AddReceiver<MapFinishedEventController>($"queue-event-finished-map.{Guid.NewGuid()}", rcv =>
                         {
                             rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
                         });
 
+                        Console.WriteLine("sub 3");
                         configuration.AddReceiver<ShuffleController>($"queue-event-shuffle.{Guid.NewGuid()}", rcv =>
                         {
                             rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
@@ -98,7 +111,6 @@ namespace Configuration
                         });
                     }
                 }
-                
             });
         }
 

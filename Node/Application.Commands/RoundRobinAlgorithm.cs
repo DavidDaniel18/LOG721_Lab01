@@ -8,7 +8,7 @@ public class RoundRobinAlgorithm : IRoundRobinAlgorithm
 
     private int _roundRobinIndex = 0;
 
-    internal RoundRobinAlgorithm(List<string> elements)
+    public RoundRobinAlgorithm(List<string> elements)
     {
         _elements = elements;
         _size = _elements.Count();

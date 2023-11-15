@@ -13,7 +13,7 @@ internal class RoundRobinAttributionStrategy : IAttributionStrategy
     // todo: get from cache...
     private IDictionary<string, string> _groupIdTopicDict = new Dictionary<string, string>();
 
-    internal RoundRobinAttributionStrategy(IHostInfo hostInfo)
+    public RoundRobinAttributionStrategy(IHostInfo hostInfo)
     {
         _hostInfo = hostInfo;
         _algorithm = new RoundRobinAlgorithm(_hostInfo.ReduceRoutingKeys.Split(',').ToList());

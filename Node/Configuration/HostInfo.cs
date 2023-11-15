@@ -1,6 +1,6 @@
 ﻿using Application.Common.Interfaces;
 
-namespace Configuration;
+namespace Node;
 
 internal sealed class HostInfo : IHostInfo
 {

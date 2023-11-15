@@ -24,6 +24,8 @@ public interface IHostInfo
 
     string MapRoutingKeys { get; }
 
+    string MapShuffleRoutingKey { get; }
+
     string ReduceRoutingKeys { get; }
 
     string InputRoutingKey { get; }
