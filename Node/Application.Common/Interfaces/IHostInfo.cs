@@ -30,5 +30,7 @@ public interface IHostInfo
 
     string InputRoutingKey { get; }
 
+    List<int> SyncStorePairPortList { get; }
+
     int NbOfIteration { get; }
 }

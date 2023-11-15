@@ -55,6 +55,8 @@ Le rôle "master" permet d'attribuer la responsabilité d'acquérir les résulta
 
 ## Diagramme de vue d'ensemble flux
 
+![](/doc/FlowOverviewDiagram.png)
+
 # Auteurs:
 
 ||

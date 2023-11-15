@@ -52,6 +52,10 @@ internal sealed class HostInfo : IHostInfo
 
     private static readonly string MapShuffleRoutingKeyEnv = Environment.GetEnvironmentVariable(MapShuffleRoutinKeyName) ?? "";
 
+    private const string SyncStorePairPortListName = "SYNC_STORE_PAIR_PORT_LIST";
+
+    private static readonly List<int> SyncStorePairPortListEnv = (Environment.GetEnvironmentVariable(SyncStorePairPortListName) ?? "").Split(',').ToList().Select(p => Convert.ToInt32(p)).ToList();
+
     public string Host => "host.docker.internal";
 
     public int BrokerPort => BrokerPortEnv;
@@ -77,6 +81,8 @@ internal sealed class HostInfo : IHostInfo
     public string MapShuffleRoutingKey => MapShuffleRoutingKeyEnv;
 
     public int NbOfIteration => NbOfIterationEnv;
+
+    public List<int> SyncStorePairPortList => SyncStorePairPortListEnv;
 
     public string DataCsvName { get; } = "data.csv";
 
