@@ -15,7 +15,7 @@ services:
       MAP_ROUTING_KEYS: 'map0,map1,map2,map3'
       MAP_ROUTING_KEY: map0
       MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
-      MAP_SHUFFLE_ROUTING_KEY: comman/shuffle
+      MAP_SHUFFLE_ROUTING_KEY: command/shuffle
       REDUCE_ROUTING_KEYS: 'reduce0,reduce1,reduce2'
       INPUT_ROUTING_KEY: command/input
     depends_on:

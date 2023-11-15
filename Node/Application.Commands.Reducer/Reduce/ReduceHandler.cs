@@ -1,6 +1,6 @@
 ﻿using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
-using System.Text.RegularExpressions;
+using Domain.Grouping;
 
 namespace Application.Commands.Map.Event;
 
@@ -22,7 +22,14 @@ public sealed class ReduceHandler : ICommandHandler<Reduce>
 
     public Task Handle(Reduce command, CancellationToken cancellation)
     {
-        // todo: do calculation + cache update.
+        double sum = 0;
+        foreach (Group group in _groupsCache)
+        {
+            sum += group.Barycentre;
+        }
+        double avg = sum / _groupsCache.Count();
+
+        // todo: save the sum to the group cache.
 
         _publisher.PublishAsync(new ReduceFinishedEvent(command.group), _hostInfo.MapFinishedEventRoutingKey);
 

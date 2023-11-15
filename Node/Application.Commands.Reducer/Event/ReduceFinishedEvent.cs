@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Seedwork;
 using Domain.Grouping;
 
-public sealed record ReduceFinishedEvent(Group space) : ICommand
+public sealed record ReduceFinishedEvent(Group group) : ICommand
 {
     public string GetCommandName()
     {

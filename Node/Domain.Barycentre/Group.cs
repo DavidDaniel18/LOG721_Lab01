@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Xml.Schema;
 using Domain.Common.Seedwork.Abstract;
 using Domain.Publicity;
 
@@ -15,5 +14,10 @@ public sealed class Group : Aggregate<Group>
     {
         Barycentre = barycentre;
         Spaces = spaces;
+    }
+
+    public override string ToString()
+    {
+        return $"Id: {Id}, Barycentre: {Barycentre}, NbOfSpaces: {Spaces.Count()}";
     }
 }

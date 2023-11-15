@@ -21,4 +21,9 @@ public sealed class Space : Aggregate<Space>
     {
         return Math.Sqrt(Math.Pow(Width,2) + Math.Pow(Price, 2));
     }
+
+    public override string ToString()
+    {
+        return $"Id: {Id}, Width: {Width}, Price: {Price}$" + ((GroupId != null) ? $", GroupdId: {GroupId}" : "");
+    }
 }

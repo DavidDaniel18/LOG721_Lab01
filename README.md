@@ -51,6 +51,10 @@ Le rôle "master" permet d'attribuer la responsabilité d'acquérir les résulta
 - Recevoir le résultat de tous les *Reduce*.
 - Lancer la prochaine itération.
 
+# Diagrammes
+
+## Diagramme de vue d'ensemble flux
+
 # Auteurs:
 
 ||

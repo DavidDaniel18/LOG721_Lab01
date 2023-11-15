@@ -17,6 +17,7 @@ using Application.Commands.Map.Input;
 using Application.Commands.Map.Event;
 using Configuration;
 using Node.Properties;
+using Application.Commands.Reducer.Event;
 
 namespace Node
 {
@@ -174,6 +175,8 @@ namespace Node
             ScrutorScanForType(services, typeof(IMappingTo<,>), assemblyNames: "Application.Mapping");
 
             services.AddScoped<IGroupAttributionService, GroupAttributionService>();
+
+            services.AddScoped<IResultService, ResultService>();
         }
 
         private static void DomainSetup(IServiceCollection services)

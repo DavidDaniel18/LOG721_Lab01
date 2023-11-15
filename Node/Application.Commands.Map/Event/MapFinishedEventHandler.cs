@@ -32,7 +32,7 @@ public sealed class MapFinishedEventHandler : ICommandHandler<MapFinishedEvent>
         bool isFinished = false;
         if (isFinished)
         {
-            _publisher.PublishAsync(new Shuffle(), _hostInfo.MapFinishedEventRoutingKey);
+            _publisher.PublishAsync(new Shuffle(), _hostInfo.MapShuffleRoutingKey);
         }
 
         return Task.CompletedTask;

@@ -3,7 +3,7 @@
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
 using Application.Commands.Map.Input;
-using Domain.Grouping;
+using Application.Commands.Interfaces;
 
 namespace Application.Commands.Map.Event;
 
@@ -13,39 +13,35 @@ public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedE
 
     private readonly IMessagePublisher<InputCommand> _publisher;
 
-    // DI data cache
-    // _spaceCache
-    private IEnumerable<Group> _groupsCache = new List<Group>(); // todo: link to cache
+    private readonly IResultService _resultService;
 
-    private Dictionary<string, bool> _groupFinished = new Dictionary<string, bool>(); 
-
-    public ReduceFinishedEventHandler(IHostInfo hostInfo, IMessagePublisher<InputCommand> publisher)
+    public ReduceFinishedEventHandler(IHostInfo hostInfo, IMessagePublisher<InputCommand> publisher, IResultService resultService)
     {
         _hostInfo = hostInfo;
         _publisher = publisher;
+        _resultService = resultService;
     }
 
     public Task Handle(ReduceFinishedEvent command, CancellationToken cancellation)
     {
-        // todo: do operation
+        _resultService.ReceiveResult(command.group.Id);
 
-        bool isFinished = false;
-        bool isLastIteration = false;
-
-        // ...
-
-        if (isFinished)
+        if (_resultService.HasFinishedCollectedResults())
         {
-            // todo: print data
+            bool isLastIteration = !_resultService.HasMoreIterations();
 
-            if (isLastIteration)
-            {
-                // todo: print end of map reduce data
-            } 
-            else
+            _resultService.IncrementIteration();
+
+            Task.Run(() => _resultService.DisplayResults());
+
+            if (!isLastIteration)
             {
                 // send message to input master to trigger another iteration
                 _publisher.PublishAsync(new InputCommand(_hostInfo.DataCsvName, _hostInfo.GroupCsvName), _hostInfo.InputRoutingKey);
+            } 
+            else
+            {
+                Console.WriteLine("Last iteration finished...\nMap Reduce terminated");
             }
         }
         
