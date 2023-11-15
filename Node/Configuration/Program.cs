@@ -18,6 +18,10 @@ using Application.Commands.Map.Event;
 using Configuration;
 using Node.Properties;
 using Application.Commands.Reducer.Event;
+using SyncStore;
+using Domain.Common;
+using Domain.Publicity;
+using Domain.Grouping;
 
 namespace Node
 {
@@ -41,9 +45,9 @@ namespace Node
 
             Task.Delay(5000).Wait();
 
-            Console.WriteLine("Configure Small Transit");
-
             ConfigureSmallTransit(builder.Services, hostInfo);
+
+            ConfigureSyncStore(builder.Services, hostInfo);
 
             ConfigureServices(builder.Services, builder.Configuration);
 
@@ -58,6 +62,19 @@ namespace Node
             app.MapControllers();
 
             app.Run();
+        }
+
+        public static void ConfigureSyncStore(IServiceCollection services, IHostInfo hostInfo)
+        {
+            services.AddSyncStore(configure =>
+            {
+                configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
+
+                configure.AddStore<string, Space>();
+                configure.AddStore<string, Group>();
+                configure.AddStore<string, MapFinishedBool>();
+                configure.AddStore<string, ReduceFinishedBool>();
+            });
         }
 
         public static void ConfigureSmallTransit(IServiceCollection services, IHostInfo hostInfo)

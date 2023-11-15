@@ -14,6 +14,8 @@
 		<PackageReference Include="SmallTransit" Version="1.1.2" />
 		<PackageReference Include="SmallTransit.Abstractions" Version="1.1.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="SyncStore" Version="0.6.0" />
+		<PackageReference Include="SyncStore.Abstractions" Version="0.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
