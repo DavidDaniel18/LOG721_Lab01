@@ -88,9 +88,9 @@ internal sealed class HostInfo : IHostInfo
 
     public List<int> SyncStorePairPortList => SyncStorePairPortListEnv;
 
-    public string DataCsvName { get; } = "data.csv";
+    public string DataCsvName { get; } = "data";
 
-    public string GroupCsvName { get; } = "groups.csv";
+    public string GroupCsvName { get; } = "groups";
 
     public int SyncExpose => SyncExposeEnv;
 }
