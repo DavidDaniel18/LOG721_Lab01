@@ -1,8 +1,8 @@
-﻿using Domain.Services.Sending.Push.States;
-using Domain.Services.Sending.SeedWork.StateHolder;
-using Domain.Services.Sending.SeedWork.States;
+﻿using SmallTransit.Domain.Services.Sending.Push.States;
+using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
 
-namespace Domain.Services.Sending.Push;
+namespace SmallTransit.Domain.Services.Sending.Push;
 
 internal sealed class PushContext : SendingStateHolder<PushContext, byte[]>
 {

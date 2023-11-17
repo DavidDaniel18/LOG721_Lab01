@@ -1,10 +1,10 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.Services.Common.Exceptions;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.StateHolder;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Common.Exceptions;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
 
-namespace Domain.Services.Sending.SeedWork.States;
+namespace SmallTransit.Domain.Services.Sending.SeedWork.States;
 
 internal sealed class ClosedSendState<TContext, TPayload> : SendState<TContext, TPayload> where TContext : SendingStateHolder<TContext, TPayload>
 {

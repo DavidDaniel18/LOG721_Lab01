@@ -2,7 +2,7 @@
 using SmallTransit.Abstractions.Configurator;
 using SmallTransit.Abstractions.Interfaces;
 
-namespace Presentation.Controllers.Dto.Configurator;
+namespace SmallTransit.Presentation.Controllers.Dto.Configurator;
 
 public sealed class QueueConfiguratorService : IQueueConfigurator
 {

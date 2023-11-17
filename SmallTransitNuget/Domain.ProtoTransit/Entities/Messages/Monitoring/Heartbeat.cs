@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.Entities.Messages.Monitoring;
+﻿namespace SmallTransit.Domain.ProtoTransit.Entities.Messages.Monitoring;
 
 internal sealed class Heartbeat : Protocol
 {

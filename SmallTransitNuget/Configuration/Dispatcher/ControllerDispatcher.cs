@@ -1,8 +1,8 @@
-﻿using Domain.Services.Receiving;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SmallTransit.Abstractions.Interfaces;
+using SmallTransit.Domain.Services.Receiving;
 
-namespace Configuration.Dispatcher;
+namespace SmallTransit.Dispatcher;
 
 public sealed class ControllerDispatcher<TContract> : IControllerDelegate<TContract> where TContract : class
 {

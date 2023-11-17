@@ -1,8 +1,8 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Domain.Common.Monads;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Application.UseCases.Interfaces;
+namespace SmallTransit.Application.UseCases.Interfaces;
 
 public interface IReceiveSubscriberClient : IDisposable
 {

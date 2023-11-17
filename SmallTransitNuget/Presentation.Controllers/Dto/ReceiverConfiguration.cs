@@ -1,6 +1,6 @@
-﻿using Presentation.Controllers.Dto.Configurator;
+﻿using SmallTransit.Presentation.Controllers.Dto.Configurator;
 
-namespace Presentation.Controllers.Dto;
+namespace SmallTransit.Presentation.Controllers.Dto;
 
 public sealed class ReceiverConfiguration
 { 

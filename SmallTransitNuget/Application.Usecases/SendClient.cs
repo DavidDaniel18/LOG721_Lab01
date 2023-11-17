@@ -1,10 +1,10 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Application.Services.Orchestrator.Sending;
-using Domain.Common.Monads;
-using Domain.Services.Sending.Send;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.Services.Orchestrator.Sending;
+using SmallTransit.Domain.Services.Sending.Send;
 
-namespace Application.UseCases;
+namespace SmallTransit.Application.UseCases;
 
 public sealed class SendClient<TContract, TResult> : IDisposable
 {
@@ -29,7 +29,9 @@ public sealed class SendClient<TContract, TResult> : IDisposable
 
         if (_tcpBridge.IsNotStarted())
         {
-            var networkStream = _networkStreamCache.Get(targetId);
+            _logger.LogInformation("Tcp bridge is not started. Starting...");
+
+            var networkStream = _networkStreamCache.GetOrAdd(targetId);
 
             _tcpBridge.RunAsync(networkStream.GetStream(), networkStream.GetStream(), _cancellationTokenSource);
         }

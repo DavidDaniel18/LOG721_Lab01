@@ -1,14 +1,14 @@
-﻿using Domain.Services.Sending.SeedWork.StateHolder;
-using Domain.Services.Sending.SeedWork.States;
-using Domain.Services.Sending.Send.States;
+﻿using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
+using SmallTransit.Domain.Services.Sending.Send.States;
 
-namespace Domain.Services.Sending.Send;
+namespace SmallTransit.Domain.Services.Sending.Send;
 
 internal sealed class SendingContext : SendingStateHolder<SendingContext, SerializedSendMessage>
 {
     private protected override SendState<SendingContext, SerializedSendMessage> SendState { get; set; }
 
-    public SendingContext() { SendState = new CreatedSendState(this); }
+    public SendingContext() { SendState = new OpenedSendState(this); }
 
     internal override bool GetConnectionReady()
     {

@@ -1,32 +1,32 @@
-﻿using Domain.ProtoTransit.Entities.Messages.Core;
-using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.ProtoTransit.Entities.Messages.Monitoring;
-using Domain.ProtoTransit.Seedwork;
+﻿using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Monitoring;
+using SmallTransit.Domain.ProtoTransit.Seedwork;
 
-namespace Domain.ProtoTransit;
+namespace SmallTransit.Domain.ProtoTransit;
 
 public enum MessageTypesEnum
 {
-    [MessageTypeAttribute<Ack>]
+    [MessageType<Ack>]
     Ack,
-    [MessageTypeAttribute<Nack>]
+    [MessageType<Nack>]
     Nack,
-    [MessageTypeAttribute<HandShake>]
+    [MessageType<HandShake>]
     HandShake,
-    [MessageTypeAttribute<Publish>]
+    [MessageType<Publish>]
     Publish,
-    [MessageTypeAttribute<Push>]
+    [MessageType<Push>]
     Push,
-    [MessageTypeAttribute<Subscribe>]
+    [MessageType<Subscribe>]
     Subscribe,
-    [MessageTypeAttribute<Unsubscribe>]
+    [MessageType<Unsubscribe>]
     Unsubscribe,
-    [MessageTypeAttribute<Heartbeat>]
+    [MessageType<Heartbeat>]
     Heartbeat,
-    [MessageTypeAttribute<Close>]
+    [MessageType<Close>]
     Close,
-    [MessageTypeAttribute<Send>]
+    [MessageType<Send>]
     Send,
-    [MessageTypeAttribute<PayloadResponse>]
+    [MessageType<PayloadResponse>]
     PayloadResponse
 }

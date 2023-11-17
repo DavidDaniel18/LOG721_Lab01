@@ -1,7 +1,7 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Sending.SeedWork.StateHolder;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
 
-namespace Domain.Services.Sending.SeedWork.Saga;
+namespace SmallTransit.Domain.Services.Sending.SeedWork.Saga;
 
 internal sealed class Saga<TContext, TPayload> : ISaga<TPayload> where TContext : SendingStateHolder<TContext, TPayload>
 {

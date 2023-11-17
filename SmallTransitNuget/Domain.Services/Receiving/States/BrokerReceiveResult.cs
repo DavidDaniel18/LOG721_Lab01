@@ -1,6 +1,6 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Receiving.BrokerReceive;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Receiving.BrokerReceive;
 
-namespace Domain.Services.Receiving.States;
+namespace SmallTransit.Domain.Services.Receiving.States;
 
 internal sealed record BrokerReceiveResult(Protocol Response) : StateResult<ReceivePublishByteWrapper>(Response);

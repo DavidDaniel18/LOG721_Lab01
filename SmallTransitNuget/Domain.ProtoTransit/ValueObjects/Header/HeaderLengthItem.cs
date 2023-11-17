@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.ValueObjects.Header;
+﻿namespace SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
 
 public sealed record HeaderLengthItem() : ProtoHeaderItem("HeaderLengthItem", StorageSizeInBytes, 0)
 {

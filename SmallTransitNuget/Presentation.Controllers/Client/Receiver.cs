@@ -1,14 +1,15 @@
-﻿using Application.UseCases.Interfaces;
-using Domain.Common.Monads;
-using Microsoft.AspNetCore.Connections;
+﻿using Microsoft.AspNetCore.Connections;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.UseCases;
+using SmallTransit.Application.UseCases.Interfaces;
 
-namespace Presentation.Controllers.Client;
+namespace SmallTransit.Presentation.Controllers.Client;
 
 public sealed class Receiver
 {
     private readonly IReceivePoint _receivePoint;
 
-    public Receiver(IReceivePoint receivePoint)
+    public Receiver(ReceivePoint receivePoint)
     {
         _receivePoint = receivePoint;
     }

@@ -1,3 +1,3 @@
-﻿namespace Domain.Services.Common;
+﻿namespace SmallTransit.Domain.Services.Common;
 
 internal sealed record ContextAlterationRequests(Type ContextType);

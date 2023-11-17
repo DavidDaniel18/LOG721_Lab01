@@ -1,10 +1,10 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Microsoft.Extensions.Logging;
-using Domain.Services.Sending.Publishing;
-using Application.Services.Orchestrator.Sending;
-using Domain.Common.Monads;
+﻿using Microsoft.Extensions.Logging;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.Services.Orchestrator.Sending;
+using SmallTransit.Domain.Services.Sending.Publishing;
 
-namespace Application.UseCases;
+namespace SmallTransit.Application.UseCases;
 
 public sealed class PublishClient<TContract> : IDisposable
 {
@@ -29,7 +29,7 @@ public sealed class PublishClient<TContract> : IDisposable
 
         if (_tcpBridge.IsNotStarted())
         {
-            var networkStream = _networkStreamCache.Get(brokerKey);
+            var networkStream = _networkStreamCache.GetOrAdd(brokerKey);
 
             _tcpBridge.RunAsync(networkStream.GetStream(), networkStream.GetStream(), _cancellationTokenSource);
         }

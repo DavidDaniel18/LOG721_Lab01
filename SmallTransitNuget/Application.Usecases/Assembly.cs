@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Presentation.Controllers")]
-[assembly: InternalsVisibleTo("Infrastructure.TcpClient")]
-[assembly: InternalsVisibleTo("Configuration")]
-namespace Application.UseCases;
+[assembly: InternalsVisibleTo("SmallTransit.Presentation.Controllers")]
+[assembly: InternalsVisibleTo("SmallTransit.Infrastructure.TcpClient")]
+[assembly: InternalsVisibleTo("SmallTransit")]
+namespace SmallTransit.Application.UseCases;

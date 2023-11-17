@@ -1,10 +1,10 @@
-﻿using Domain.Common.Monads;
-using Domain.Services.Common;
-using Domain.Services.Sending;
-using Domain.Services.Sending.Publishing;
-using MessagePack;
+﻿using MessagePack;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Sending;
+using SmallTransit.Domain.Services.Sending.Publishing;
 
-namespace Application.Services.Orchestrator.Sending;
+namespace SmallTransit.Application.Services.Orchestrator.Sending;
 
 internal sealed class PublishingSendingOrchestrator<TContract> : SendingOrchestrator<PublishContext, SerializedPublishMessage>
 {

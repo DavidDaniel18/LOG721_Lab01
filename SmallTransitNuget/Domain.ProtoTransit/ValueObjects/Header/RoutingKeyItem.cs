@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.ValueObjects.Header;
+﻿namespace SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
 
 public sealed record RoutingKeyItem() : ProtoHeaderItem("RoutingKeyItem", StorageSizeInBytes, 3)
 {

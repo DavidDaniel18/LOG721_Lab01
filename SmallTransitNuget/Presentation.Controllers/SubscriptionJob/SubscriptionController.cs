@@ -1,14 +1,14 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Application.UseCases;
-using Application.UseCases.Interfaces;
-using Domain.Common.Monads;
-using Domain.Services.Sending.Subscribing.Dto;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Presentation.Controllers.Dto.Configurator;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.UseCases;
+using SmallTransit.Application.UseCases.Interfaces;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
+using SmallTransit.Presentation.Controllers.Dto.Configurator;
 
-namespace Presentation.Controllers.SubscriptionJob;
+namespace SmallTransit.Presentation.Controllers.SubscriptionJob;
 
 public sealed class SubscriptionController : BackgroundService
 {
@@ -45,7 +45,7 @@ public sealed class SubscriptionController : BackgroundService
 
                 var networkStreamCache = scope.ServiceProvider.GetRequiredService<INetworkStreamCache>();
 
-                var networkStream = networkStreamCache.Get(configuration.targetConfiguration.TargetKey);
+                var networkStream = networkStreamCache.GetOrAdd(configuration.targetConfiguration.TargetKey);
 
                 var subscriptionResult = await receiveClient.Subscribe(
                         networkStream,

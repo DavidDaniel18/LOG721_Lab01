@@ -1,6 +1,6 @@
-﻿using Domain.Common.Monads;
+﻿using SmallTransit.Abstractions.Monads;
 
-namespace Domain.Services.Common;
+namespace SmallTransit.Domain.Services.Common;
 
 public interface IComHandler : IDisposable
 {

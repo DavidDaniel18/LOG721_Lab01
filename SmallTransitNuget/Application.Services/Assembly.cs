@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Application.UseCases")]
-[assembly: InternalsVisibleTo("Infrastructure.TcpClient")]
-namespace Application.Services;
+[assembly: InternalsVisibleTo("SmallTransit.Application.UseCases")]
+[assembly: InternalsVisibleTo("SmallTransit.Infrastructure.TcpClient")]
+namespace SmallTransit.Application.Services;

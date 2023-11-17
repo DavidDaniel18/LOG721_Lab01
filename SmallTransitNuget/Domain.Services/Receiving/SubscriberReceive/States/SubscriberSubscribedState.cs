@@ -1,11 +1,11 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.Entities.Messages.Core;
-using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Receiving.States;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Receiving.States;
 
-namespace Domain.Services.Receiving.SubscriberReceive.States;
+namespace SmallTransit.Domain.Services.Receiving.SubscriberReceive.States;
 
 internal sealed class SubscriberSubscribedState : SubscriberReceiveState
 {

@@ -1,12 +1,12 @@
-﻿using Domain.Common.Monads;
-using Domain.Services.Common;
-using Domain.Services.Receiving.SubscriberReceive;
-using Domain.Services.Sending;
-using Domain.Services.Sending.Subscribing;
-using Domain.Services.Sending.Subscribing.Dto;
-using MessagePack;
+﻿using MessagePack;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Receiving.SubscriberReceive;
+using SmallTransit.Domain.Services.Sending;
+using SmallTransit.Domain.Services.Sending.Subscribing;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Application.Services.Orchestrator.Sending;
+namespace SmallTransit.Application.Services.Orchestrator.Sending;
 
 internal sealed class SubscribingOrchestrator : SendingOrchestrator<SubscribeContext, SubscriptionDto>
 {

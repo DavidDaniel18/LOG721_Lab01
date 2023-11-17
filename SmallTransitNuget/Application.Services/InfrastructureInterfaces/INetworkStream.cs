@@ -1,8 +1,8 @@
 ﻿using System.Net.Sockets;
 
-namespace Application.Services.InfrastructureInterfaces;
+namespace SmallTransit.Application.Services.InfrastructureInterfaces;
 
-public interface INetworkStream
+public interface INetworkStream 
 {
     string Key { get; }
 

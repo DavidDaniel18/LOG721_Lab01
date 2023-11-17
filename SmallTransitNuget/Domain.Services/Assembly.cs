@@ -1,9 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Application.Services")]
-[assembly: InternalsVisibleTo("Application.UseCases")]
-[assembly: InternalsVisibleTo("Infrastructure.TcpClient")]
-[assembly: InternalsVisibleTo("Infrastructure.Cache")]
-[assembly: InternalsVisibleTo("Configuration")]
-[assembly: InternalsVisibleTo("Presentation.Controllers")]
-namespace Domain.Services;
+[assembly: InternalsVisibleTo("SmallTransit.Application.Services")]
+[assembly: InternalsVisibleTo("SmallTransit.Application.UseCases")]
+[assembly: InternalsVisibleTo("SmallTransit.Infrastructure.TcpClient")]
+[assembly: InternalsVisibleTo("SmallTransit.Infrastructure.Cache")]
+[assembly: InternalsVisibleTo("SmallTransit.Configuration")]
+[assembly: InternalsVisibleTo("SmallTransit.Presentation.Controllers")]
+namespace SmallTransit.Domain.Services;

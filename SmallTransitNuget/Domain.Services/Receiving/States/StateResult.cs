@@ -1,8 +1,8 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Common;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Domain.Services.Receiving.States;
+namespace SmallTransit.Domain.Services.Receiving.States;
 
 internal record StateResult<TResult>(Protocol Response)
 {

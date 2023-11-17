@@ -1,6 +1,6 @@
-﻿using Domain.Common.Monads;
+﻿using SmallTransit.Abstractions.Monads;
 
-namespace Application.UseCases.Interfaces;
+namespace SmallTransit.Application.UseCases.Interfaces;
 
 public interface IReceivePoint : IDisposable
 {

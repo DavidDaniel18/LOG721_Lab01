@@ -1,11 +1,11 @@
-﻿using Application.UseCases;
-using Domain.Common.Monads;
-using Domain.Services.Receiving;
-using Microsoft.AspNetCore.Connections;
+﻿using Microsoft.AspNetCore.Connections;
 using SmallTransit.Abstractions.Broker;
 using SmallTransit.Abstractions.Interfaces;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.UseCases;
+using SmallTransit.Domain.Services.Receiving;
 
-namespace Presentation.Controllers.BrokerReceiver;
+namespace SmallTransit.Presentation.Controllers.BrokerReceiver;
 
 public sealed class BrokerReceiver : IBrokerPushEndpoint
 {

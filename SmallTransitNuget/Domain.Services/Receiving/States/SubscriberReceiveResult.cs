@@ -1,5 +1,5 @@
-﻿using Domain.ProtoTransit;
+﻿using SmallTransit.Domain.ProtoTransit;
 
-namespace Domain.Services.Receiving.States;
+namespace SmallTransit.Domain.Services.Receiving.States;
 
 internal sealed record SubscriberReceiveResult(Protocol Response) : StateResult<byte[]>(Response);

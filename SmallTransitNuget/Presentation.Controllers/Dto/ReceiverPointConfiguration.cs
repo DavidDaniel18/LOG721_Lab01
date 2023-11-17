@@ -1,4 +1,4 @@
-﻿namespace Presentation.Controllers.Dto;
+﻿namespace SmallTransit.Presentation.Controllers.Dto;
 
 public sealed class ReceiverPointConfiguration
 {

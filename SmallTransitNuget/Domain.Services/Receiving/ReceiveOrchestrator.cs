@@ -1,7 +1,7 @@
-﻿using Domain.Services.Common;
-using Domain.Services.Receiving.States;
+﻿using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Receiving.States;
 
-namespace Domain.Services.Receiving;
+namespace SmallTransit.Domain.Services.Receiving;
 
 internal abstract class ReceiveOrchestrator<TContext, TPayload, TStateResult, TResult>
     where TContext : ReceiveStateHolder<TContext, TPayload, TStateResult, TResult>

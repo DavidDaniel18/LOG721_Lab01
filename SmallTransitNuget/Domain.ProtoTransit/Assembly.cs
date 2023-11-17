@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Application.Services")]
-[assembly: InternalsVisibleTo("Domain.Services")]
-[assembly: InternalsVisibleTo("Domain.ProtoTransitTests")]
-namespace Domain.ProtoTransit;
+[assembly: InternalsVisibleTo("SmallTransit.Application.Services")]
+[assembly: InternalsVisibleTo("SmallTransit.Domain.Services")]
+[assembly: InternalsVisibleTo("SmallTransit.Domain.ProtoTransitTests")]
+namespace SmallTransit.Domain.ProtoTransit;

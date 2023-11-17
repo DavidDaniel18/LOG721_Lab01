@@ -1,12 +1,12 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.Entities.Messages.Core;
-using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Receiving.States;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Receiving.States;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Domain.Services.Receiving.BrokerReceive.States;
+namespace SmallTransit.Domain.Services.Receiving.BrokerReceive.States;
 
 internal sealed class FreeBrokerState : BrokerReceiveState
 {

@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
-using Domain.Common.Monads;
-using Domain.ProtoTransit.Entities.Header;
-using Domain.ProtoTransit.Seedwork;
-using Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit.Entities.Header;
+using SmallTransit.Domain.ProtoTransit.Seedwork;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
 
-namespace Domain.ProtoTransit;
+namespace SmallTransit.Domain.ProtoTransit;
 
 internal abstract partial class Protocol
 {

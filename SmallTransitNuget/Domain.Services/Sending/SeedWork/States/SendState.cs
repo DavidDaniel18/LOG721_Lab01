@@ -1,9 +1,9 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.Services.Common;
-using Domain.Services.Sending.SeedWork.Saga;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
 
-namespace Domain.Services.Sending.SeedWork.States;
+namespace SmallTransit.Domain.Services.Sending.SeedWork.States;
 
 internal abstract class SendState<TContext, TPayload>
 {

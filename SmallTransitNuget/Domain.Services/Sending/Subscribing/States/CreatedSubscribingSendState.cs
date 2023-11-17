@@ -1,11 +1,11 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.States;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Domain.Services.Sending.Subscribing.States;
+namespace SmallTransit.Domain.Services.Sending.Subscribing.States;
 
 internal sealed class CreatedSubscribingSendState : SubscribeSendState
 {
@@ -35,7 +35,7 @@ internal sealed class CreatedSubscribingSendState : SubscribeSendState
             protoMessage.TrySetProperty<RoutingKey>(payload.RoutingKey),
             protoMessage.TrySetProperty<PayloadType>(payload.PayloadType),
             protoMessage.TrySetProperty<QueueName>(payload.QueueName))
-            .Bind(() => Result.Success(new SagaItem<SubscribeContext, SubscriptionDto>(protoMessage,
+            .Bind<SagaItem<SubscribeContext, SubscriptionDto>>(() => Result.Success(new SagaItem<SubscribeContext, SubscriptionDto>(protoMessage,
                 OnPayloadResponse,
                 OnAck,
                 OnNack,

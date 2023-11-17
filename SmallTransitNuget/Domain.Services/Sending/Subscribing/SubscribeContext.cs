@@ -1,9 +1,9 @@
-﻿using Domain.Services.Sending.SeedWork.StateHolder;
-using Domain.Services.Sending.SeedWork.States;
-using Domain.Services.Sending.Subscribing.Dto;
-using Domain.Services.Sending.Subscribing.States;
+﻿using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
+using SmallTransit.Domain.Services.Sending.Subscribing.States;
 
-namespace Domain.Services.Sending.Subscribing;
+namespace SmallTransit.Domain.Services.Sending.Subscribing;
 
 internal sealed class SubscribeContext : SendingStateHolder<SubscribeContext, SubscriptionDto>
 {

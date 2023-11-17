@@ -1,16 +1,17 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit.Entities.Messages.Core;
-using Domain.ProtoTransit.Exceptions;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.Services.Common;
-using Domain.Services.Sending;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.Send;
-using MessagePack;
-using Domain.ProtoTransit.ValueObjects.Properties;
+﻿using MessagePack;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
+using SmallTransit.Domain.ProtoTransit.Extensions;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Sending;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.Send;
 
-namespace Application.Services.Orchestrator.Sending;
+namespace SmallTransit.Application.Services.Orchestrator.Sending;
 
 internal sealed class SendOrchestrator<TContract, TResult> : SendingOrchestrator<SendingContext, SerializedSendMessage>
 {
@@ -30,7 +31,7 @@ internal sealed class SendOrchestrator<TContract, TResult> : SendingOrchestrator
             var options = MessagePackSerializerOptions.Standard.WithResolver(MessagePack.Resolvers.ContractlessStandardResolver.Instance);
 
             var senderId = MessagePackSerializer.Serialize(sendingWrapper.SenderId);
-            var serializedPayloadType = MessagePackSerializer.Serialize(typeof(TContract).Name);
+            var serializedPayloadType = MessagePackSerializer.Serialize(typeof(TContract).GetTypeName());
             var serializedPayload = MessagePackSerializer.Serialize(sendingWrapper.Payload, options);
 
             return Result.Success(new SerializedSendMessage(senderId, serializedPayloadType, serializedPayload));
@@ -45,18 +46,22 @@ internal sealed class SendOrchestrator<TContract, TResult> : SendingOrchestrator
     {
         if (await PrimeConnection(stateParameter) is { } primingResult && primingResult.IsFailure()) return Result.FromFailure<TResult>(primingResult);
 
-        return await Context.BuildSaga(stateParameter).BindAsync(WireAndGetResponse);
+        return await Context.BuildSaga(stateParameter).BindAsync<Saga<SendingContext, SerializedSendMessage>, TResult>(WireAndGetResponse);
     }
 
     private async Task<Result<TResult>> WireAndGetResponse(ISaga<SerializedSendMessage> saga)
     {
         if (saga.GetMessage() is { } message)
         {
-            var result = await Serialize(message).BindAsync(ComHandler.SendMessage).BindAsync(async () => await WaitForValidResponse(saga));
+            var result = await Serialize(message).BindAsync(ComHandler.SendMessage);
 
             if (result.IsFailure()) return Result.FromFailure<TResult>(result);
+
+            var resultValue = await WaitForValidResponse(saga);
+
+            if (resultValue.IsFailure()) return Result.FromFailure<TResult>(resultValue);
             
-            saga.Ack();
+            return resultValue;
         }
 
         return Result.Failure<TResult>("Saga is not in a valid state");
@@ -78,7 +83,7 @@ internal sealed class SendOrchestrator<TContract, TResult> : SendingOrchestrator
                 {
                     protocolMessage = messageResult.Content!.Protocol;
 
-                    return Result.Success(messageResult.Content!.Reminder);
+                    return Result.Success<byte[]>(messageResult.Content!.Reminder);
                 }
 
                 return Result.FromFailure<byte[]>(messageResult);
@@ -95,7 +100,11 @@ internal sealed class SendOrchestrator<TContract, TResult> : SendingOrchestrator
 
             return protocolMessage switch
             {
-                PayloadResponse payloadResponse => Deserialize(payloadResponse),
+                PayloadResponse payloadResponse => Deserialize(payloadResponse).Bind(response =>
+                {
+                    saga.PayloadResponse();
+                    return response;
+                }),
                 Ack => await HandleFailure(saga.Ack, saga),
                 Nack => await HandleFailure(saga.Failure, saga),
                 Close => await HandleFailure(saga.ConnectionClosed, saga),
@@ -119,7 +128,7 @@ internal sealed class SendOrchestrator<TContract, TResult> : SendingOrchestrator
 
         var typeName = MessagePackSerializer.Deserialize<string>(payloadTypeBytes.Content!.Bytes, options);
 
-        if (typeName != typeof(TResult).Name) return Result.Failure<TResult>("Payload type does not match");
+        if (typeName != typeof(TResult).GetTypeName()) return Result.Failure<TResult>("Payload type does not match");
 
         var deserializedPayload = MessagePackSerializer.Deserialize<TResult>(payloadBytes.Content!.Bytes, options);
 

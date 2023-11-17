@@ -1,9 +1,9 @@
-﻿using Domain.Common.Monads;
-using Domain.Services.Common;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.States;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
 
-namespace Domain.Services.Sending.SeedWork.StateHolder;
+namespace SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
 
 internal abstract class SendingStateHolder<TContext, TPayload> : Context where TContext : SendingStateHolder<TContext, TPayload>
 {

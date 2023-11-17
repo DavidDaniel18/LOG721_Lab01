@@ -1,11 +1,11 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Application.Services.Orchestrator.Receiving;
-using Application.UseCases.Interfaces;
-using Domain.Common.Monads;
-using Domain.Services.Receiving;
-using Domain.Services.Receiving.ClientReceive;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.Services.Orchestrator.Receiving;
+using SmallTransit.Application.UseCases.Interfaces;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Domain.Services.Receiving.ClientReceive;
 
-namespace Application.UseCases;
+namespace SmallTransit.Application.UseCases;
 
 public sealed class ReceivePoint : IReceivePoint
 {

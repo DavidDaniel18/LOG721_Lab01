@@ -1,8 +1,8 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Domain.Common.Monads;
-using Infrastructure.TcpClient.L4LinkBuffers;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Infrastructure.TcpClient.L4LinkBuffers;
 
-namespace Infrastructure.TcpClient;
+namespace SmallTransit.Infrastructure.TcpClient;
 
 public sealed class TcpBridge : ITcpBridge
 {
@@ -97,8 +97,6 @@ public sealed class TcpBridge : ITcpBridge
 
     public void Dispose()
     {
-        _readTask.Dispose();
-        _writeTask.Dispose();
         _cancellationTokenSource?.Dispose();
     }
 }

@@ -2,7 +2,7 @@
 using SmallTransit.Abstractions.Configurator;
 using SmallTransit.Abstractions.Interfaces;
 
-namespace Configuration.Options;
+namespace SmallTransit.Options;
 
 internal sealed class BrokerOptions : ISBrokerConfigurator
 {

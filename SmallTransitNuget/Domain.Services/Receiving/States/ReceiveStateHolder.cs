@@ -1,6 +1,6 @@
-﻿using Domain.Common.Monads;
+﻿using SmallTransit.Abstractions.Monads;
 
-namespace Domain.Services.Receiving.States;
+namespace SmallTransit.Domain.Services.Receiving.States;
 
 internal abstract class ReceiveStateHolder<TContext, TPayload, TStateResult, TResult> 
     where TContext : ReceiveStateHolder<TContext, TPayload, TStateResult, TResult>

@@ -1,11 +1,11 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit.Entities.Header;
-using Domain.ProtoTransit.Exceptions;
-using Domain.ProtoTransit.Extensions;
-using Domain.ProtoTransit.Seedwork;
-using Domain.ProtoTransit.ValueObjects.Header;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit.Entities.Header;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
+using SmallTransit.Domain.ProtoTransit.Extensions;
+using SmallTransit.Domain.ProtoTransit.Seedwork;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
 
-namespace Domain.ProtoTransit;
+namespace SmallTransit.Domain.ProtoTransit;
 
 internal abstract partial class Protocol
 {
@@ -51,6 +51,15 @@ internal abstract partial class Protocol
 
         return Result.Success((this, 0));
 
-        byte[] Parse(MessagePortion messagePortion) => message[messagePortion.BeginAtIndex..(messagePortion.Length + messagePortion.BeginAtIndex)];
+        byte[] Parse(MessagePortion messagePortion)
+        {
+            if (messagePortion.Length.Equals(0))
+                throw new Exception("Message portion length is 0");
+
+            if (messagePortion.BeginAtIndex + messagePortion.Length > message.Length)
+                throw new Exception("Message portion length is greater than message length");
+
+            return message[messagePortion.BeginAtIndex..(messagePortion.Length + messagePortion.BeginAtIndex)];
+        }
     }
 }

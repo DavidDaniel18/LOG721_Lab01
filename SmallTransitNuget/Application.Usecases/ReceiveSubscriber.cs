@@ -1,14 +1,14 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Application.Services.Orchestrator.Receiving;
-using Application.Services.Orchestrator.Sending;
-using Application.UseCases.Interfaces;
-using Domain.Common.Monads;
-using Domain.Services.Receiving;
-using Domain.Services.Receiving.SubscriberReceive;
-using Domain.Services.Sending.Subscribing;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.Services.Orchestrator.Receiving;
+using SmallTransit.Application.Services.Orchestrator.Sending;
+using SmallTransit.Application.UseCases.Interfaces;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Domain.Services.Receiving.SubscriberReceive;
+using SmallTransit.Domain.Services.Sending.Subscribing;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Application.UseCases;
+namespace SmallTransit.Application.UseCases;
 
 public sealed class ReceiveSubscriber<TContract> : IReceiveSubscriberClient
 {

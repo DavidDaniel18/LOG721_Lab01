@@ -1,7 +1,7 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Sending.SeedWork.States;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
 
-namespace Domain.Services.Sending.Publishing.States;
+namespace SmallTransit.Domain.Services.Sending.Publishing.States;
 
 internal sealed class CreatedPublishingSendState : PublishingSendState
 {

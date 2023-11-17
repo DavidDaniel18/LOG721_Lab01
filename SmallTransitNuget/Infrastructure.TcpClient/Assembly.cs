@@ -1,4 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Configuration")]
-namespace Infrastructure.TcpClient;
+[assembly: InternalsVisibleTo("SmallTransit")]
+namespace SmallTransit.Infrastructure.TcpClient;

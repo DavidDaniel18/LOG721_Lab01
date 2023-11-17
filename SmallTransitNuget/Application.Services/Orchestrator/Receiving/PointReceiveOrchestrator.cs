@@ -1,18 +1,15 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit.Exceptions;
-using Domain.ProtoTransit;
-using Domain.Services.Common;
-using Domain.Services.Receiving.States;
-using Domain.Services.Receiving;
-using Domain.Services.Receiving.ClientReceive;
-using Domain.Services.Sending.Subscribing.Dto;
-using MessagePack;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Sending.Publishing;
-using System.Diagnostics.Contracts;
-using System.Reflection.Metadata.Ecma335;
+﻿using MessagePack;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
+using SmallTransit.Domain.ProtoTransit.Extensions;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Domain.Services.Receiving.ClientReceive;
+using SmallTransit.Domain.Services.Receiving.States;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Application.Services.Orchestrator.Receiving;
+namespace SmallTransit.Application.Services.Orchestrator.Receiving;
 
 internal sealed class PointReceiveOrchestrator : ReceiveOrchestrator<ClientReceiveContext, Protocol, ClientReceiveResult, ReceiveSendByteWrapper>
 {
@@ -73,8 +70,7 @@ internal sealed class PointReceiveOrchestrator : ReceiveOrchestrator<ClientRecei
     private async Task<Result<Protocol>> ReceiverHandleMessage(ClientReceiveResult clientReceiveResult)
     {
         if (clientReceiveResult.Result is { } payloadBytes)
-        {
-            return await DeserializeAndSendToController(payloadBytes)
+        { return await DeserializeAndSendToController(payloadBytes)
             .BindAsync(tuple => Context.GetPayloadResponse(tuple.payload, tuple.payloadType));
         }
 
@@ -94,7 +90,7 @@ internal sealed class PointReceiveOrchestrator : ReceiveOrchestrator<ClientRecei
 
                     var serializedPayload = MessagePackSerializer.Serialize(receiveWrapper.ResultType, result, options);
 
-                    var serializedPayloadType = MessagePackSerializer.Serialize(receiveWrapper.ResultType.Name, options);
+                    var serializedPayloadType = MessagePackSerializer.Serialize(receiveWrapper.ResultType.GetTypeName(), options);
 
                     return Result.Success((serializedPayload, serializedPayloadType));
                 }
@@ -115,11 +111,11 @@ internal sealed class PointReceiveOrchestrator : ReceiveOrchestrator<ClientRecei
 
             var (contract, returnType) = _controllerDelegate.GetContractType(typeName);
 
-            var payloadObject = MessagePackSerializer.Deserialize(contract, payload.SerializedPayloadType, options);
+            var payloadObject = MessagePackSerializer.Deserialize(contract, payload.SerializedPayload, options);
 
             var senderId = MessagePackSerializer.Deserialize<string>(payload.SenderId, options)!;
 
-            return Result.Success(new ReceiveWrapper(senderId, payload, contract, returnType));
+            return Result.Success(new ReceiveWrapper(senderId, payloadObject, contract, returnType));
         }
         catch (Exception e)
         {

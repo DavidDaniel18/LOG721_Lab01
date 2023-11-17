@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.Entities.Messages.Core;
+﻿namespace SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
 
 internal sealed class Close : Protocol
 {

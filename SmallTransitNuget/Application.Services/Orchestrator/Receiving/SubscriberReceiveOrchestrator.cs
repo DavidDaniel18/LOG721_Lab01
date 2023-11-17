@@ -1,13 +1,13 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.Exceptions;
-using Domain.Services.Common;
-using Domain.Services.Receiving;
-using Domain.Services.Receiving.States;
-using Domain.Services.Receiving.SubscriberReceive;
-using MessagePack;
+﻿using MessagePack;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Domain.Services.Receiving.States;
+using SmallTransit.Domain.Services.Receiving.SubscriberReceive;
 
-namespace Application.Services.Orchestrator.Receiving;
+namespace SmallTransit.Application.Services.Orchestrator.Receiving;
 
 internal sealed class SubscriberReceiveOrchestrator<TContract> : ReceiveOrchestrator<SubscriberReceiveContext, Protocol, SubscriberReceiveResult, byte[]>
 {
@@ -44,7 +44,7 @@ internal sealed class SubscriberReceiveOrchestrator<TContract> : ReceiveOrchestr
 
                 var clientReceiveResult = Context.Handle(parsingResult.Content!.Protocol);
 
-                var result = await clientReceiveResult.BindAsync(BrokerHandleMessage).BindAsync(async () => await AnswerClient(clientReceiveResult.Content!));
+                var result = await BindMonadExtensions.BindAsync((Task<Result>)clientReceiveResult.BindAsync(BrokerHandleMessage), (Func<Task<Result>>)(async () => await AnswerClient(clientReceiveResult.Content!)));
 
                 if (result.IsFailure()) return Result.FromFailure(result);
             }

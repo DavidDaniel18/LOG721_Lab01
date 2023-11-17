@@ -1,8 +1,8 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Receiving.States;
-using Domain.Services.Receiving.SubscriberReceive.States;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Receiving.States;
+using SmallTransit.Domain.Services.Receiving.SubscriberReceive.States;
 
-namespace Domain.Services.Receiving.SubscriberReceive;
+namespace SmallTransit.Domain.Services.Receiving.SubscriberReceive;
 
 internal sealed class SubscriberReceiveContext : ReceiveStateHolder<SubscriberReceiveContext, Protocol, SubscriberReceiveResult, byte[]>
 {

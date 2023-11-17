@@ -1,7 +1,7 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
 
-namespace Domain.Services.Receiving.States;
+namespace SmallTransit.Domain.Services.Receiving.States;
 
 internal sealed class BrokerClosedState<TContext, TResult, TReceive> : ReceiveState<TContext, Protocol, TResult, TReceive> 
     where TContext : ReceiveStateHolder<TContext, Protocol, TResult, TReceive>

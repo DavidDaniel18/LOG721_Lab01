@@ -1,7 +1,7 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Sending.SeedWork.StateHolder;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
 
-namespace Domain.Services.Sending.SeedWork.States;
+namespace SmallTransit.Domain.Services.Sending.SeedWork.States;
 
 internal sealed class ClosingSendState<TContext, TPayload> : SendState<TContext, TPayload> where TContext : SendingStateHolder<TContext, TPayload>
 {

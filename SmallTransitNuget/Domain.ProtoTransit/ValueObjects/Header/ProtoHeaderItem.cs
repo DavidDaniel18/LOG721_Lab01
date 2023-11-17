@@ -1,6 +1,6 @@
 ﻿using System.Reflection.Emit;
 
-namespace Domain.ProtoTransit.ValueObjects.Header;
+namespace SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
 
 public abstract record ProtoHeaderItem(string Name, int HeaderLength, int Order = int.MaxValue)
 {

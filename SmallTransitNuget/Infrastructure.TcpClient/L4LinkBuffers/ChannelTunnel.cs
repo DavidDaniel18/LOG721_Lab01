@@ -1,7 +1,7 @@
 ﻿using System.Threading.Channels;
-using Domain.Common.Monads;
+using SmallTransit.Abstractions.Monads;
 
-namespace Infrastructure.TcpClient.L4LinkBuffers;
+namespace SmallTransit.Infrastructure.TcpClient.L4LinkBuffers;
 
 internal sealed class ChannelTunnel
 {

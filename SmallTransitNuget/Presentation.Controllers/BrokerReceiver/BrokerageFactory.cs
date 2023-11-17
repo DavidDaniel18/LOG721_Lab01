@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Broker;
 
-namespace Presentation.Controllers.BrokerReceiver;
+namespace SmallTransit.Presentation.Controllers.BrokerReceiver;
 
 public sealed class BrokerageFactory : BrokerConnectionHandler
 {

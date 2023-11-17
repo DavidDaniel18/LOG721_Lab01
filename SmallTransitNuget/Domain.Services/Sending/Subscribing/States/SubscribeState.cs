@@ -1,7 +1,7 @@
-﻿using Domain.Services.Sending.SeedWork.States;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Domain.Services.Sending.SeedWork.States;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Domain.Services.Sending.Subscribing.States;
+namespace SmallTransit.Domain.Services.Sending.Subscribing.States;
 
 internal abstract class SubscribeSendState : SendState<SubscribeContext, SubscriptionDto>
 {

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.TcpClient.L4LinkBuffers;
+﻿namespace SmallTransit.Infrastructure.TcpClient.L4LinkBuffers;
 
 internal interface ITunnel : IDisposable
 {

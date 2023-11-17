@@ -1,8 +1,7 @@
-﻿using Presentation.Controllers.Client;
-using SmallTransit.Abstractions.Configurator;
+﻿using SmallTransit.Abstractions.Configurator;
 using SmallTransit.Abstractions.Interfaces;
 
-namespace Presentation.Controllers.Dto.Configurator;
+namespace SmallTransit.Presentation.Controllers.Dto.Configurator;
 
 public sealed class Configurator : IConfigurator
 {
@@ -11,6 +10,8 @@ public sealed class Configurator : IConfigurator
     public readonly List<TargetConfiguration> TargetPointConfigurators = new();
 
     public readonly List<ReceiverPointConfiguration> ReceiverPointConfigurators = new();
+
+    public int ExposedPortPoint { get; set; }
 
     public void AddQueueConfigurator(Action<IQueueConfigurator> queueConfigurator)
     {

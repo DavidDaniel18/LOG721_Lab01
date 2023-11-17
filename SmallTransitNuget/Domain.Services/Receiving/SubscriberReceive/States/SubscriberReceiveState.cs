@@ -1,7 +1,7 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Receiving.States;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Receiving.States;
 
-namespace Domain.Services.Receiving.SubscriberReceive.States;
+namespace SmallTransit.Domain.Services.Receiving.SubscriberReceive.States;
 
 internal abstract class SubscriberReceiveState : ReceiveState<SubscriberReceiveContext, Protocol, SubscriberReceiveResult, byte[]>
 {

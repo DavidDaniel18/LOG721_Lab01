@@ -1,9 +1,9 @@
-﻿using Domain.Common.Monads;
-using Domain.Services.Common;
-using Domain.Services.Sending;
-using Domain.Services.Sending.Push;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Sending;
+using SmallTransit.Domain.Services.Sending.Push;
 
-namespace Application.Services.Orchestrator.Sending;
+namespace SmallTransit.Application.Services.Orchestrator.Sending;
 
 internal sealed class PushingSendingOrchestrator : SendingOrchestrator<PushContext, byte[]>
 {

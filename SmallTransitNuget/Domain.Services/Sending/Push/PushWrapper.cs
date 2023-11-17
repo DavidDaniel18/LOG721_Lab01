@@ -1,3 +1,3 @@
-﻿namespace Domain.Services.Sending.Push;
+﻿namespace SmallTransit.Domain.Services.Sending.Push;
 
 public record PushWrapper(byte[] payload);

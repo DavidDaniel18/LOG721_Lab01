@@ -1,7 +1,7 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Receiving.States;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Receiving.States;
 
-namespace Domain.Services.Receiving.BrokerReceive.States;
+namespace SmallTransit.Domain.Services.Receiving.BrokerReceive.States;
 
 internal abstract class BrokerReceiveState : ReceiveState<BrokerReceiveContext, Protocol, BrokerReceiveResult, ReceivePublishByteWrapper>
 {

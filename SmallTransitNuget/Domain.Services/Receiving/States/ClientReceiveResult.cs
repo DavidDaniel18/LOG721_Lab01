@@ -1,6 +1,6 @@
-﻿using Domain.ProtoTransit;
-using Domain.Services.Receiving.ClientReceive;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Receiving.ClientReceive;
 
-namespace Domain.Services.Receiving.States;
+namespace SmallTransit.Domain.Services.Receiving.States;
 
 internal sealed record ClientReceiveResult(Protocol Response) : StateResult<ReceiveSendByteWrapper>(Response);

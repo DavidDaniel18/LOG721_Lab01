@@ -1,4 +1,4 @@
-﻿namespace Domain.Services.Sending.Push.Exceptions;
+﻿namespace SmallTransit.Domain.Services.Sending.Push.Exceptions;
 
 internal sealed class PushInternalErrorException : Exception
 {

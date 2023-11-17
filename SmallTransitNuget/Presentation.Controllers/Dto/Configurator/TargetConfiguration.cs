@@ -1,6 +1,6 @@
 ﻿using SmallTransit.Abstractions.Configurator;
 
-namespace Presentation.Controllers.Dto.Configurator;
+namespace SmallTransit.Presentation.Controllers.Dto.Configurator;
 
 public sealed class TargetConfiguration : ITargetConfiguration
 {

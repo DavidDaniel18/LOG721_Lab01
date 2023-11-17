@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.Exceptions;
+﻿namespace SmallTransit.Domain.ProtoTransit.Exceptions;
 
 internal sealed class MessageIncompleteException : Exception
 {

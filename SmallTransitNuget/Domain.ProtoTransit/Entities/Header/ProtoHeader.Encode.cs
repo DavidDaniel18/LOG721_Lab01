@@ -1,7 +1,7 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit.ValueObjects.Header;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
 
-namespace Domain.ProtoTransit.Entities.Header;
+namespace SmallTransit.Domain.ProtoTransit.Entities.Header;
 
 internal partial class ProtoHeader
 {

@@ -1,6 +1,6 @@
-﻿using Domain.ProtoTransit.ValueObjects.Properties;
+﻿using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
 
-namespace Domain.ProtoTransit.Entities.Messages.Data;
+namespace SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
 
 internal sealed class Send : Protocol
 {

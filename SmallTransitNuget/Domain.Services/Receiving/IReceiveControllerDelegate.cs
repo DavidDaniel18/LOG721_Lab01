@@ -1,6 +1,6 @@
-﻿using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Domain.Services.Receiving;
+namespace SmallTransit.Domain.Services.Receiving;
 
 public interface IReceiveControllerDelegate
 {

@@ -1,12 +1,13 @@
-﻿using Domain.ProtoTransit;
+﻿using SmallTransit.Domain.ProtoTransit;
 
-namespace Domain.Services.Sending.SeedWork.Saga;
+namespace SmallTransit.Domain.Services.Sending.SeedWork.Saga;
 
 internal interface ISaga<out TMessage>
 {
     TMessage GetOriginalPayload();
     Protocol? GetMessage();
     void Ack();
+    void PayloadResponse();
     void Failure();
     void InternalError();
     void ConnectionClosed();

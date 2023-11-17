@@ -1,13 +1,13 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.Entities.Messages.Core;
-using Domain.ProtoTransit.Exceptions;
-using Domain.Services.Common;
-using Domain.Services.Common.Exceptions;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.StateHolder;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Common.Exceptions;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.StateHolder;
 
-namespace Domain.Services.Sending;
+namespace SmallTransit.Domain.Services.Sending;
 
 internal abstract class SendingOrchestrator<TContext, TStateParameter> where TContext : SendingStateHolder<TContext, TStateParameter>
 {
@@ -69,7 +69,7 @@ internal abstract class SendingOrchestrator<TContext, TStateParameter> where TCo
                 {
                     protocolMessage = messageResult.Content!.Protocol;
 
-                    return Result.Success(messageResult.Content!.Reminder);
+                    return Result.Success<byte[]>(messageResult.Content!.Reminder);
                 }
 
                 return Result.FromFailure<byte[]>(messageResult);

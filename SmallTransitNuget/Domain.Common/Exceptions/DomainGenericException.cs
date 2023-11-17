@@ -1,4 +1,4 @@
-﻿namespace Domain.Common.Exceptions;
+﻿namespace SmallTransit.Domain.Common.Exceptions;
 
 public sealed class DomainGenericException : Exception
 {

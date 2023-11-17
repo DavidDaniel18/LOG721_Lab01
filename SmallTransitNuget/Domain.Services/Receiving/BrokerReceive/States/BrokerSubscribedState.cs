@@ -1,8 +1,8 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.Services.Receiving.States;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Receiving.States;
 
-namespace Domain.Services.Receiving.BrokerReceive.States;
+namespace SmallTransit.Domain.Services.Receiving.BrokerReceive.States;
 
 internal sealed class BrokerSubscribedState : BrokerReceiveState
 {

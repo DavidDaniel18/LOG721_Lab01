@@ -1,14 +1,14 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Application.Services.Orchestrator.Receiving;
-using Application.Services.Orchestrator.Sending;
-using Domain.Common.Monads;
-using Domain.Services.Receiving;
-using Domain.Services.Receiving.BrokerReceive;
-using Domain.Services.Sending.Push;
-using Domain.Services.Sending.Subscribing.Dto;
-using SmallTransit.Abstractions.Broker;
+﻿using SmallTransit.Abstractions.Broker;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.Services.Orchestrator.Receiving;
+using SmallTransit.Application.Services.Orchestrator.Sending;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Domain.Services.Receiving.BrokerReceive;
+using SmallTransit.Domain.Services.Sending.Push;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Application.UseCases;
+namespace SmallTransit.Application.UseCases;
 
 public sealed class Broker : IDisposable
 {

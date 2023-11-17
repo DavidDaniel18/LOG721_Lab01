@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
-using Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
 
-namespace Infrastructure.TcpClient;
+namespace SmallTransit.Infrastructure.TcpClient;
 
 internal sealed class NetworkClient : INetworkStream
 {

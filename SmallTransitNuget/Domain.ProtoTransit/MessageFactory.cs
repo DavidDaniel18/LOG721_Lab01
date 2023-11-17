@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit;
+﻿namespace SmallTransit.Domain.ProtoTransit;
 
 public static class MessageFactory
 {

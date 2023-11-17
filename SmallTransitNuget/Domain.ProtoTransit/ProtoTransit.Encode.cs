@@ -1,6 +1,6 @@
-﻿using Domain.Common.Monads;
+﻿using SmallTransit.Abstractions.Monads;
 
-namespace Domain.ProtoTransit;
+namespace SmallTransit.Domain.ProtoTransit;
 
 internal abstract partial class Protocol
 {

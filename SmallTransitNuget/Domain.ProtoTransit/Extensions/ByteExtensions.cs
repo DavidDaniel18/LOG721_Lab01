@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.Extensions;
+﻿namespace SmallTransit.Domain.ProtoTransit.Extensions;
 
 internal static class ByteExtensions
 {
@@ -33,12 +33,31 @@ internal static class ByteExtensions
 
     internal static int FromBytesToInt(this byte[] value)
     {
+        if (value.Length > 4) throw new Exception("Value is too big to be converted to int");
+
+        if (value.Length >1)
+        {
+            var index = value.Length-1;
+            var zeros = 0;
+            while (value[index].Equals(0))
+            {
+                index--;
+                zeros++;
+            }
+
+            Array.Reverse(value, 0, value.Length-zeros);
+        }
+
         byte[] paddedValue = new byte[4];
 
+        // Copy the incoming big-endian bytes into the rightmost part of the array
         Array.Copy(value, 0, paddedValue, 0, value.Length);
 
+        // Convert the byte array to an int
         return BitConverter.ToInt32(paddedValue, 0);
     }
+
+
 
     private static void ToBigEndian(byte[] bytes)
     {

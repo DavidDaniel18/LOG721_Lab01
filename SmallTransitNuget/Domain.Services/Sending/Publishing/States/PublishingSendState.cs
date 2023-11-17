@@ -1,6 +1,6 @@
-﻿using Domain.Services.Sending.SeedWork.States;
+﻿using SmallTransit.Domain.Services.Sending.SeedWork.States;
 
-namespace Domain.Services.Sending.Publishing.States;
+namespace SmallTransit.Domain.Services.Sending.Publishing.States;
 
 internal abstract class PublishingSendState : SendState<PublishContext, SerializedPublishMessage>
 {

@@ -1,4 +1,4 @@
-﻿namespace Domain.Services.Common;
+﻿namespace SmallTransit.Domain.Services.Common;
 
 internal abstract class Context
 {

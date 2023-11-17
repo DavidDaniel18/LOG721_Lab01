@@ -1,6 +1,6 @@
-﻿using Domain.Services.Common;
+﻿using SmallTransit.Domain.Services.Common;
 
-namespace Application.Services.InfrastructureInterfaces;
+namespace SmallTransit.Application.Services.InfrastructureInterfaces;
 
 public interface ITcpBridge : IComHandler
 {

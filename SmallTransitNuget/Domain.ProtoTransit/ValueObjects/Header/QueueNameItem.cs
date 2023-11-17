@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.ValueObjects.Header;
+﻿namespace SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
 
 public sealed record QueueNameItem() : ProtoHeaderItem("QueueNameItem", StorageSizeInBytes, 5)
 {

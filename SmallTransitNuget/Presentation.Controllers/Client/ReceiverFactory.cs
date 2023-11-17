@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Receiver;
 
-namespace Presentation.Controllers.Client;
+namespace SmallTransit.Presentation.Controllers.Client;
 
 public sealed class ReceiverFactory : ReceiverConnectionHandler
 {

@@ -1,10 +1,10 @@
-﻿using Domain.ProtoTransit;
-using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Receiving.ClientReceive.States;
-using Domain.Services.Receiving.States;
+﻿using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Receiving.ClientReceive.States;
+using SmallTransit.Domain.Services.Receiving.States;
 
-namespace Domain.Services.Receiving.ClientReceive;
+namespace SmallTransit.Domain.Services.Receiving.ClientReceive;
 
 internal sealed class ClientReceiveContext : ReceiveStateHolder<ClientReceiveContext, Protocol, ClientReceiveResult, ReceiveSendByteWrapper>
 {

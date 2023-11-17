@@ -1,24 +1,26 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Application.UseCases;
-using Configuration.Dispatcher;
-using Configuration.Options;
-using Domain.Services.Common;
-using Domain.Services.Receiving;
-using Infrastructure.TcpClient;
+﻿using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Presentation.Controllers.BrokerReceiver;
-using Presentation.Controllers.Client;
-using Presentation.Controllers.Dto.Configurator;
-using Presentation.Controllers.Publish;
-using Presentation.Controllers.SubscriptionJob;
 using SmallTransit.Abstractions.Broker;
 using SmallTransit.Abstractions.Configurator;
 using SmallTransit.Abstractions.Interfaces;
 using SmallTransit.Abstractions.Receiver;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
+using SmallTransit.Application.UseCases;
+using SmallTransit.Dispatcher;
+using SmallTransit.Domain.Services.Common;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Infrastructure.TcpClient;
+using SmallTransit.Options;
+using SmallTransit.Presentation.Controllers.BrokerReceiver;
+using SmallTransit.Presentation.Controllers.Client;
+using SmallTransit.Presentation.Controllers.Dto.Configurator;
+using SmallTransit.Presentation.Controllers.Publish;
+using SmallTransit.Presentation.Controllers.Send;
+using SmallTransit.Presentation.Controllers.SubscriptionJob;
 
-namespace Configuration;
+namespace SmallTransit;
 
 public static class ServiceRegistration
 {
@@ -45,26 +47,16 @@ public static class ServiceRegistration
 
         LoadPointConfigurations(collection, configuration);
 
-        collection.AddSingleton(typeof(INetworkStreamCache), services =>
+        collection.AddTransient(typeof(INetworkStreamCache), services =>
         {
-            var cache = new NetworkStreamCache();
+            var factory = services.GetRequiredService<ClientFactory>();
 
-            foreach (var targetConfiguration in targetConfigurations)
-            {
-                var factory = services.GetRequiredService<ClientFactory>();
+            var collection = targetConfigurations
+                .ConvertAll(target => new KeyValuePair<string, ITargetConfiguration>(target.TargetKey, target));
 
-                var clientFactory = factory.RetryCreateClient(
-                    targetConfiguration.Host, 
-                    targetConfiguration.Port, 
-                    targetConfiguration.TargetKey);
-
-                clientFactory.ThrowIfException();
-
-                cache.Add(clientFactory.Content!);
-            }
+            var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(collection), factory);
 
             return cache;
-
         });
 
         collection.AddSingleton(_ => configuration);
@@ -76,11 +68,26 @@ public static class ServiceRegistration
     {
         if (configuration.ReceiverPointConfigurators.Any())
         {
+            collection.Configure<KestrelServerOptions>(options =>
+            {
+                options.ListenAnyIP(configuration.ExposedPortPoint, listenOptions =>
+                {
+                    listenOptions.UseConnectionHandler<ReceiverFactory>();
+                });
+
+                options.ListenAnyIP(80);
+            });
+
             collection.AddSingleton<ReceiverConnectionHandler, ReceiverFactory>();
 
             foreach (var receiverConfiguration in configuration.ReceiverPointConfigurators)
             {
                 collection.AddScoped(receiverConfiguration.IConsumerInterface, receiverConfiguration.ReceivingController);
+
+                var genericISender = MakeGeneric((receiverConfiguration.ContractType, receiverConfiguration.ResultType), typeof(ISender<,>));
+                var genericSender = MakeGeneric((receiverConfiguration.ContractType, receiverConfiguration.ResultType), typeof(Sender<,>));
+
+                collection.AddScoped(genericISender, genericSender);
             }
         }
     }
@@ -150,11 +157,19 @@ public static class ServiceRegistration
     private static void Presentation(IServiceCollection collection)
     {
         collection.AddScoped(typeof(IPublisher<>), typeof(Publisher<>));
+        collection.AddScoped(typeof(Receiver));
     }
 
     private static void Application(IServiceCollection collection)
     {
         collection.AddScoped(typeof(PublishClient<>));
         collection.AddScoped(typeof(ReceiveSubscriber<>));
+        collection.AddScoped(typeof(SendClient<,>));
+        collection.AddScoped(typeof(ReceivePoint));
+    }
+
+    private static Type MakeGeneric((Type TContract, Type TResult) types, Type genericTypeDefinition)
+    {
+        return genericTypeDefinition.MakeGenericType(types.TContract, types.TResult);
     }
 }

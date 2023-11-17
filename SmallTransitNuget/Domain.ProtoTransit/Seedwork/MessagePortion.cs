@@ -1,4 +1,4 @@
-﻿namespace Domain.ProtoTransit.Seedwork;
+﻿namespace SmallTransit.Domain.ProtoTransit.Seedwork;
 
 internal struct MessagePortion
 {

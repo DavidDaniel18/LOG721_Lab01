@@ -1,10 +1,10 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.States;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
 
-namespace Domain.Services.Sending.Publishing.States;
+namespace SmallTransit.Domain.Services.Sending.Publishing.States;
 
 internal sealed class OpenedPublishingSendState : PublishingSendState
 {

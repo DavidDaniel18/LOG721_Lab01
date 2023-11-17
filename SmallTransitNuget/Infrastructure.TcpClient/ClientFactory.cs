@@ -1,8 +1,8 @@
-﻿using Application.Services.InfrastructureInterfaces;
-using Domain.Common.Monads;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Application.Services.InfrastructureInterfaces;
 
-namespace Infrastructure.TcpClient;
+namespace SmallTransit.Infrastructure.TcpClient;
 
 public sealed class ClientFactory
 {

@@ -1,10 +1,10 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.States;
-using Domain.Services.Sending.Subscribing.Dto;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
 
-namespace Domain.Services.Sending.Subscribing.States;
+namespace SmallTransit.Domain.Services.Sending.Subscribing.States;
 
 internal sealed class SubscribedSendState : SubscribeSendState
 {

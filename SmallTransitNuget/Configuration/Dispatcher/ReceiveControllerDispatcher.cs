@@ -1,11 +1,12 @@
-﻿using Domain.Services.Receiving;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SmallTransit.Abstractions.Interfaces;
 using SmallTransit.Abstractions.Receiver;
-using Domain.Services.Sending.Subscribing.Dto;
-using Presentation.Controllers.Dto.Configurator;
+using SmallTransit.Domain.ProtoTransit.Extensions;
+using SmallTransit.Domain.Services.Receiving;
+using SmallTransit.Domain.Services.Sending.Subscribing.Dto;
+using SmallTransit.Presentation.Controllers.Dto.Configurator;
 
-namespace Configuration.Dispatcher;
+namespace SmallTransit.Dispatcher;
 
 public sealed class ReceiveControllerDispatcher : IReceiveControllerDelegate
 {
@@ -21,7 +22,7 @@ public sealed class ReceiveControllerDispatcher : IReceiveControllerDelegate
     public (Type Contract, Type ReturnType) GetContractType(string contractName)
     {
         var configuration = _configurator.ReceiverPointConfigurators
-            .SingleOrDefault(configuration => configuration.ContractType.Name.Equals(contractName, StringComparison.InvariantCultureIgnoreCase));
+            .FirstOrDefault(configuration => configuration.ContractType.GetTypeName().Equals(contractName, StringComparison.InvariantCultureIgnoreCase));
 
         return configuration is null
             ? throw new InvalidOperationException($"Configuration for contract {contractName} not found")
@@ -36,7 +37,7 @@ public sealed class ReceiveControllerDispatcher : IReceiveControllerDelegate
 
         var closedGenericType = genericTypeDefinition.MakeGenericType(wrapper.ContractType, wrapper.ResultType);
 
-        var dispatcher = (IDispatcher)scope.ServiceProvider.GetRequiredService(closedGenericType);
+        var dispatcher = (IDispatcher)Activator.CreateInstance(closedGenericType)!;
 
         return await dispatcher.SendToController(wrapper, scope.ServiceProvider);
     }

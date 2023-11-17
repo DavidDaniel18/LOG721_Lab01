@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.TcpClient.L4LinkBuffers;
+﻿namespace SmallTransit.Infrastructure.TcpClient.L4LinkBuffers;
 
 /// <summary>
 ///   A tunnel is a wrapper around a stream that allows for reading and writing to an external TCP connection.

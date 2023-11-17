@@ -1,10 +1,10 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using Domain.Services.Sending.SeedWork.Saga;
-using Domain.Services.Sending.SeedWork.States;
+﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
+using SmallTransit.Domain.Services.Sending.SeedWork.Saga;
+using SmallTransit.Domain.Services.Sending.SeedWork.States;
 
-namespace Domain.Services.Sending.Send.States;
+namespace SmallTransit.Domain.Services.Sending.Send.States;
 
 internal sealed class OpenedSendState : SendState
 {
@@ -13,7 +13,7 @@ internal sealed class OpenedSendState : SendState
     private protected override Func<SendState<SendingContext, SerializedSendMessage>> OnNack { get; }
     private protected override Func<SendState<SendingContext, SerializedSendMessage>> OnInternalError { get; }
     private protected override Func<SendState<SendingContext, SerializedSendMessage>> OnConnectionClosed { get; }
-    private protected override MessageTypesEnum ResponseMessageType => MessageTypesEnum.HandShake;
+    private protected override MessageTypesEnum ResponseMessageType => MessageTypesEnum.Send;
 
     public OpenedSendState(SendingContext sendingContext) : base(sendingContext)
     {

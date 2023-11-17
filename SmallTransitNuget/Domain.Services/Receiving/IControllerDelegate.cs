@@ -1,4 +1,4 @@
-﻿namespace Domain.Services.Receiving;
+﻿namespace SmallTransit.Domain.Services.Receiving;
 
 public interface IControllerDelegate<in TContract>
 {

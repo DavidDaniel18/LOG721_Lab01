@@ -1,6 +1,6 @@
 ﻿using System.Reflection.Emit;
 
-namespace Domain.ProtoTransit.ValueObjects.Properties;
+namespace SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
 
 public abstract record ProtoProperty(Type HeaderType)
 {
