@@ -96,7 +96,7 @@ services:
       REDUCE_ROUTING_KEY: command/reduce0
       REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
       SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5305,5306
-      NB_OF_ITERATION: 2
+      NB_OF_ITERATION: 1
       SYNC_EXPOSE: 5304
     ports:
       - 4304:80

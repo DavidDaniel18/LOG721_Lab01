@@ -99,45 +99,42 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         {
             var spaces = await _spacesCache.Query(q => q);
 
-            if (spaces != null)
-                await _publisher.PublishAsync(new MapCommand(new List<Space>()), "command/map1");
+            var mapTopics = _hostInfo.MapRoutingKeys.Split(',').ToList();
 
-            //var mapTopics = _hostInfo.MapRoutingKeys.Split(',').ToList();
-            //
-            //int nbOfMapTopics = mapTopics.Count();
-            //int chunkSize = spaces.Count() / mapTopics.Count();
-            //
-            //var tasks = new Task[nbOfMapTopics];
-            //
-            //for (int i = 0; i < nbOfMapTopics; i++)
-            //{
-            //    var startIndex = i * chunkSize;
-            //    var count = (i == nbOfMapTopics - 1) 
-            //        ? spaces.Count() - startIndex -1
-            //        : chunkSize;
-            //
-            //    string mapTopic = _algorithm.GetNextElement();
-            //    _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + count}] to {mapTopic}"); 
-            //    tasks[i] = Task.Run(async () => 
-            //    {
-            //        try
-            //        {
-            //            var elements = spaces.GetRange(startIndex, count);
-            //
-            //            _logger.LogInformation($"nb of spaces to send: {elements.Count()}");
-            //
-            //            _logger.LogInformation($"Sending...");
-            //            await _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), mapTopic);
-            //            _logger.LogInformation($"Spaces sent.");
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            _logger.LogError(ex.Message);
-            //        }
-            //    });
-            //}
-            //
-            //Task.WaitAll(tasks);
+            int nbOfMapTopics = mapTopics.Count();
+            int chunkSize = spaces.Count() / mapTopics.Count();
+
+            var tasks = new Task[nbOfMapTopics];
+
+            for (int i = 0; i < nbOfMapTopics; i++)
+            {
+                var startIndex = i * chunkSize;
+                var count = (i == nbOfMapTopics - 1) 
+                    ? spaces.Count() - startIndex -1
+                    : chunkSize;
+
+                string mapTopic = _algorithm.GetNextElement();
+                _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + count}] to {mapTopic}"); 
+                tasks[i] = Task.Run(async () => 
+                {
+                    try
+                    {
+                        var elements = spaces.GetRange(startIndex, count);
+
+                        _logger.LogInformation($"nb of spaces to send: {elements.Count()}");
+
+                        _logger.LogInformation($"Sending...");
+                        await _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), mapTopic);
+                        _logger.LogInformation($"Spaces sent...");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message);
+                    }
+                });
+            }
+
+            Task.WaitAll(tasks);
         }
     }
 }
