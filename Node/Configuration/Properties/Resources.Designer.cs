@@ -116,7 +116,8 @@ namespace Configuration.Properties {
         ///214;272
         ///64;122
         ///187;245
-        ///226;284        /// [rest of string was truncated]&quot;;.
+        ///226;284
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string data {
             get {

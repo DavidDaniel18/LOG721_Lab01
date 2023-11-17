@@ -80,7 +80,7 @@ public class ResultService : IResultService
 
         if (groups != null)
         {
-            groups.ForEach(g => g.Spaces.Clear());
+            groups.ForEach(g => g.Spaces.Clear()); // second space clear (failsafe). Maybe not needed.
             await _groupCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)));
         }
             

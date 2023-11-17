@@ -164,7 +164,7 @@ namespace Node
 
             services.AddScoped<ICommandHandler<MapFinishedEvent>, MapFinishedEventHandler>();
 
-            services.AddScoped<ICommandHandler<Shuffle>, ShuffleHander>();
+            services.AddScoped<ICommandHandler<Shuffle>, ShuffleHandler>();
 
             // Reduce Section
 

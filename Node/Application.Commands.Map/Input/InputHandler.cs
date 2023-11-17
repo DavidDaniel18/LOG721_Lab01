@@ -7,12 +7,15 @@ using Application.Common.Interfaces;
 using Application.Dtos;
 using Domain.Grouping;
 using Domain.Publicity;
+using Microsoft.Extensions.Logging;
 using SyncStore.Abstractions;
 
 namespace Application.Commands.Map.Input;
 
 public sealed class InputHandler : ICommandHandler<InputCommand>
 {
+    private readonly ILogger<InputHandler> _logger;
+
     private readonly ICsvHandler _csvHandler;
 
     private readonly IMessagePublisher<MapCommand> _publisher;
@@ -30,6 +33,7 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
     private readonly RoundRobinAlgorithm _algorithm;
 
     public InputHandler(
+        ILogger<InputHandler> logger,
         ISyncStore<string, Space> spaceSyncStore, 
         ISyncStore<string, Group> groupSyncStore,
         IMappingTo<DataDto, Space> dataMapper,
@@ -38,6 +42,7 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         ICsvHandler csvHandler, 
         IMessagePublisher<MapCommand> publisher)
     {
+        _logger = logger;
         _hostInfo = hostInfo;
         _dataMapper = dataMapper;
         _groupMapper = groupMapper;
@@ -50,17 +55,22 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
 
     public async Task Handle(InputCommand command, CancellationToken cancellation)
     {
+        _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
+
         var spaces = await _spacesCache.Query(s => s);
         var groups = await _groupsCache.Query(g => g);
         
         if (!spaces.Any() || !groups.Any())
         {
+            _logger.LogInformation("Init of Caches: Groups and Spaces...");
             Task.WaitAll(new Task[] {
                 Task.Run(() => SyncDataToCache(), cancellation),
                 Task.Run(() => SyncGroupToCache(), cancellation)
             }, cancellation);
+            _logger.LogInformation("Init of Caches: Terminated");
         }
 
+        _logger.LogInformation("Map spaces to map workers...");
         await Task.Run(() => SendSpacesToMappers());
 
         async void SyncDataToCache()
@@ -103,7 +113,9 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
                     ? spaces.Count() - startIndex -1
                     : chunkSize;
 
-                tasks[i] = Task.Run(() => _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), _algorithm.GetNextElement()));
+                string mapTopic = _algorithm.GetNextElement();
+                _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + count}] to {mapTopic}"); 
+                tasks[i] = Task.Run(() => _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), mapTopic));
             }
 
             Task.WaitAll(tasks);
