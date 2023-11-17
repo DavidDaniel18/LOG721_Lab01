@@ -76,7 +76,7 @@ namespace Node
         {
             services.AddSyncStore(configure =>
             {
-                configure.ExposedPort = hostInfo.SyncExpose;
+                configure.ExposedPort = 3000;
 
                 configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
 

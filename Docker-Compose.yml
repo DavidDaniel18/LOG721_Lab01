@@ -8,6 +8,7 @@ services:
     restart: always
     ports:
       - 4300:80
+      - 5300:3000
     environment:
       NODE_NAME: map0
       TYPE: map
@@ -31,6 +32,8 @@ services:
     restart: always
     ports:
       - 4301:80
+      - 5301:3000
+
     environment:
       NODE_NAME: map1
       TYPE: map
@@ -49,6 +52,7 @@ services:
     restart: always
     ports:
       - 4302:80
+      - 5302:3000
     environment:
       NODE_NAME: map2
       TYPE: map
@@ -67,6 +71,7 @@ services:
     restart: always
     ports:
       - 4303:80
+      - 5303:3000
     environment:
       NODE_NAME: map3
       TYPE: map
@@ -96,6 +101,7 @@ services:
       SYNC_EXPOSE: 5304
     ports:
       - 4304:80
+      - 5304:3000
     depends_on:
       - broker
   reducer1:
@@ -114,6 +120,7 @@ services:
       SYNC_EXPOSE: 5305
     ports:
       - 4305:80
+      - 5305:3000
     depends_on:
       - broker
   reducer2:
@@ -132,6 +139,7 @@ services:
       SYNC_EXPOSE: 5306
     ports:
       - 4306:80
+      - 5306:3000
     depends_on:
       - broker
   broker:
