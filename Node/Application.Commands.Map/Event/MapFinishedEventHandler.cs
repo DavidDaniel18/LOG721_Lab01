@@ -41,7 +41,7 @@ public sealed class MapFinishedEventHandler : ICommandHandler<MapFinishedEvent>
 
         _logger.LogInformation($"Is the map step finished...");
         var mapJobsFinished = await _spaceFinishedSyncStore.Query(query => query.Where(space => space.IsFinished));
-
+        _logger.LogInformation($"{command.name}: finished: {mapJobsFinished.Count()}, needed: {_hostInfo.MapRoutingKeys.Split(',').Count()}");
         bool isFinished = mapJobsFinished.Count() == _hostInfo.MapRoutingKeys.Split(',').Count();
 
         if (isFinished)

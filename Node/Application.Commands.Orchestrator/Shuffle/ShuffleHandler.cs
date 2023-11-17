@@ -19,7 +19,7 @@ public sealed class ShuffleHandler : ICommandHandler<Shuffle>
 
     private ISyncStore<string, Group> _groupSyncStore;
 
-    internal ShuffleHandler(ILogger<ShuffleHandler> logger, ISyncStore<string, Group> groupSyncStore, IMessagePublisher<Reduce> publisher, IGroupAttributionService groupAttributionService)
+    public ShuffleHandler(ILogger<ShuffleHandler> logger, ISyncStore<string, Group> groupSyncStore, IMessagePublisher<Reduce> publisher, IGroupAttributionService groupAttributionService)
     {
         _logger = logger;
         _groupSyncStore = groupSyncStore;

@@ -31,6 +31,8 @@ public sealed class ReduceHandler : ICommandHandler<Reduce>
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
         var spacesForGroup = command.group.Spaces;
 
+        double barycentre = command.group.Barycentre;
+
         _logger.LogInformation($"Calculate avg for groupId: {command.group.Id}");
         double avg = 0;
         spacesForGroup.ForEach(s => avg += s.GetNormalizedValue());
@@ -41,6 +43,6 @@ public sealed class ReduceHandler : ICommandHandler<Reduce>
         await _groupsCache.SaveChangesAsync();
 
         _logger.LogInformation($"Send ReduceFinishedEvent...");
-        await _publisher.PublishAsync(new ReduceFinishedEvent(command.group), _hostInfo.MapFinishedEventRoutingKey);
+        await _publisher.PublishAsync(new ReduceFinishedEvent(command.group, Math.Abs(avg - barycentre)), _hostInfo.ReduceFinishedEventRoutingKey);
     }
 }

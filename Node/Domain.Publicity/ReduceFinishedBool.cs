@@ -10,5 +10,6 @@ namespace Domain.Common
     {
         public string Id = "";
         public bool IsFinished = true;
+        public double Delta = 0;
     }
 }

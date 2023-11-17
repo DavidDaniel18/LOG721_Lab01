@@ -38,8 +38,10 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
         var groups = await _groupsCache.Query(g => g);
-        
-        command.spaces.ForEach(space => GroupServices.GetClosestGroupByBarycentre(space, groups).Spaces.Add(space));
+        var spaces = await _spaceCache.Query(s => s);
+
+        spaces.Skip(command.startIndex).Take(command.endIndex + 1 - command.startIndex).ToList()
+            .ForEach(space => GroupServices.GetClosestGroupByBarycentre(space, groups).Spaces.Add(space));
 
         _logger.LogInformation("Saves groups with closests spaces linked to it...");
         await _groupsCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)));

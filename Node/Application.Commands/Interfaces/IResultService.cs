@@ -10,5 +10,5 @@ public interface IResultService
     public bool HasMoreIterations();
     public bool HasFinishedCollectedResults();
     public void IncrementIteration();
-    public void ReceiveResult(string groupId);
+    public void ReceiveResult(string groupId, double delta);
 }

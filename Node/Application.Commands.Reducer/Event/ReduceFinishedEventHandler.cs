@@ -30,7 +30,7 @@ public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedE
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
 
-        _resultService.ReceiveResult(command.group.Id);
+        _resultService.ReceiveResult(command.group.Id, command.delta);
 
         if (_resultService.HasFinishedCollectedResults())
         {
@@ -41,7 +41,7 @@ public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedE
 
             Task.Run(() => _resultService.DisplayResults());
 
-            if (!isLastIteration)
+            if (_resultService.HasMoreIterations())
             {
                 _logger.LogInformation($"Start next iteration");
                 // send message to input master to trigger another iteration
@@ -50,6 +50,7 @@ public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedE
             else
             {
                 Console.WriteLine("Last iteration finished...\nMap Reduce terminated");
+                Task.Run(() => _resultService.DisplayResults());
             }
         }
         else

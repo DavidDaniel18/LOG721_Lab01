@@ -109,22 +109,20 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
             for (int i = 0; i < nbOfMapTopics; i++)
             {
                 var startIndex = i * chunkSize;
-                var count = (i == nbOfMapTopics - 1) 
-                    ? spaces.Count() - startIndex -1
-                    : chunkSize;
-
                 string mapTopic = _algorithm.GetNextElement();
-                _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + count}] to {mapTopic}"); 
+
+                _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + chunkSize - 1}] to {mapTopic}"); 
+                
                 tasks[i] = Task.Run(async () => 
                 {
                     try
                     {
-                        var elements = spaces.GetRange(startIndex, count);
-
+                        var elements = spaces.GetRange(startIndex, chunkSize);
+                
                         _logger.LogInformation($"nb of spaces to send: {elements.Count()}");
-
+                
                         _logger.LogInformation($"Sending...");
-                        await _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), mapTopic);
+                        await _publisher.PublishAsync(new MapCommand(startIndex, startIndex + chunkSize - 1), mapTopic);
                         _logger.LogInformation($"Spaces sent...");
                     }
                     catch (Exception ex)
