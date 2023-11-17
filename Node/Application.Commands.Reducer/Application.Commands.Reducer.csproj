@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="SyncStore.Abstractions" Version="0.9.0" />
+    <PackageReference Include="SyncStore.Abstractions" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
