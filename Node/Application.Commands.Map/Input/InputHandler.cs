@@ -71,7 +71,7 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         }
 
         _logger.LogInformation("Map spaces to map workers...");
-        await Task.Run(() => SendSpacesToMappers());
+        SendSpacesToMappers();
 
         async void SyncDataToCache()
         {
@@ -95,9 +95,13 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
             await _groupsCache.SaveChangesAsync();
         }
 
-        async void SendSpacesToMappers()
+        void SendSpacesToMappers()
         {
-            var spaces = await _spacesCache.Query(q => q);
+            var getSpaces = _spacesCache.Query(q => q);
+
+            Task.WaitAll(getSpaces);
+
+            var spaces = getSpaces.Result;
 
             var mapTopics = _hostInfo.MapRoutingKeys.Split(',').ToList();
 
@@ -112,27 +116,12 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
                 string mapTopic = _algorithm.GetNextElement();
 
                 _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + chunkSize - 1}] to {mapTopic}"); 
-                
-                tasks[i] = Task.Run(async () => 
-                {
-                    try
-                    {
-                        var elements = spaces.GetRange(startIndex, chunkSize);
-                
-                        _logger.LogInformation($"nb of spaces to send: {elements.Count()}");
-                
-                        _logger.LogInformation($"Sending...");
-                        await _publisher.PublishAsync(new MapCommand(startIndex, startIndex + chunkSize - 1), mapTopic);
-                        _logger.LogInformation($"Spaces sent...");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex.Message);
-                    }
-                });
+                _logger.LogInformation($"Sending...");
+                Task.WaitAll(_publisher.PublishAsync(new MapCommand(startIndex, startIndex + chunkSize - 1), mapTopic));
+                _logger.LogInformation($"Spaces sent to [{mapTopic}]...");
+   
             }
-
-            Task.WaitAll(tasks);
+            _logger.LogError($"End of InputHandler");
         }
     }
 }
