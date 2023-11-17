@@ -22,7 +22,7 @@ namespace Configuration.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Configuration.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Configuration.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Configuration.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -118,7 +118,7 @@ namespace Configuration.Properties {
         ///187;245
         ///226;284        /// [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string data {
+        public static string data {
             get {
                 return ResourceManager.GetString("data", resourceCulture);
             }
@@ -133,7 +133,7 @@ namespace Configuration.Properties {
         ///#5;&lt;250,300&gt;
         ///.
         /// </summary>
-        internal static string groups {
+        public static string groups {
             get {
                 return ResourceManager.GetString("groups", resourceCulture);
             }

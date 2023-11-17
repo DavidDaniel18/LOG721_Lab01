@@ -1,7 +1,7 @@
 ﻿using System.Resources;
 using Infrastructure.FileHandlers.Interfaces;
 
-namespace Configuration;
+namespace Node;
 
 public class DataReader : IDataReader
 {
@@ -10,6 +10,7 @@ public class DataReader : IDataReader
     public DataReader(ResourceManager manager)
     {
         _manager = manager;
+        _manager = new ResourceManager("Configuration.Properties.Resources", typeof(Program).Assembly);
     }
 
     public string GetString(string key)
