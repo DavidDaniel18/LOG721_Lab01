@@ -38,7 +38,7 @@ public sealed class ReduceHandler : ICommandHandler<Reduce>
         spacesForGroup.ForEach(s => avg += s.GetNormalizedValue());
         avg /= spacesForGroup.Count();
 
-        _logger.LogInformation($"Save avg and emptied the spaces list of the group...");
+        _logger.LogInformation($"Save avg {avg} and emptied the spaces list of the group...");
         await _groupsCache.AddOrUpdate(command.group.Id, new Group(command.group.Id, avg, ImmutableList<Space>.Empty));
         await _groupsCache.SaveChangesAsync();
 

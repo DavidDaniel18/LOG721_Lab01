@@ -33,8 +33,11 @@ public sealed class ShuffleHandler : ICommandHandler<Shuffle>
         var groups = await _groupSyncStore.Query(g => g);
 
         _logger.LogInformation("Send groups to appropriate reduce worker...");
-        groups.ForEach(group => {
-            Task.Run(() => _publisher.PublishAsync(new Reduce(group), _groupAttributionService.GetAttributedKeyFromGroup(group)), cancellation);
-        });
+        foreach (var group in groups)
+        {
+            var topic = _groupAttributionService.GetAttributedKeyFromGroup(group);
+            _logger.LogInformation($"Send groupId: {group.Id} to {topic}");
+            await _publisher.PublishAsync(new Reduce(group), topic);
+        }
     }
 }

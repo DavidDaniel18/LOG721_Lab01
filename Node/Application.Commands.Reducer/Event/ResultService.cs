@@ -37,14 +37,19 @@ public class ResultService : IResultService
 
         Task.WaitAll(getGroups);
 
+        _logger.LogInformation("");
+        _logger.LogInformation("");
+        _logger.LogInformation("");
+        _logger.LogInformation("");
+        _logger.LogInformation("Result:");
         getGroups.Result.ForEach(group => 
         {
-            _logger.LogInformation("");
-            _logger.LogInformation("Result:");
-            _logger.LogInformation("");
             _logger.LogInformation($"{group}");
-            _logger.LogInformation("");
         });
+        _logger.LogInformation("");
+        _logger.LogInformation("");
+        _logger.LogInformation("");
+        _logger.LogInformation("");
     }
 
     public void ReceiveResult(string groupId, double delta) 
@@ -60,7 +65,7 @@ public class ResultService : IResultService
 
         Task.WaitAll(getGroupResultReceived, getGroups);
 
-        _logger.LogInformation($"group finished count: {getGroupResultReceived.Result.Count()}, nb of groups: {getGroups.Result.Count()}");
+        _logger.LogInformation($"finished count: {getGroupResultReceived.Result.Count()}, nb of groups: {getGroups.Result.Count()}");
         return getGroupResultReceived.Result.Count() == /*getGroups.Result.Count()*/ 1;
     }
 

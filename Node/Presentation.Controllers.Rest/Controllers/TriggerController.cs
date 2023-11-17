@@ -32,7 +32,7 @@ namespace Presentation.Controllers.Rest.Controllers
 
         [HttpPost]
         [ActionName("Input")]
-        public async Task<ActionResult> Input(bool Perpetual)
+        public async Task<ActionResult> Input()
         {
             await _inputPublisher.PublishAsync(new InputCommand(_hostInfo.DataCsvName, _hostInfo.GroupCsvName), _hostInfo.InputRoutingKey);
             return Ok("Input sent.");

@@ -8,7 +8,7 @@ public class GroupAttributionService : IGroupAttributionService
 {
     private IAttributionStrategy _attributionStrategy;
 
-    internal GroupAttributionService(IHostInfo hostInfo)
+    public GroupAttributionService(IHostInfo hostInfo)
     {
         _attributionStrategy = new RoundRobinAttributionStrategy(hostInfo);
     }
