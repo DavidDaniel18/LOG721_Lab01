@@ -9,6 +9,6 @@ namespace Domain.Common
     public class ReduceFinishedBool
     {
         public string Id = "";
-        public bool Value = true;
+        public bool IsFinished = true;
     }
 }

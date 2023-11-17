@@ -31,18 +31,13 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
 
     public async Task Handle(MapCommand command, CancellationToken cancellation)
     {
-        Space space = command.space;
+        var groups = await _groupsCache.Query(g => g);
+        
+        command.spaces.ForEach(space => GroupServices.GetClosestGroupByBarycentre(space, groups).Spaces.Add(space));
 
-        var groups = await _groupsCache.Query(query => query.Where(g => true));
-
-        var groupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id;
-
-        space.GroupId = groupId;
-
-        await _spaceCache.AddOrUpdate(space.Id, space);
-
+        await _groupsCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)));
         await _spaceCache.SaveChangesAsync();
 
-        await _publisher.PublishAsync(new MapFinishedEvent(space), _hostInfo.MapFinishedEventRoutingKey);
+        await _publisher.PublishAsync(new MapFinishedEvent(_hostInfo.MapRoutingKey), _hostInfo.MapFinishedEventRoutingKey);
     }
 }

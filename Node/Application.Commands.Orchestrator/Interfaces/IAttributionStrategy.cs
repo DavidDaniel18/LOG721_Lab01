@@ -1,8 +1,8 @@
-﻿using Domain.Publicity;
+﻿using Domain.Grouping;
 
 namespace Application.Commands.Orchestrator.Interfaces;
 
 internal interface IAttributionStrategy
 {
-    string GetTopicFrom(Space space);
+    string GetTopicFrom(Group group);
 }

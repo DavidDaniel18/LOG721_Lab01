@@ -18,7 +18,8 @@ services:
       MAP_SHUFFLE_ROUTING_KEY: command/shuffle
       REDUCE_ROUTING_KEYS: 'reduce0,reduce1,reduce2'
       INPUT_ROUTING_KEY: command/input
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306
+      SYNC_STORE_PAIR_PORT_LIST: 5301,5302,5303,5304,5305,5306
+      SYNC_EXPOSE: 5300
     depends_on:
       - broker
   map1:
@@ -34,7 +35,8 @@ services:
       BROKER_PORT: 32769
       MAP_ROUTING_KEY: map1
       MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306s
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5302,5303,5304,5305,5306
+      SYNC_EXPOSE: 5301
     depends_on:
       - broker
   map2:
@@ -50,7 +52,8 @@ services:
       BROKER_PORT: 32769
       MAP_ROUTING_KEY: map2
       MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5303,5304,5305,5306
+      SYNC_EXPOSE: 5302
     depends_on:
       - broker
   map3:
@@ -66,7 +69,8 @@ services:
       BROKER_PORT: 32769
       MAP_ROUTING_KEY: map3
       MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5304,5305,5306
+      SYNC_EXPOSE: 5303
     depends_on:
       - broker
   reducer0:
@@ -82,8 +86,9 @@ services:
       INPUT_ROUTING_KEY: command/input
       REDUCE_ROUTING_KEY: reduce0
       REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5305,5306
       NB_OF_ITERATION: 1
+      SYNC_EXPOSE: 5304
     ports:
       - 4304:80
     depends_on:
@@ -99,7 +104,8 @@ services:
       BROKER_PORT: 32769
       REDUCE_ROUTING_KEY: reduce1
       REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5304,5306
+      SYNC_EXPOSE: 5305
     ports:
       - 4305:80
     depends_on:
@@ -115,7 +121,8 @@ services:
       BROKER_PORT: 32769
       REDUCE_ROUTING_KEY: reduce1
       REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
-      SYNC_STORE_PAIR_PORT_LIST: 4300,4301,4302,4303,4304,4305,4306
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5304,5305
+      SYNC_EXPOSE: 5306
     ports:
       - 4306:80
     depends_on:

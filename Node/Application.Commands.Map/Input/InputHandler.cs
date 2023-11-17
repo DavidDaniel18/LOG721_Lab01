@@ -25,6 +25,8 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
 
     private ISyncStore<string, Group> _groupsCache;
 
+    private IHostInfo _hostInfo;
+
     private readonly RoundRobinAlgorithm _algorithm;
 
     public InputHandler(
@@ -36,6 +38,7 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         ICsvHandler csvHandler, 
         IMessagePublisher<MapCommand> publisher)
     {
+        _hostInfo = hostInfo;
         _dataMapper = dataMapper;
         _groupMapper = groupMapper;
         _csvHandler = csvHandler;
@@ -47,39 +50,63 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
 
     public async Task Handle(InputCommand command, CancellationToken cancellation)
     {
-        var spaces = await _spacesCache.Query(spaces => spaces.Where(space => true));
-        var groups = await _groupsCache.Query(groups => groups.Where(group => true));
+        var spaces = await _spacesCache.Query(s => s);
+        var groups = await _groupsCache.Query(g => g);
         
-        if (!spaces.Any() || !groups.Any()) // If not empty we continue (next iteration). Not super clean but could work.
+        if (!spaces.Any() || !groups.Any())
         {
             Task.WaitAll(new Task[] {
                 Task.Run(() => SyncDataToCache(), cancellation),
-                Task.Run(() => SyncGroupToCache(), cancellation) // why not sync group also... (not needed)
+                Task.Run(() => SyncGroupToCache(), cancellation)
             }, cancellation);
         }
 
-        foreach (var space in spaces)
-            _ = _publisher.PublishAsync(new MapCommand(space), _algorithm.GetNextElement());
+        await Task.Run(() => SendSpacesToMappers());
 
-        void SyncDataToCache()
+        async void SyncDataToCache()
         {
-            _csvHandler.ReadDatas().ToList().AsParallel().ForAll(async dto => 
+            await _spacesCache.AddOrUpdateRange(_csvHandler.ReadDatas().ToList().Select(dto =>
             {
                 var space = _dataMapper.MapFrom(dto);
-                await _spacesCache.AddOrUpdate(space.Id, space);
-                
-            });
-            _spacesCache.SaveChangesAsync().ConfigureAwait(true);
+                return (space.Id, space);
+            }));
+
+            await _spacesCache.SaveChangesAsync();
         }
 
-        void SyncGroupToCache()
+        async void SyncGroupToCache()
         {
-            _csvHandler.ReadGroups().ToList().AsParallel().ForAll(async dto =>
+            await _groupsCache.AddOrUpdateRange(_csvHandler.ReadGroups().ToList().Select(dto =>
             {
                 var group = _groupMapper.MapFrom(dto);
-                await _groupsCache.AddOrUpdate(group.Id, group);
-            });
-            _groupsCache.SaveChangesAsync().ConfigureAwait(true);
+                return (group.Id, group);
+            }));
+
+            await _groupsCache.SaveChangesAsync();
+        }
+
+        async void SendSpacesToMappers()
+        {
+            var spaces = await _spacesCache.Query(q => q);
+
+            var mapTopics = _hostInfo.MapRoutingKeys.Split(',').ToList();
+
+            int nbOfMapTopics = mapTopics.Count();
+            int chunkSize = spaces.Count() / mapTopics.Count();
+
+            var tasks = new Task[nbOfMapTopics];
+
+            for (int i = 0; i < nbOfMapTopics; i++)
+            {
+                var startIndex = i * chunkSize;
+                var count = (i == nbOfMapTopics - 1) 
+                    ? spaces.Count() - startIndex -1
+                    : chunkSize;
+
+                tasks[i] = Task.Run(() => _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), _algorithm.GetNextElement()));
+            }
+
+            Task.WaitAll(tasks);
         }
     }
 }

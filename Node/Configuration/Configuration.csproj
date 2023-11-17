@@ -14,8 +14,8 @@
 		<PackageReference Include="SmallTransit" Version="1.1.2" />
 		<PackageReference Include="SmallTransit.Abstractions" Version="1.1.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-		<PackageReference Include="SyncStore" Version="0.6.0" />
-		<PackageReference Include="SyncStore.Abstractions" Version="0.6.0" />
+		<PackageReference Include="SyncStore" Version="0.9.0" />
+		<PackageReference Include="SyncStore.Abstractions" Version="0.9.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,7 +42,7 @@
 
 	<ItemGroup>
 	  <EmbeddedResource Update="Properties\Resources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	</ItemGroup>

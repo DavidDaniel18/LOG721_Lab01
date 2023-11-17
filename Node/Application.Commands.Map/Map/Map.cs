@@ -1,10 +1,9 @@
 ﻿using Application.Commands.Seedwork;
-using Application.Dtos;
 using Domain.Publicity;
 
 namespace Application.Commands.Map.Mapping;
 
-public sealed record MapCommand(Space space) : ICommand
+public sealed record MapCommand(List<Space> spaces) : ICommand
 {
     public string GetCommandName()
     {

@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Orchestrator.Interfaces;
 using Application.Common.Interfaces;
+using Domain.Grouping;
 using Domain.Publicity;
 
 namespace Application.Commands.Orchestrator.Service;
@@ -19,11 +20,14 @@ internal class RoundRobinAttributionStrategy : IAttributionStrategy
         _algorithm = new RoundRobinAlgorithm(_hostInfo.ReduceRoutingKeys.Split(',').ToList());
     }
 
-    public string GetTopicFrom(Space space)
+    public string GetTopicFrom(Group group)
     {
-        if (_groupIdTopicDict.TryGetValue(space.GroupId ?? "", out var topic))
+        if (_groupIdTopicDict.TryGetValue(group.Id, out var topic))
             return topic;
 
-        return _algorithm.GetNextElement();
+        topic = _algorithm.GetNextElement();
+        _groupIdTopicDict[group.Id] = topic;
+
+        return topic;
     }
 }

@@ -16,12 +16,13 @@ using Application.Commands.Map.Mapping;
 using Application.Commands.Map.Input;
 using Application.Commands.Map.Event;
 using Configuration;
-using Node.Properties;
 using Application.Commands.Reducer.Event;
 using SyncStore;
 using Domain.Publicity;
 using Domain.Grouping;
 using Domain.Common;
+using Application.Commands.Reducer.Reduce;
+using Configuration.Properties;
 
 namespace Node
 {
@@ -68,6 +69,8 @@ namespace Node
         {
             services.AddSyncStore(configure =>
             {
+                configure.ExposedPort = hostInfo.SyncExpose;
+
                 configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
 
                 configure.AddStore<string, Space>();
@@ -143,7 +146,7 @@ namespace Node
 
         private static void ConfigurationSetup(IServiceCollection services, IConfiguration builderConfiguration)
         {
-            services.AddSingleton(_ => new ResourceManager(typeof(Resources)));
+            //services.AddSingleton(_ => new ResourceManager(typeof(Resources)));
 
             services.AddSingleton<IDataReader, DataReader>();
         }

@@ -18,6 +18,8 @@ public interface IHostInfo
     
     string ReduceRoutingKey { get; }
 
+    int SyncExpose { get; }
+
     string MapFinishedEventRoutingKey { get; }
 
     string ReduceFinishedEventRoutingKey { get; }

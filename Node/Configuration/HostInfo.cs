@@ -56,6 +56,10 @@ internal sealed class HostInfo : IHostInfo
 
     private static readonly List<int> SyncStorePairPortListEnv = (Environment.GetEnvironmentVariable(SyncStorePairPortListName) ?? "").Split(',').ToList().Select(p => Convert.ToInt32(p)).ToList();
 
+    private const string SyncExposeName = "SYNC_EXPOSE";
+
+    private static readonly int SyncExposeEnv = Convert.ToInt32(Environment.GetEnvironmentVariable(SyncExposeName) ?? "0");
+
     public string Host => "host.docker.internal";
 
     public int BrokerPort => BrokerPortEnv;
@@ -87,4 +91,6 @@ internal sealed class HostInfo : IHostInfo
     public string DataCsvName { get; } = "data.csv";
 
     public string GroupCsvName { get; } = "groups.csv";
+
+    public int SyncExpose => SyncExposeEnv;
 }

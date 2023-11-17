@@ -10,6 +10,7 @@ public class DataReader : IDataReader
     public DataReader(ResourceManager manager)
     {
         _manager = manager;
+        _manager = new ResourceManager("Configuration.Properties.Resources", typeof(Program).Assembly);
     }
 
     public string GetString(string key)

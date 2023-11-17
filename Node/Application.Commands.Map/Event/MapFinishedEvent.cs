@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Seedwork;
 using Domain.Publicity;
 
-public sealed record MapFinishedEvent(Space space) : ICommand
+public sealed record MapFinishedEvent(string name) : ICommand
 {
     public string GetCommandName()
     {
