@@ -2,8 +2,6 @@
 using Application.Common.Interfaces;
 using Domain.Common;
 using Domain.Grouping;
-using Domain.Publicity;
-using SyncStore.Abstractions;
 
 namespace Application.Commands.Reducer.Event;
 

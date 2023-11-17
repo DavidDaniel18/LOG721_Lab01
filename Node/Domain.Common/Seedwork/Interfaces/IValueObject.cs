@@ -1,4 +1,4 @@
-﻿namespace Domain.Common.Seedwork.Interfaces;
+﻿namespace DomainNode.Common.Seedwork.InterfacesNode;
 
 public interface IValueObject<T> where T : class, IEquatable<T>
 {

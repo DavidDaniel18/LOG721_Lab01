@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using Domain.Common.Seedwork.Abstract;
+using DomainNode.Common.Seedwork.AbstractNode;
 using Domain.Publicity;
 
 namespace Domain.Grouping;

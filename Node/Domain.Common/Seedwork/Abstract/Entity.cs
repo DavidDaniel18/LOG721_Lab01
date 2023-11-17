@@ -1,4 +1,4 @@
-﻿namespace Domain.Common.Seedwork.Abstract;
+﻿namespace DomainNode.Common.Seedwork.AbstractNode;
 
 public abstract class Entity<T> : IEquatable<Entity<T>> where T : class
 {

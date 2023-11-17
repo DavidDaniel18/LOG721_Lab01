@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
-    <ProjectReference Include="..\Domain.Common\Domain.Common.csproj" />
+    <ProjectReference Include="..\Domain.Common\DomainNode.Common.csproj" />
   </ItemGroup>
 
 </Project>

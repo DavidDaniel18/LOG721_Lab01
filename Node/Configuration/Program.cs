@@ -16,21 +16,24 @@ using Application.Commands.Map.Mapping;
 using Application.Commands.Map.Input;
 using Application.Commands.Map.Event;
 using Configuration;
-using Node.Properties;
 using Application.Commands.Reducer.Event;
-using SyncStore;
 using Domain.Publicity;
 using Domain.Grouping;
 using Domain.Common;
 using Application.Common.Cache;
 using Application.Commands.Reducer;
 using Application.Commands;
+using ConfigurationNode.Properties;
+using Application.Dtos;
+using Application.Commands.Mappers;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Presentation.Controllers.Rest.Controllers;
 
-namespace Node
+namespace ConfigurationNode
 {
     public class Program
     {
-        private static Action<IServiceCollection, IConfiguration> Configuration { get; set; } = ConfigurationSetup;
+        private static Action<IServiceCollection, IConfiguration> ConfigurationNode { get; set; } = ConfigurationSetup;
         private static Action<IServiceCollection> Presentation { get; set; } = PresentationSetup;
         private static Action<IServiceCollection, IConfiguration> Infrastructure { get; set; } = InfrastructureSetup;
         private static Action<IServiceCollection> Application { get; set; } = ApplicationSetup;
@@ -41,6 +44,8 @@ namespace Node
             var hostInfo = new HostInfo();
 
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -53,6 +58,8 @@ namespace Node
             //ConfigureSyncStore(builder.Services, hostInfo);
 
             ConfigureServices(builder.Services, builder.Configuration);
+
+            builder.Services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(TriggerController).Assembly));
 
             var app = builder.Build();
 
@@ -67,64 +74,72 @@ namespace Node
             app.Run();
         }
 
-       //public static void ConfigureSyncStore(IServiceCollection services, IHostInfo hostInfo)
-       //{
-       //    services.AddSyncStore(configure =>
-       //    {
-       //        configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
-       //
-       //        configure.AddStore<string, Space>();
-       //        configure.AddStore<string, Group>();
-       //        configure.AddStore<string, MapFinishedBool>();
-       //        configure.AddStore<string, ReduceFinishedBool>();
-       //    });
-       //}
+        //public static void ConfigureSyncStore(IServiceCollection services, IHostInfo hostInfo)
+        //{
+        //    services.AddSyncStore(configure =>
+        //    {
+        //        configure.AddPairs(cfg => hostInfo.SyncStorePairPortList.ForEach(port => cfg.AddPair("host.docker.internal", port)));
+        //
+        //        configure.AddStore<string, Space>();
+        //        configure.AddStore<string, Group>();
+        //        configure.AddStore<string, MapFinishedBool>();
+        //        configure.AddStore<string, ReduceFinishedBool>();
+        //    });
+        //}
 
         public static void ConfigureSmallTransit(IServiceCollection services, IHostInfo hostInfo)
         {
-            services.AddSmallTransit(cfg =>
+            services.AddSmallTransit(/*cfg*/ configuration =>
             {
-                cfg.AddQueueConfigurator(configuration =>
+                //cfg.AddQueueConfigurator(configuration =>
+                //{
+                //configuration.Host("1", hostInfo.Host, hostInfo.BrokerPort);
+
+                configuration.Host = hostInfo.Host;
+                configuration.Port = hostInfo.BrokerPort;
+
+                if (string.Equals(hostInfo.NodeType, "map"))
                 {
-                    configuration.Host("1", hostInfo.Host, hostInfo.BrokerPort);
-
-                    if (string.Equals(hostInfo.NodeType, "map"))
+                    configuration.AddReceiver<MapController>($"worker.queue-{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                     {
-                        configuration.AddReceiver<MapController>($"queue-map.{Guid.NewGuid()}", rcv =>
+                        rcv.RoutingKey = hostInfo.MapRoutingKey;
+                    });
+
+                    if (hostInfo.IsMaster)
+                    {
+                        configuration.AddReceiver<InputEventController>($"worker.queue-{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
-                            rcv.RoutingKey = hostInfo.MapRoutingKey;
+                            rcv.RoutingKey = hostInfo.InputRoutingKey;
                         });
 
-                        if (hostInfo.IsMaster)
+                        configuration.AddReceiver<MapFinishedEventController>($"orchestrator.queue-{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
-                            configuration.AddReceiver<MapFinishedEventController>($"queue-event-finished-map.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
-                            });
-
-                            configuration.AddReceiver<ShuffleController>($"queue-event-shuffle.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
-                            });
-                        }
-                    }
-
-                    if (string.Equals(hostInfo.NodeType, "reduce"))
-                    {
-                        configuration.AddReceiver<ReduceController>($"queue-reduce.{Guid.NewGuid()}", rcv =>
-                        {
-                            rcv.RoutingKey = hostInfo.ReduceRoutingKey;
+                            rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
                         });
 
-                        if (hostInfo.IsMaster)
+                        configuration.AddReceiver<ShuffleController>($"orchestrator.queue-{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
-                            configuration.AddReceiver<ReduceFinishedEventController>($"queue-event-finished-reduce.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.ReduceFinishedEventRoutingKey;
-                            });
-                        }
+                            rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
+                        });
                     }
-                });
+                }
+
+                if (string.Equals(hostInfo.NodeType, "reduce"))
+                {
+                    configuration.AddReceiver<ReduceController>($"worker.queue-{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                    {
+                        rcv.RoutingKey = hostInfo.ReduceRoutingKey;
+                    });
+
+                    if (hostInfo.IsMaster)
+                    {
+                        configuration.AddReceiver<ReduceFinishedEventController>($"orchestrator.queue-{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                        {
+                            rcv.RoutingKey = hostInfo.ReduceFinishedEventRoutingKey;
+                        });
+                    }
+                }
+                //});
             });
         }
 
@@ -134,7 +149,7 @@ namespace Node
             Application(services);
             Infrastructure(services, builderConfiguration);
             Presentation(services);
-            Configuration(services, builderConfiguration);
+            ConfigurationNode(services, builderConfiguration);
 
             services.AddEndpointsApiExplorer();
 
@@ -146,7 +161,9 @@ namespace Node
 
         private static void ConfigurationSetup(IServiceCollection services, IConfiguration builderConfiguration)
         {
-            services.AddSingleton(_ => new ResourceManager(typeof(Resources)));
+            //services.AddSingleton(_ => new ResourceManager(typeof(Resources)));
+
+            //ResourceManager resourceManager = new ResourceManager("Resources", typeof(Program).Assembly);
 
             services.AddSingleton<IDataReader, DataReader>();
         }
@@ -191,7 +208,10 @@ namespace Node
 
         private static void ApplicationSetup(IServiceCollection services)
         {
-            ScrutorScanForType(services, typeof(IMappingTo<,>), assemblyNames: "Application.Mapping");
+            //ScrutorScanForType(services, typeof(IMappingTo<,>), assemblyNames: "Application.Mapping");
+
+            services.AddScoped<IMappingTo<GroupDto, Group>, GroupMapper>();
+            services.AddScoped<IMappingTo<SpaceDto, Space>, SpaceMapper>();
 
             services.AddScoped<IGroupAttributionService, GroupAttributionService>();
 

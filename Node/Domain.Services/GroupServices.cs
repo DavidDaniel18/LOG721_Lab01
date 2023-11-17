@@ -1,7 +1,7 @@
 ﻿using Domain.Grouping;
 using Domain.Publicity;
 
-namespace Domain.Services;
+namespace DomainNode.Services;
 
 public static class GroupServices
 {

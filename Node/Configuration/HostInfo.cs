@@ -1,6 +1,6 @@
 ﻿using Application.Common.Interfaces;
 
-namespace Node;
+namespace ConfigurationNode;
 
 internal sealed class HostInfo : IHostInfo
 {
@@ -54,7 +54,13 @@ internal sealed class HostInfo : IHostInfo
 
     private const string SyncStorePairPortListName = "SYNC_STORE_PAIR_PORT_LIST";
 
-    private static readonly List<int> SyncStorePairPortListEnv = (Environment.GetEnvironmentVariable(SyncStorePairPortListName) ?? "").Split(',').ToList().Select(p => Convert.ToInt32(p)).ToList();
+    private static readonly List<int> SyncStorePairPortListEnv = new List<int>();
+
+    //private static readonly List<int> SyncStorePairPortListEnv = (Environment.GetEnvironmentVariable(SyncStorePairPortListName) ?? "").Split(',').ToList().Select(p => Convert.ToInt32(p)).ToList();
+
+    private const string NodeNameName = "NODE_NAME";
+
+    private static readonly string NodeNameEnv = Environment.GetEnvironmentVariable(NodeNameName) ?? string.Empty;
 
     public string Host => "host.docker.internal";
 
@@ -84,7 +90,9 @@ internal sealed class HostInfo : IHostInfo
 
     public List<int> SyncStorePairPortList => SyncStorePairPortListEnv;
 
-    public string DataCsvName { get; } = "data.csv";
+    public string DataCsvName { get; } = "data";
 
-    public string GroupCsvName { get; } = "groups.csv";
+    public string GroupCsvName { get; } = "groups";
+
+    public string NodeName => NodeNameEnv;
 }

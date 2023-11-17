@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SyncStore.Abstractions" Version="0.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,7 +22,7 @@
     <ProjectReference Include="..\Application.Dtos\Application.Dtos.csproj" />
     <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
     <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
-    <ProjectReference Include="..\Domain.Services\Domain.Services.csproj" />
+    <ProjectReference Include="..\Domain.Services\DomainNode.Services.csproj" />
   </ItemGroup>
 
 </Project>

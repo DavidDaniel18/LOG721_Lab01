@@ -19,13 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{D9CD5E60-E315-4436-8361-C7CD31BC67B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configuration", "Configuration\Configuration.csproj", "{08CAA134-A837-482A-9AA9-B0061EB454D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationNode", "Configuration\ConfigurationNode.csproj", "{08CAA134-A837-482A-9AA9-B0061EB454D9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Controllers.Rest", "Presentation.Controllers.Rest\Presentation.Controllers.Rest.csproj", "{DFE4D5E8-586F-4D86-8AA9-790E3F8D9875}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Dtos", "Application.Dtos\Application.Dtos.csproj", "{16780967-B54D-47AC-914E-8A5A6D2710EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Common", "Domain.Common\Domain.Common.csproj", "{C03943A2-361F-422B-AEEB-2A0FC8596582}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainNode.Common", "Domain.Common\DomainNode.Common.csproj", "{C03943A2-361F-422B-AEEB-2A0FC8596582}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Publicity", "Domain.Publicity\Domain.Publicity.csproj", "{A67C82D3-2350-4149-9F87-D09E5A038171}"
 EndProject
@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Orchestrating", "Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Grouping", "Domain.Barycentre\Domain.Grouping.csproj", "{64AB8FAA-8A61-40A7-882C-C572C635D986}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Services", "Domain.Services\Domain.Services.csproj", "{56F9D513-AC03-4E67-80F8-9CC26F45F4F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainNode.Services", "Domain.Services\DomainNode.Services.csproj", "{56F9D513-AC03-4E67-80F8-9CC26F45F4F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Commands", "Application.Commands\Application.Commands.csproj", "{DD8AC9E0-AFF7-4092-B9E2-F16055554DB5}"
 EndProject

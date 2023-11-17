@@ -1,8 +1,11 @@
 ﻿using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using Application.Commands.Interfaces;
 using Application.Common.Interfaces;
 using Application.Dtos;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Infrastructure.FileHandlers.Interfaces;
 
 namespace Infrastructure.FileHandlers;
@@ -12,7 +15,7 @@ public sealed class CsvHandler : ICsvHandler
     private readonly IDataReader _dataReader;
     private readonly IHostInfo _hostInfo;
 
-    internal CsvHandler(IDataReader dataReader, IHostInfo hostInfo)
+    public CsvHandler(IDataReader dataReader, IHostInfo hostInfo)
     {
         _dataReader = dataReader;
         _hostInfo = hostInfo;
@@ -30,7 +33,7 @@ public sealed class CsvHandler : ICsvHandler
 
     public IEnumerable<DataDto> ReadDatas()
     {
-        return Read<DataDto>(_dataReader.GetString(_hostInfo.GroupCsvName));
+        return Read<DataDto>(_dataReader.GetString(_hostInfo.DataCsvName));
     }
 
     public IEnumerable<GroupDto> ReadGroups()
@@ -49,11 +52,15 @@ public sealed class CsvHandler : ICsvHandler
         }
     }
 
-    private static IEnumerable<TResult> Read<TResult>(string filePath)
+    private static IEnumerable<TResult> Read<TResult>(string content)
     {
-        using var reader = new StreamReader(filePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-        return csv.GetRecords<TResult>();
+        using var reader = new StringReader(content);
+        using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            Delimiter = ";", // Set the delimiter to semicolon
+            HasHeaderRecord = false, // Indicates that the CSV file has a header
+        });
+        
+        return csv.GetRecords<TResult>().ToList();
     }
 }

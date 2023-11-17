@@ -1,4 +1,4 @@
-﻿using Domain.Common.Seedwork.Abstract;
+﻿using DomainNode.Common.Seedwork.AbstractNode;
 
 namespace Domain.Publicity;
 
@@ -10,7 +10,7 @@ public sealed class Space : Aggregate<Space>
 
     public string? GroupId { get; set; }
 
-    internal Space(string id, int width, int price, string? groupId = null) : base(id)
+    public Space(string id, int width, int price, string? groupId = null) : base(id)
     {
         Width = width;
         Price = price;

@@ -1,15 +1,17 @@
 ﻿using System.Resources;
 using Infrastructure.FileHandlers.Interfaces;
 
-namespace Node;
+namespace ConfigurationNode;
 
 public class DataReader : IDataReader
 {
     private readonly ResourceManager _manager;
+    private readonly ILogger<IDataReader> _logger;
 
-    public DataReader(ResourceManager manager)
+    public DataReader(ILogger<IDataReader> logger)
     {
-        _manager = manager;
+        _logger = logger;
+        _manager = new ResourceManager("ConfigurationNode.Properties.Resources", typeof(Program).Assembly);
     }
 
     public string GetString(string key)

@@ -1,6 +1,6 @@
 ﻿using Application.Commands.Seedwork;
 
-namespace Node.Dispatchers;
+namespace ConfigurationNode.Dispatchers;
 
 public class CommandDispatcher : ICommandDispatcher
 {

@@ -1,4 +1,4 @@
-﻿using Domain.Common.Seedwork.Abstract;
+﻿using DomainNode.Common.Seedwork.AbstractNode;
 
 namespace Domain.Orchestrating;
 
