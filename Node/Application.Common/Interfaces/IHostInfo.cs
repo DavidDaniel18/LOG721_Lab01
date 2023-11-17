@@ -35,4 +35,6 @@ public interface IHostInfo
     List<int> SyncStorePairPortList { get; }
 
     int NbOfIteration { get; }
+
+    string NodeName { get; }
 }

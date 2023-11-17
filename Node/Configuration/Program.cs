@@ -23,6 +23,9 @@ using Domain.Grouping;
 using Domain.Common;
 using Application.Commands.Reducer.Reduce;
 using Configuration.Properties;
+using SmallTransit;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Presentation.Controllers.Rest.Controllers;
 
 namespace Node
 {
@@ -39,6 +42,8 @@ namespace Node
             var hostInfo = new HostInfo();
 
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -90,19 +95,24 @@ namespace Node
 
                     if (string.Equals(hostInfo.NodeType, "map"))
                     {
-                        configuration.AddReceiver<MapController>($"queue-map.{Guid.NewGuid()}", rcv =>
+                        configuration.AddReceiver<MapController>($"map.worker.queue.{Guid.NewGuid()}", rcv =>
                         {
                             rcv.RoutingKey = hostInfo.MapRoutingKey;
                         });
 
                         if (hostInfo.IsMaster)
                         {
-                            configuration.AddReceiver<MapFinishedEventController>($"queue-event-finished-map.{Guid.NewGuid()}", rcv =>
+                            configuration.AddReceiver<InputEventController>($"map.worker.queue.{Guid.NewGuid()}", rcv =>
+                            {
+                                rcv.RoutingKey = hostInfo.InputRoutingKey;
+                            });
+
+                            configuration.AddReceiver<MapFinishedEventController>($"map.orchestrator.queue.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
                             });
 
-                            configuration.AddReceiver<ShuffleController>($"queue-event-shuffle.{Guid.NewGuid()}", rcv =>
+                            configuration.AddReceiver<ShuffleController>($"map.orchestrator.queue.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
                             });
@@ -111,14 +121,14 @@ namespace Node
 
                     if (string.Equals(hostInfo.NodeType, "reduce"))
                     {
-                        configuration.AddReceiver<ReduceController>($"queue-reduce.{Guid.NewGuid()}", rcv =>
+                        configuration.AddReceiver<ReduceController>($"reduce.worker.queue.{Guid.NewGuid()}", rcv =>
                         {
                             rcv.RoutingKey = hostInfo.ReduceRoutingKey;
                         });
 
                         if (hostInfo.IsMaster)
                         {
-                            configuration.AddReceiver<ReduceFinishedEventController>($"queue-event-finished-reduce.{Guid.NewGuid()}", rcv =>
+                            configuration.AddReceiver<ReduceFinishedEventController>($"reduce.orchestrator.queue.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.ReduceFinishedEventRoutingKey;
                             });
@@ -172,6 +182,8 @@ namespace Node
             // other
 
             services.AddScoped<IGroupAttributionService, GroupAttributionService>();
+
+            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(TriggerController).Assembly));
         }
 
         private static void InfrastructureSetup(IServiceCollection services, IConfiguration configuration)

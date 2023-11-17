@@ -60,6 +60,10 @@ internal sealed class HostInfo : IHostInfo
 
     private static readonly int SyncExposeEnv = Convert.ToInt32(Environment.GetEnvironmentVariable(SyncExposeName) ?? "0");
 
+    private const string NodeNameName = "NODE_NAME";
+
+    private static readonly string NodeNameEnv = Environment.GetEnvironmentVariable(NodeNameName) ?? string.Empty;
+
     public string Host => "host.docker.internal";
 
     public int BrokerPort => BrokerPortEnv;
@@ -93,4 +97,6 @@ internal sealed class HostInfo : IHostInfo
     public string GroupCsvName { get; } = "groups";
 
     public int SyncExpose => SyncExposeEnv;
+
+    public string NodeName => NodeNameEnv;
 }
