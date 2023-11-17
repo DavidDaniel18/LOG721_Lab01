@@ -8,13 +8,10 @@ public sealed class Space : Aggregate<Space>
 
     public int Price { get; }
 
-    public string? GroupId { get; set; }
-
-    public Space(string id, int width, int price, string? groupId = null) : base(id)
+    public Space(string id, int width, int price) : base(id)
     {
         Width = width;
         Price = price;
-        GroupId = groupId;
     }
 
     public double GetNormalizedValue()
@@ -24,6 +21,6 @@ public sealed class Space : Aggregate<Space>
 
     public override string ToString()
     {
-        return $"Id: {Id}, Width: {Width}, Price: {Price}$" + ((GroupId != null) ? $", GroupdId: {GroupId}" : "");
+        return $"Id: {Id}, Width: {Width}, Price: {Price}$";
     }
 }
