@@ -7,9 +7,8 @@ public class DataReader : IDataReader
 {
     private readonly ResourceManager _manager;
 
-    public DataReader(ResourceManager manager)
+    public DataReader()
     {
-        _manager = manager;
         _manager = new ResourceManager("Configuration.Properties.Resources", typeof(Program).Assembly);
     }
 

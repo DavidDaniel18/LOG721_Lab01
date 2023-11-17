@@ -193,7 +193,7 @@ namespace Node
             //ScrutorScanForType(services, typeof(IMappingTo<,>), assemblyNames: "Application.Mapping");
 
             services.AddScoped<IMappingTo<GroupDto, Group>, GroupMapper>();
-            services.AddScoped<IMappingTo<SpaceDto, Space>, SpaceMapper>();
+            services.AddScoped<IMappingTo<DataDto, Space>, SpaceMapper>();
 
             services.AddScoped<IGroupAttributionService, GroupAttributionService>();
 

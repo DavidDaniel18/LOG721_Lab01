@@ -13,7 +13,7 @@ public sealed class CsvHandler : ICsvHandler
     private readonly IDataReader _dataReader;
     private readonly IHostInfo _hostInfo;
 
-    internal CsvHandler(IDataReader dataReader, IHostInfo hostInfo)
+    public CsvHandler(IDataReader dataReader, IHostInfo hostInfo)
     {
         _dataReader = dataReader;
         _hostInfo = hostInfo;
