@@ -13,12 +13,8 @@ public class ReduceController : IConsumer<Reduce>
         _handler = handler;
     }
 
-    public Task Consume(Reduce contract)
+    public async Task Consume(Reduce contract)
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-        _handler.Handle(contract, cancellationTokenSource.Token);
-
-        return Task.CompletedTask;
+        await _handler.Handle(contract, default);
     }
 }

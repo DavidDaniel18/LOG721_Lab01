@@ -12,12 +12,8 @@ public class ReduceFinishedEventController : IConsumer<ReduceFinishedEvent>
         _handler = handler;
     }
 
-    public Task Consume(ReduceFinishedEvent contract)
+    public async Task Consume(ReduceFinishedEvent contract)
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-        _handler.Handle(contract, cancellationTokenSource.Token);
-
-        return Task.CompletedTask;
+        await _handler.Handle(contract, default);
     }
 }

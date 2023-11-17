@@ -14,12 +14,8 @@ public class MapController : IConsumer<MapCommand>
         _handler = handler;
     }
 
-    public Task Consume(MapCommand contract)
+    public async Task Consume(MapCommand contract)
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-        _handler.Handle(contract, cancellationTokenSource.Token);
-
-        return Task.CompletedTask;
+        await _handler.Handle(contract, default);
     }
 }

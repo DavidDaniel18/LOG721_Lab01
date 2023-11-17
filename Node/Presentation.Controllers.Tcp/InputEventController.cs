@@ -13,12 +13,8 @@ public class InputEventController : IConsumer<InputCommand>
         _inputHandler = inputHandler;
     }
 
-    public Task Consume(InputCommand contract)
+    public async Task Consume(InputCommand contract)
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-        _inputHandler.Handle(contract, cancellationTokenSource.Token);
-
-        return Task.CompletedTask;
+        await _inputHandler.Handle(contract, default);
     }
 }

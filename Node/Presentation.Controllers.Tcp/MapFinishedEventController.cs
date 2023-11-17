@@ -12,12 +12,8 @@ public class MapFinishedEventController : IConsumer<MapFinishedEvent>
         _handler = handler;
     }
 
-    public Task Consume(MapFinishedEvent contract)
+    public async Task Consume(MapFinishedEvent contract)
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-        _handler.Handle(contract, cancellationTokenSource.Token);
-
-        return Task.CompletedTask;
+        await _handler.Handle(contract, default);
     }
 }
