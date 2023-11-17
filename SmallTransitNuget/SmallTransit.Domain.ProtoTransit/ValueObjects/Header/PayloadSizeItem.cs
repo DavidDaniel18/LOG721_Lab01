@@ -2,5 +2,5 @@
 
 public sealed record PayloadSizeItem() : ProtoHeaderItem("PayloadSizeItem", StorageSizeInBytes, 5)
 {
-    internal static readonly int StorageSizeInBytes = 2;
+    internal static readonly int StorageSizeInBytes = 3;
 }

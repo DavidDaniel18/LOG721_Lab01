@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

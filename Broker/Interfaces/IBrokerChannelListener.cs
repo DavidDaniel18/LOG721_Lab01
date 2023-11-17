@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using SmallTransit.Abstractions.Monads;
 
 namespace Interfaces
 {

@@ -16,6 +16,8 @@
     <ProjectReference Include="..\Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />
     <ProjectReference Include="..\Domain.Services\SmallTransit.Domain.Services.csproj" />
     <ProjectReference Include="..\SmallTransit.Abstractions\SmallTransit.Abstractions.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.Services\SmallTransit.Domain.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,10 @@
-﻿using Domain.Common.Monads;
-using Domain.ProtoTransit;
-using Domain.ProtoTransit.Entities.Messages.Core;
-using Domain.ProtoTransit.Entities.Messages.Data;
-using Domain.ProtoTransit.ValueObjects.Properties;
-using MessagePack;
+﻿using MessagePack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
+using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
 
 namespace Domain.ProtoTransitTests
 {
