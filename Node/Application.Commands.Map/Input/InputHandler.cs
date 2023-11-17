@@ -115,7 +115,23 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
 
                 string mapTopic = _algorithm.GetNextElement();
                 _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + count}] to {mapTopic}"); 
-                tasks[i] = Task.Run(() => _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), mapTopic));
+                tasks[i] = Task.Run(async () => 
+                {
+                    try
+                    {
+                        var elements = spaces.GetRange(startIndex, count);
+
+                        _logger.LogInformation($"nb of spaces to send: {elements.Count()}");
+
+                        _logger.LogInformation($"Sending...");
+                        await _publisher.PublishAsync(new MapCommand(spaces.GetRange(startIndex, count)), mapTopic);
+                        _logger.LogInformation($"Spaces sent...");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message);
+                    }
+                });
             }
 
             Task.WaitAll(tasks);

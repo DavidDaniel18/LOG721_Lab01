@@ -83,52 +83,52 @@ namespace Node
                 configure.AddStore<string, MapFinishedBool>();
                 configure.AddStore<string, ReduceFinishedBool>();
             },
-                queueConfigurator =>
+            queueConfigurator =>
+            {
+                queueConfigurator.Host("1", hostInfo.Host, hostInfo.BrokerPort);
+
+                if (string.Equals(hostInfo.NodeType, "map"))
                 {
-                    queueConfigurator.Host("1", hostInfo.Host, hostInfo.BrokerPort);
-
-                    if (string.Equals(hostInfo.NodeType, "map"))
+                    queueConfigurator.AddReceiver<MapController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                     {
-                        queueConfigurator.AddReceiver<MapController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                        rcv.RoutingKey = hostInfo.MapRoutingKey;
+                    });
+
+                    if (hostInfo.IsMaster)
+                    {
+                        queueConfigurator.AddReceiver<InputEventController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
-                            rcv.RoutingKey = hostInfo.MapRoutingKey;
+                            rcv.RoutingKey = hostInfo.InputRoutingKey;
                         });
 
-                        if (hostInfo.IsMaster)
+                        queueConfigurator.AddReceiver<MapFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
-                            queueConfigurator.AddReceiver<InputEventController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.InputRoutingKey;
-                            });
-
-                            queueConfigurator.AddReceiver<MapFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
-                            });
-
-                            queueConfigurator.AddReceiver<ShuffleController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
-                            });
-                        }
-                    }
-
-                    if (string.Equals(hostInfo.NodeType, "reduce"))
-                    {
-                        queueConfigurator.AddReceiver<ReduceController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
-                        {
-                            rcv.RoutingKey = hostInfo.ReduceRoutingKey;
+                            rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
                         });
 
-                        if (hostInfo.IsMaster)
+                        queueConfigurator.AddReceiver<ShuffleController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
-                            queueConfigurator.AddReceiver<ReduceFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
-                            {
-                                rcv.RoutingKey = hostInfo.ReduceFinishedEventRoutingKey;
-                            });
-                        }
+                            rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
+                        });
                     }
-                });
+                }
+
+                if (string.Equals(hostInfo.NodeType, "reduce"))
+                {
+                    queueConfigurator.AddReceiver<ReduceController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                    {
+                        rcv.RoutingKey = hostInfo.ReduceRoutingKey;
+                    });
+
+                    if (hostInfo.IsMaster)
+                    {
+                        queueConfigurator.AddReceiver<ReduceFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                        {
+                            rcv.RoutingKey = hostInfo.ReduceFinishedEventRoutingKey;
+                        });
+                    }
+                }
+            });
         }
 
         public static void ConfigureServices(IServiceCollection services, IConfiguration builderConfiguration)
