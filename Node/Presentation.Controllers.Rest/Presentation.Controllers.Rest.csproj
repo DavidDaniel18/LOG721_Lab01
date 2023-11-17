@@ -20,6 +20,6 @@
 
 
 	<ItemGroup>
-	  <Folder Include="Controllers\" />
+	  <ProjectReference Include="..\Application.Commands.Map\Application.Commands.Map.csproj" />
 	</ItemGroup>
 </Project>
