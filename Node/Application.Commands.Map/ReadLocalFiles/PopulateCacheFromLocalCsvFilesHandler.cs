@@ -11,6 +11,6 @@ internal sealed class PopulateCacheFromLocalCsvFilesHandler : ICommandHandler<Po
 
     public Task Handle(PopulateCacheFromLocalCsvFiles command, CancellationToken cancellation)
     {
-
+        return Task.CompletedTask;
     }
 }

@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SyncStore.Abstractions" Version="0.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
+    <ProjectReference Include="..\Domain.Barycentre\Domain.Grouping.csproj" />
+    <ProjectReference Include="..\Domain.Publicity\Domain.Publicity.csproj" />
+  </ItemGroup>
+
 </Project>

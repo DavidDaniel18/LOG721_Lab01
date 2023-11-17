@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Dtos\Application.Dtos.csproj" />
+    <ProjectReference Include="..\Domain.Barycentre\Domain.Grouping.csproj" />
+    <ProjectReference Include="..\Domain.Publicity\Domain.Publicity.csproj" />
+  </ItemGroup>
+
 </Project>

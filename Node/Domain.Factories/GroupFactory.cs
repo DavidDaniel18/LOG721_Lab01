@@ -1,11 +1,13 @@
 ﻿using Domain.Grouping;
+using Domain.Publicity;
+using System.Collections.Immutable;
 
 namespace Domain.Factories;
 
 internal sealed class GroupFactory
 {
-    internal static Group Create(string id)
+    internal static Group Create(string id, double value)
     {
-        throw new NotImplementedException();
+        return new Group(id, value, ImmutableList<Space>.Empty);
     }
 }

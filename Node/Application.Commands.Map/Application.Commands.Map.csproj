@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,15 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="ReadLocalFiles\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SyncStore.Abstractions" Version="0.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
+    <ProjectReference Include="..\Application.Commands.Orchestrator\Application.Commands.Orchestrator.csproj" />
     <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
     <ProjectReference Include="..\Application.Dtos\Application.Dtos.csproj" />
-    <ProjectReference Include="..\Application.Mappers\Application.Commands.Mappers.csproj" />
+    <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
     <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
     <ProjectReference Include="..\Domain.Services\Domain.Services.csproj" />
   </ItemGroup>

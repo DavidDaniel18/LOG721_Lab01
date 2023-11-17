@@ -33,25 +33,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Factories", "Domain.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.FileHandlers", "Infrastructure.FileHandlers\Infrastructure.FileHandlers.csproj", "{A7407B58-C3C5-426E-BB6D-DDEDFCCBE070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Clients.Rest", "Infrastructure.Clients.Rest\Infrastructure.Clients.Rest.csproj", "{B17550FF-D4DA-4607-9585-2143E1ACED67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Clients.Rest", "Infrastructure.Clients.Rest\Infrastructure.Clients.Rest.csproj", "{B17550FF-D4DA-4607-9585-2143E1ACED67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Clients.Tcp", "Infrastructure.Clients.Tcp\Infrastructure.Clients.Tcp.csproj", "{A0BEB1D1-DF5B-4EC9-AE56-81EAB54B37FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Controllers.Tcp", "Presentation.Controllers.Tcp\Presentation.Controllers.Tcp.csproj", "{98063F7C-27C2-4998-8E3A-E91FFB1652F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Common", "Application.Common\Application.Common.csproj", "{59F1EA6C-4747-48A6-B85C-3ADD35B735E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Common", "Application.Common\Application.Common.csproj", "{59F1EA6C-4747-48A6-B85C-3ADD35B735E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Cache", "Infrastructure.Cache\Infrastructure.Cache.csproj", "{F4A580FF-798B-4065-98CA-758BC59375CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Cache", "Infrastructure.Cache\Infrastructure.Cache.csproj", "{F4A580FF-798B-4065-98CA-758BC59375CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Orchestrating", "Domain.Orchestrating\Domain.Orchestrating.csproj", "{31351BEC-9006-42DF-976F-74E27AD0E915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Orchestrating", "Domain.Orchestrating\Domain.Orchestrating.csproj", "{31351BEC-9006-42DF-976F-74E27AD0E915}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Grouping", "Domain.Barycentre\Domain.Grouping.csproj", "{64AB8FAA-8A61-40A7-882C-C572C635D986}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Grouping", "Domain.Barycentre\Domain.Grouping.csproj", "{64AB8FAA-8A61-40A7-882C-C572C635D986}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Services", "Domain.Services\Domain.Services.csproj", "{56F9D513-AC03-4E67-80F8-9CC26F45F4F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Services", "Domain.Services\Domain.Services.csproj", "{56F9D513-AC03-4E67-80F8-9CC26F45F4F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Commands", "Application.Commands\Application.Commands.csproj", "{DD8AC9E0-AFF7-4092-B9E2-F16055554DB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Queries", "Application.Queries\Application.Queries.csproj", "{7F82003B-55D0-4758-A70D-A057C6A51FFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Queries", "Application.Queries\Application.Queries.csproj", "{7F82003B-55D0-4758-A70D-A057C6A51FFA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{A712C7FB-4571-435F-8BA7-E6E249AB704C}"
 EndProject
