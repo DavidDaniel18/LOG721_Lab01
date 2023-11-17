@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
-    <ProjectReference Include="..\Domain.Caching\Domain.Caching.csproj" />
     <ProjectReference Include="..\Domain.Common\Domain.Common.csproj" />
   </ItemGroup>
 
