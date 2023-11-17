@@ -23,6 +23,7 @@ using Domain.Grouping;
 using Domain.Common;
 using Application.Commands.Reducer.Reduce;
 using Configuration.Properties;
+using SmallTransit;
 
 namespace Node
 {
