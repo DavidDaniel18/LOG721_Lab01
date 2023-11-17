@@ -33,11 +33,11 @@ public static class ServiceRegistration
         collection.AddSingleton(typeof(IControllerDelegate<>), typeof(ControllerDispatcher<>));
         collection.AddSingleton(typeof(IReceiveControllerDelegate), typeof(ReceiveControllerDispatcher));
 
-        collection.AddSingleton<ClientFactory>();
-
         var configuration = new Configurator();
 
         configurator?.Invoke(configuration);
+
+        collection.AddSingleton<ClientFactory>();
 
         List<TargetConfiguration> targetConfigurations = new();
 
@@ -52,6 +52,8 @@ public static class ServiceRegistration
             var factory = services.GetRequiredService<ClientFactory>();
 
             var collection = targetConfigurations
+                    .Concat(configuration.QueueConfigurators.Select(queue => queue.TargetConfiguration))
+                    .ToList()
                 .ConvertAll(target => new KeyValuePair<string, ITargetConfiguration>(target.TargetKey, target));
 
             var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(collection), factory);

@@ -53,8 +53,6 @@ namespace Node
 
             Task.Delay(5000).Wait();
 
-            ConfigureSmallTransit(builder.Services, hostInfo);
-
             ConfigureSyncStore(builder.Services, hostInfo);
 
             ConfigureServices(builder.Services, builder.Configuration);
@@ -84,37 +82,31 @@ namespace Node
                 configure.AddStore<string, Group>();
                 configure.AddStore<string, MapFinishedBool>();
                 configure.AddStore<string, ReduceFinishedBool>();
-            });
-        }
-
-        public static void ConfigureSmallTransit(IServiceCollection services, IHostInfo hostInfo)
-        {
-            services.AddSmallTransit(cfg =>
-            {
-                cfg.AddQueueConfigurator(configuration =>
+            },
+                queueConfigurator =>
                 {
-                    configuration.Host("1", hostInfo.Host, hostInfo.BrokerPort);
+                    queueConfigurator.Host("1", hostInfo.Host, hostInfo.BrokerPort);
 
                     if (string.Equals(hostInfo.NodeType, "map"))
                     {
-                        configuration.AddReceiver<MapController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                        queueConfigurator.AddReceiver<MapController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
                             rcv.RoutingKey = hostInfo.MapRoutingKey;
                         });
 
                         if (hostInfo.IsMaster)
                         {
-                            configuration.AddReceiver<InputEventController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                            queueConfigurator.AddReceiver<InputEventController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.InputRoutingKey;
                             });
 
-                            configuration.AddReceiver<MapFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                            queueConfigurator.AddReceiver<MapFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.MapFinishedEventRoutingKey;
                             });
 
-                            configuration.AddReceiver<ShuffleController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                            queueConfigurator.AddReceiver<ShuffleController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.MapShuffleRoutingKey;
                             });
@@ -123,21 +115,20 @@ namespace Node
 
                     if (string.Equals(hostInfo.NodeType, "reduce"))
                     {
-                        configuration.AddReceiver<ReduceController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                        queueConfigurator.AddReceiver<ReduceController>($"worker.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                         {
                             rcv.RoutingKey = hostInfo.ReduceRoutingKey;
                         });
 
                         if (hostInfo.IsMaster)
                         {
-                            configuration.AddReceiver<ReduceFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
+                            queueConfigurator.AddReceiver<ReduceFinishedEventController>($"orchestrator.queue.{hostInfo.NodeName}.{Guid.NewGuid()}", rcv =>
                             {
                                 rcv.RoutingKey = hostInfo.ReduceFinishedEventRoutingKey;
                             });
                         }
                     }
                 });
-            });
         }
 
         public static void ConfigureServices(IServiceCollection services, IConfiguration builderConfiguration)
