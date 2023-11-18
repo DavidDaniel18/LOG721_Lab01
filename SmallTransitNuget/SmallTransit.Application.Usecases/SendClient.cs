@@ -10,7 +10,7 @@ namespace SmallTransit.Application.UseCases;
 
 public sealed class SendClient<TContract, TResult> : IDisposable
 {
-    private readonly ConcurrentDictionary<string, TargerResolver<TContract, TResult>> _resolvers = new();
+    private readonly ConcurrentDictionary<string, TargerResolver> _resolvers = new();
     private readonly INetworkStreamCache _networkStreamCache;
     private readonly ILogger<PublishClient<TContract>> _logger;
     private readonly IServiceProvider _provider;
@@ -27,9 +27,9 @@ public sealed class SendClient<TContract, TResult> : IDisposable
     {
         var targetResolver = _resolvers.GetOrAdd(targetId, _ =>
         {
-            var tcpBridge = _provider.GetRequiredService<ITcpBridge>();
+            var tcpBridge = _provider.CreateScope().ServiceProvider.GetRequiredService<ITcpBridge>();
 
-            return new TargerResolver<TContract, TResult>(tcpBridge);
+            return new TargerResolver(tcpBridge);
         });
 
         var tcpBridge = targetResolver.TcpBridge;
@@ -58,7 +58,7 @@ public sealed class SendClient<TContract, TResult> : IDisposable
         _cancellationTokenSource.Dispose();
     }
 
-    private class TargerResolver<TContract, TResult>
+    private class TargerResolver
     {
         public ITcpBridge TcpBridge { get; }
 

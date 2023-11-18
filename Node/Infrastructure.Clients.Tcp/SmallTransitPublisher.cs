@@ -14,6 +14,6 @@ public sealed class SmallTransitPublisher<TMessage> : IMessagePublisher<TMessage
 
     public async Task PublishAsync(TMessage message, string routingKey)
     {
-        await _publisher.Publish(message, routingKey, "1");
+        await _publisher.Publish(message, routingKey, "Broker1");
     }
 }

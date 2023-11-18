@@ -20,8 +20,6 @@ public sealed class NetworkStreamCache : INetworkStreamCache
 
     public INetworkStream GetOrAdd(string key, ILogger logger)
     {
-        logger.LogInformation("creating bus to, key: {key}", key);
-
         return _networkStacks.GetOrAdd(key, key =>
         {
             try

@@ -81,7 +81,7 @@ namespace Configuration
             },
             queueConfigurator =>
             {
-                queueConfigurator.Host("1", hostInfo.Host, hostInfo.BrokerPort);
+                queueConfigurator.Host("Broker1", hostInfo.Host, hostInfo.BrokerPort);
 
                 if (string.Equals(hostInfo.NodeType, "map"))
                 {
@@ -198,18 +198,6 @@ namespace Configuration
 
         private static void DomainSetup(IServiceCollection services)
         {
-        }
-
-        private static void ScrutorScanForType(IServiceCollection services, Type type,
-            ServiceLifetime lifetime = ServiceLifetime.Scoped, params string[] assemblyNames)
-        {
-            services.Scan(selector =>
-            {
-                selector.FromAssemblies(assemblyNames.Select(Assembly.Load))
-                    .AddClasses(filter => filter.AssignableTo(type))
-                    .AsImplementedInterfaces()
-                    .WithLifetime(lifetime);
-            });
         }
     }
 }

@@ -8,11 +8,12 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MessagePack" Version="2.5.129" />
 		<PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.12" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-		<PackageReference Include="SyncStore" Version="1.0.20" />
+		<PackageReference Include="SyncStore" Version="1.0.28" />
 		<PackageReference Include="SyncStore.Abstractions" Version="1.0.0" />
 	</ItemGroup>
 
@@ -21,6 +22,7 @@
 	  <ProjectReference Include="..\Application.Commands.Orchestrator\Application.Commands.Orchestrator.csproj" />
 	  <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
 	  <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
+	  <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
 	  <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
 	  <ProjectReference Include="..\Domain.Barycentre\Domain.Grouping.csproj" />
 	  <ProjectReference Include="..\Domain.Common\Domain.Common.csproj" />

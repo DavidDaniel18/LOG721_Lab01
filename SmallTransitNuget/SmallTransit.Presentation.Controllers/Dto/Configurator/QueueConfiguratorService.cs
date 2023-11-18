@@ -6,7 +6,7 @@ namespace SmallTransit.Presentation.Controllers.Dto.Configurator;
 
 public sealed class QueueConfiguratorService : IQueueConfigurator
 {
-    public TargetConfiguration TargetConfiguration { get; private set; }
+    public TargetConfiguration? TargetConfiguration { get; private set; }
  
     public readonly ConcurrentBag<ReceiverConfiguration> ReceiverConfigurator = new();
 

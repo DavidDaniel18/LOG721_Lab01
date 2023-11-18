@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,9 +43,11 @@ public static class ServiceRegistration
         List<TargetConfiguration> targetConfigurations = new();
 
         targetConfigurations.AddRange(configuration.TargetPointConfigurators);
-        targetConfigurations.AddRange(configuration.QueueConfigurators.Select(queue => queue.TargetConfiguration).ToList());
+        targetConfigurations.AddRange(configuration.QueueConfigurators.Select(queue => queue.TargetConfiguration).OfType<TargetConfiguration>().ToList());
 
-        LoadQueueConfigurations(collection, configuration, targetConfigurations);
+        targetConfigurations = targetConfigurations.DistinctBy(targetConfiguration => targetConfiguration.TargetKey).ToList();
+
+        LoadQueueConfigurations(collection, configuration);
 
         LoadPointConfigurations(collection, configuration);
 
@@ -52,15 +55,17 @@ public static class ServiceRegistration
         {
             var factory = services.GetRequiredService<ClientFactory>();
 
-            var collection = targetConfigurations
+            var keyValuePairs = targetConfigurations
                 .ConvertAll(target => new KeyValuePair<string, ITargetConfiguration>(target.TargetKey, target));
 
-            foreach (var pair in collection)
+            keyValuePairs = keyValuePairs.DistinctBy(pair => pair.Key).ToList();
+
+            foreach (var pair in keyValuePairs)
             {
                 Console.WriteLine($"pair key:{pair.Key}, pair value host: {pair.Value.Host}, pair value port: {pair.Value.Port}");
             }
 
-            var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(collection), factory);
+            var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(), factory);
 
             return cache;
         });
@@ -98,8 +103,7 @@ public static class ServiceRegistration
         }
     }
 
-    private static void LoadQueueConfigurations(IServiceCollection collection, Configurator configuration,
-        List<TargetConfiguration> targetConfigurations)
+    private static void LoadQueueConfigurations(IServiceCollection collection, Configurator configuration)
     {
         if (configuration.QueueConfigurators.Any())
         {
@@ -110,8 +114,6 @@ public static class ServiceRegistration
 
             foreach (var queueConfigurator in configuration.QueueConfigurators)
             {
-                targetConfigurations.Add(queueConfigurator.TargetConfiguration);
-
                 foreach (var receiverConfiguration in queueConfigurator.ReceiverConfigurator)
                 {
                     collection.AddScoped(receiverConfiguration.IConsumerInterface,
@@ -153,8 +155,6 @@ public static class ServiceRegistration
     private static void Infrastructure(IServiceCollection collection)
     {
         collection.AddTransient<TcpBridge>();
-
-        collection.AddSingleton<INetworkStreamCache>(serviceProvider => serviceProvider.GetRequiredService<NetworkStreamCache>());
 
         collection.AddTransient<ITcpBridge>(serviceProvider => serviceProvider.GetRequiredService<TcpBridge>());
         collection.AddTransient<IComHandler>(serviceProvider => serviceProvider.GetRequiredService<TcpBridge>());

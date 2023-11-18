@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Services\SmallTransit.Application.Services.csproj" />
+    <ProjectReference Include="..\SmallTransit.Application.Services\SmallTransit.Application.Services.csproj" />
     <ProjectReference Include="..\SmallTransit.Application.Services\SmallTransit.Application.Services.csproj" />
     <ProjectReference Include="..\SmallTransit.Domain.Services\SmallTransit.Domain.Services.csproj" />
   </ItemGroup>

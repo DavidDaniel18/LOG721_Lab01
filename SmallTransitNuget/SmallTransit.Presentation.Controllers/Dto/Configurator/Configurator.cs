@@ -19,7 +19,7 @@ public sealed class Configurator : IConfigurator
 
         queueConfigurator?.Invoke(configurator);
 
-        configurator.TargetConfiguration.Validate();
+        configurator.TargetConfiguration!.Validate();
 
         QueueConfigurators.Add(configurator);
     }
