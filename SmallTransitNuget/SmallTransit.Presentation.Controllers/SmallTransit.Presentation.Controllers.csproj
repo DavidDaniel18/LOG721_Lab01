@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Usecases\SmallTransit.Application.UseCases.csproj" />
-    <ProjectReference Include="..\Domain.Common\SmallTransit.Domain.Common.csproj" />
+    <ProjectReference Include="..\SmallTransit.Application.Usecases\SmallTransit.Application.UseCases.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.Common\SmallTransit.Domain.Common.csproj" />
     <ProjectReference Include="..\SmallTransit.Application.Services\SmallTransit.Application.Services.csproj" />
     <ProjectReference Include="..\SmallTransit.Application.Usecases\SmallTransit.Application.UseCases.csproj" />
     <ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />

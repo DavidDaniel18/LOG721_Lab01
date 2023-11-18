@@ -8,25 +8,26 @@ internal static class ByteExtensions
 
         ToBigEndian(fullBytes);
 
-        int startIndex = 0;
+        var index = fullBytes.Length - 1;
+        var zeros = 0;
 
-        // Find the first non-zero byte
-        while (startIndex < fullBytes.Length && fullBytes[startIndex] == 0)
+        while (fullBytes[index].Equals(0))
         {
-            startIndex++;
+            index--;
+            zeros++;
         }
 
         // If all bytes are zero (i.e., the value is 0), return a single byte array
-        if (startIndex == fullBytes.Length)
+        if (zeros == fullBytes.Length)
         {
             return new byte[] { 0 };
         }
 
-        int length = fullBytes.Length - startIndex;
+        int length = fullBytes.Length - zeros;
 
         byte[] result = new byte[length];
 
-        Array.Copy(fullBytes, startIndex, result, 0, length);
+        Array.Copy(fullBytes, 0, result, 0, length);
 
         return result;
     }
@@ -35,17 +36,20 @@ internal static class ByteExtensions
     {
         if (value.Length > 4) throw new Exception("Value is too big to be converted to int");
 
-        if (value.Length >1)
+        if (!BitConverter.IsLittleEndian)
         {
-            var index = value.Length-1;
-            var zeros = 0;
-            while (value[index].Equals(0))
+            if (value.Length > 1)
             {
-                index--;
-                zeros++;
-            }
+                var index = value.Length - 1;
+                var zeros = 0;
+                while (value[index].Equals(0))
+                {
+                    index--;
+                    zeros++;
+                }
 
-            Array.Reverse(value, 0, value.Length-zeros);
+                Array.Reverse(value, 0, value.Length - zeros);
+            }
         }
 
         byte[] paddedValue = new byte[4];
@@ -61,7 +65,7 @@ internal static class ByteExtensions
 
     private static void ToBigEndian(byte[] bytes)
     {
-        if (BitConverter.IsLittleEndian)
+        if (!BitConverter.IsLittleEndian)
         {
             Array.Reverse(bytes);
         }

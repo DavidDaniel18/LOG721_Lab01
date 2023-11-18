@@ -4,6 +4,7 @@ using SmallTransit.Abstractions.Monads;
 using SmallTransit.Domain.ProtoTransit;
 using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
 using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.Extensions;
 using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
 
 namespace Domain.ProtoTransitTests
@@ -12,13 +13,23 @@ namespace Domain.ProtoTransitTests
     public class MessageFactoryTests
     {
         [TestMethod()]
+        public void ByteProtocol()
+        {
+            var bytes = new byte[] { 51,0,0,0 };
+
+            var number = bytes.FromBytesToInt();
+
+            Assert.IsTrue(number == 51);
+        }
+
+        [TestMethod()]
         public void PublishProtocol()
         {
             var message = MessageFactory.Create(MessageTypesEnum.Publish);
 
             List<int> ints = new();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100000000; i++)
             {
                 ints.Add(i);   
             }

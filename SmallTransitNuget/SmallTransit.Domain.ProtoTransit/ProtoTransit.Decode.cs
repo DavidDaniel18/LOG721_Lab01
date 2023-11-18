@@ -57,7 +57,7 @@ internal abstract partial class Protocol
                 throw new Exception("Message portion length is 0");
 
             if (messagePortion.BeginAtIndex + messagePortion.Length > message.Length)
-                throw new Exception("Message portion length is greater than message length");
+                throw new Exception($"Message portion length is greater than message length { messagePortion.BeginAtIndex + messagePortion.Length } > { message.Length }, MessagePortionLength ({messagePortion.Length})");
 
             return message[messagePortion.BeginAtIndex..(messagePortion.Length + messagePortion.BeginAtIndex)];
         }

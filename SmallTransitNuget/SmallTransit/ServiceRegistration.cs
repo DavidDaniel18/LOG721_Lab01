@@ -43,11 +43,8 @@ public static class ServiceRegistration
         List<TargetConfiguration> targetConfigurations = new();
 
         targetConfigurations.AddRange(configuration.TargetPointConfigurators);
-        targetConfigurations.AddRange(configuration.QueueConfigurators.Select(queue => queue.TargetConfiguration).OfType<TargetConfiguration>().ToList());
 
-        targetConfigurations = targetConfigurations.DistinctBy(targetConfiguration => targetConfiguration.TargetKey).ToList();
-
-        LoadQueueConfigurations(collection, configuration);
+        LoadQueueConfigurations(collection, configuration, targetConfigurations);
 
         LoadPointConfigurations(collection, configuration);
 
@@ -65,7 +62,7 @@ public static class ServiceRegistration
                 Console.WriteLine($"pair key:{pair.Key}, pair value host: {pair.Value.Host}, pair value port: {pair.Value.Port}");
             }
 
-            var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(), factory);
+            var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(keyValuePairs), factory);
 
             return cache;
         });
@@ -103,7 +100,7 @@ public static class ServiceRegistration
         }
     }
 
-    private static void LoadQueueConfigurations(IServiceCollection collection, Configurator configuration)
+    private static void LoadQueueConfigurations(IServiceCollection collection, Configurator configuration, List<TargetConfiguration> targetConfigurations)
     {
         if (configuration.QueueConfigurators.Any())
         {
@@ -114,6 +111,8 @@ public static class ServiceRegistration
 
             foreach (var queueConfigurator in configuration.QueueConfigurators)
             {
+                targetConfigurations.Add(queueConfigurator.TargetConfiguration);
+
                 foreach (var receiverConfiguration in queueConfigurator.ReceiverConfigurator)
                 {
                     collection.AddScoped(receiverConfiguration.IConsumerInterface,

@@ -7,14 +7,15 @@ namespace SmallTransit.Infrastructure.TcpClient;
 
 public sealed class NetworkStreamCache : INetworkStreamCache
 {
-    private readonly ConcurrentDictionary<string, ITargetConfiguration> _configurations;
+    private static ConcurrentDictionary<string, ITargetConfiguration>? _configurations;
+
     private readonly ClientFactory _clientFactory;
 
     private readonly ConcurrentDictionary<string, INetworkStream> _networkStacks = new();
 
     public NetworkStreamCache(ConcurrentDictionary<string, ITargetConfiguration> configurations, ClientFactory clientFactory)
     {
-        _configurations = configurations;
+        _configurations ??= configurations;
         _clientFactory = clientFactory;
     }
 
