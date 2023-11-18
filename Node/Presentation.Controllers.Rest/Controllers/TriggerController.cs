@@ -43,7 +43,7 @@ namespace Presentation.Controllers.Rest.Controllers
         [ActionName("Map")]
         public async Task<ActionResult> Map(string routingKey = "command/map1", int startIndex = 0, int endIndex = 24)
         {
-            await _mapPublisher.PublishAsync(new MapCommand(startIndex, endIndex), routingKey);
+            await _mapPublisher.PublishAsync(new MapCommand(new()), routingKey);
 
             return Ok("Map sent.");
         }

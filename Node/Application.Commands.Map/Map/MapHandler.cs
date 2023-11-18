@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Map.Event;
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Grouping;
 using Domain.Publicity;
 using Domain.Services;
@@ -37,22 +38,38 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
 
     public async Task Handle(MapCommand command, CancellationToken cancellation)
     {
-        _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
+        await Try.WithConsequenceAsync(async () =>
+        {
+            _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
 
-        var spaceIdDic = command.SpaceIds.ToDictionary(s => s);
-        var spacesFromCache = await _spaceCache.Query(s => s.Where(space => spaceIdDic.ContainsKey(space.Id)));
-        var groups = await _groupsCache.Query(g => g);
+            var spaceIdDic = command.SpaceIds.ToDictionary(s => s);
 
-        _logger.LogInformation($"Spaces ids count fetched from command: [{command.SpaceIds.Count()}]");
+            var spacesFromCache = await _spaceCache.Query(s => s.Where(space => spaceIdDic.ContainsKey(space.Id)));
 
-        spacesFromCache.ToList().ForEach(space => space.GroupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id);
+            var groups = await _groupsCache.Query(g => g);
 
-        _logger.LogInformation("Saves spaces with closests group linked to it...");
+            _logger.LogInformation($"Spaces ids count fetched from command: [{command.SpaceIds.Count()}]");
 
-        await _spaceCache.AddOrUpdateRange(spacesFromCache.Select(s => (s.Id, s)).ToList());
-        await _spaceCache.SaveChangesAsync();
+            spacesFromCache.ToList().ForEach(space => space.GroupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id);
 
-        _logger.LogInformation("Send Map terminated event...");
+            _logger.LogInformation("Saves spaces with closests group linked to it...");
+
+            await _spaceCache.AddOrUpdateRange(spacesFromCache.Select(s => (s.Id, s)).ToList());
+
+            await _spaceCache.SaveChangesAsync();
+
+            _logger.LogInformation("Send Map terminated event...");
+
+            return true;
+        }, async (_, _) =>
+        {
+            await _spaceCache.UndoChangesAsync();
+
+            _logger.LogInformation("Undo changes on spaces cache...");
+        }, 
+            retryCount: 5);
+       
+        _logger.LogInformation("Send MapFinishedEvent...");
 
         await _publisher.PublishAsync(new MapFinishedEvent(_hostInfo.MapRoutingKey), _hostInfo.MapFinishedEventRoutingKey);
     }

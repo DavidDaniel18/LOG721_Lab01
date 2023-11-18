@@ -109,8 +109,9 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
                 _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + chunkSize - 1}] to {mapTopic}"); 
                 _logger.LogInformation($"Sending...");
 
-                int endIndex =  startIndex + (chunkSize - 1);
-                endIndex = endIndex >= spaces.Count() ? spaces.Count() - 1 : endIndex;
+                var endIndex =  startIndex + chunkSize;
+
+                endIndex = endIndex >= spaces.Count() ? spaces.Count() : endIndex;
 
                 var spaceIds = spaces.ToArray()[startIndex..endIndex].Select(s => s.Id).ToList();
 
