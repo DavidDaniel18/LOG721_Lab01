@@ -19,8 +19,16 @@ public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
 
     private ISyncStore<string, Group> _groupsCache;
 
-    public ReduceHandler(ILogger<ReduceHandler> logger, ISyncStore<string, Group> groupsCache, IHostInfo hostInfo, IMessagePublisher<ReduceFinishedEvent> publisher)
+    private ISyncStore<string, Space> _spacesCache;
+
+    public ReduceHandler(
+        ILogger<ReduceHandler> logger,
+        ISyncStore<string, Group> groupsCache,
+        ISyncStore<string, Space> spaceCache,
+        IHostInfo hostInfo, 
+        IMessagePublisher<ReduceFinishedEvent> publisher)
     {
+        _spacesCache = spaceCache;
         _logger = logger;
         _groupsCache = groupsCache;
         _hostInfo = hostInfo;
@@ -30,14 +38,15 @@ public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
     public async Task Handle(Commands.Reduce command, CancellationToken cancellation)
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
-        var spacesForGroup = command.group.Spaces;
+
+        var spaces = await _spacesCache.Query(s => s.Where(space => space.GroupId!.Equals(command.group.Id)));
 
         double barycentre = command.group.Barycentre;
 
         _logger.LogInformation($"Calculate avg for groupId: {command.group.Id}");
         double avg = 0;
-        spacesForGroup.ForEach(s => avg += s.GetNormalizedValue());
-        avg /= spacesForGroup.Count();
+        spaces.ForEach(s => avg += s.GetNormalizedValue());
+        avg /= spaces.Count();
 
         _logger.LogInformation($"Save avg {avg} and emptied the spaces list of the group...");
         await _groupsCache.AddOrUpdate(command.group.Id, new Group(command.group.Id, avg, ImmutableList<Space>.Empty));

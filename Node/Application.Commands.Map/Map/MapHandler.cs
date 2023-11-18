@@ -39,23 +39,21 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
 
+        var spacesFromCache = await _spaceCache.Query(s => s);
         var groups = await _groupsCache.Query(g => g);
 
-        var spaces = await _spaceCache.Query(s => s);
+        List<Space> spaces = spacesFromCache.Skip(command.StartIndex).Take(command.EndIndex + 1 - command.StartIndex).ToList();
 
-        spaces.Skip(command.StartIndex).Take(command.EndIndex + 1 - command.StartIndex).ToList()
-            .ForEach(space =>
-            {
-                var group = GroupServices.GetClosestGroupByBarycentre(space, groups);
+        _logger.LogInformation($"Find closests groups for space range: [{command.StartIndex}, {command.EndIndex}]...");
+        spaces = spaces.Select(space => 
+        {
+            space.GroupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id;
+            return space;
+        }).ToList();
 
-                group.Spaces = group.Spaces.Add(space);
-            });
+        _logger.LogInformation("Saves spaces with closests group linked to it...");
 
-        _logger.LogInformation("Saves groups with closests spaces linked to it...");
-
-        await _groupsCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)).ToList());
-
-        await _spaceCache.SaveChangesAsync();
+        await _spaceCache.AddOrUpdateRange(spaces.Select(s => (s.Id, s)).ToList());
 
         _logger.LogInformation("Send Map terminated event...");
 

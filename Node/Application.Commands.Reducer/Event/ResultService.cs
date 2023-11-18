@@ -81,14 +81,6 @@ public class ResultService : IResultService
 
     public async Task IncrementIteration()
     {
-        var groups = await _groupCache.Query(g => g);
-
-        groups.ForEach(g => g.Spaces = g.Spaces.Clear()); // second space clear (failsafe). Maybe not needed.
-
-        await _groupCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)).ToList());
-
-        await _groupCache.SaveChangesAsync();
-
         var groupsFinished = await _groupResultReceived.Query(g => g);
 
         groupsFinished.ForEach(g => g.IsFinished = false);
