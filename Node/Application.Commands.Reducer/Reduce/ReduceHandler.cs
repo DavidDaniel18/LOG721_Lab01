@@ -42,8 +42,11 @@ public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
         var spacesAll= await _spacesCache.Query(s => s);
 
         var spaces = await _spacesCache.Query(s => s.Where(space => space.GroupId!.Equals(command.group.Id)));
-    
-        double barycentre = command.group.Barycentre;
+
+        var group = await _groupsCache.TryGet(command.group.Id);
+
+        if (group == null)
+            throw new Exception($"Did not find group {command.group.Id}");
 
         _logger.LogInformation($"Calculate avg for groupId: {command.group.Id}");
         double avg = 0;
@@ -58,6 +61,6 @@ public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
         await _groupsCache.SaveChangesAsync();
 
         _logger.LogInformation($"Send ReduceFinishedEvent...");
-        await _publisher.PublishAsync(new ReduceFinishedEvent(command.group, Math.Abs(avg - barycentre)), _hostInfo.ReduceFinishedEventRoutingKey);
+        await _publisher.PublishAsync(new ReduceFinishedEvent(command.group, Math.Abs(avg - group?.Barycentre ?? 0)), _hostInfo.ReduceFinishedEventRoutingKey);
     }
 }
