@@ -32,7 +32,7 @@ internal abstract partial class Protocol
 
     private Result<(Protocol Protocol, int Length)> InitializeFrom(byte[] message)
     {
-        var result = Header.GetPropertyHeaderInfos(_protoProperties.Values.ToArray());
+        var result = Header.GetPropertyHeaderInfos(_protoProperties.Values.ToArray(), message.Length);
 
         if (result.IsFailure()) return Result.FromFailure<(Protocol Protocol, int Length)>(result);
 

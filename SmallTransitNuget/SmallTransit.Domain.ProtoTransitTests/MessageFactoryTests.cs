@@ -4,6 +4,7 @@ using SmallTransit.Abstractions.Monads;
 using SmallTransit.Domain.ProtoTransit;
 using SmallTransit.Domain.ProtoTransit.Entities.Messages.Core;
 using SmallTransit.Domain.ProtoTransit.Entities.Messages.Data;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
 using SmallTransit.Domain.ProtoTransit.Extensions;
 using SmallTransit.Domain.ProtoTransit.ValueObjects.Properties;
 
@@ -92,6 +93,54 @@ namespace Domain.ProtoTransitTests
             Assert.IsTrue(newRoutingKey.Equals("Key.Test"));
             Assert.IsTrue(newPayloadType.Equals(nameof(TestHeavyPayload)));
             Assert.IsTrue(newPayload.Equals(payload));
+        }
+
+        [TestMethod()]
+        public void IncompleteMessageProtocol()
+        {
+            var message = MessageFactory.Create(MessageTypesEnum.Publish);
+
+            List<int> ints = new();
+
+            for (int i = 0; i < 100000000; i++)
+            {
+                ints.Add(i);
+            }
+
+            var payload = new TestHeavyPayload()
+            {
+                Message = "John Doe",
+                DateTime = DateTime.UtcNow,
+                Id = Guid.NewGuid(),
+                Ints = ints
+            };
+
+            var options = MessagePackSerializerOptions.Standard.WithResolver(MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+
+            var routingKey = MessagePackSerializer.Serialize("Key.Test");
+            var payloadType = MessagePackSerializer.Serialize(nameof(TestHeavyPayload));
+            var serializedPayload = MessagePackSerializer.Serialize(payload, options);
+
+            Result.From(
+                    message.TrySetProperty<RoutingKey>(routingKey),
+                    message.TrySetProperty<PayloadType>(payloadType),
+                    message.TrySetProperty<Payload>(serializedPayload))
+                .ThrowIfException();
+
+
+            Assert.IsTrue(message is Publish);
+
+            var bytesResult = message.GetBytes();
+
+            Assert.IsTrue(bytesResult.IsSuccess());
+            Assert.IsTrue(bytesResult.Content!.Length > 0);
+
+            var incompleteMessage = bytesResult.Content[..^10];
+
+            var conversionResult = Protocol.TryParseMessage(incompleteMessage);
+
+            Assert.IsTrue(conversionResult.IsFailure());
+            Assert.IsTrue(conversionResult.Exception is MessageIncompleteException);
         }
 
         [TestMethod()]

@@ -1,4 +1,5 @@
 ﻿using SmallTransit.Abstractions.Monads;
+using SmallTransit.Domain.ProtoTransit.Exceptions;
 using SmallTransit.Domain.ProtoTransit.Extensions;
 using SmallTransit.Domain.ProtoTransit.Seedwork;
 using SmallTransit.Domain.ProtoTransit.ValueObjects.Header;
@@ -30,7 +31,7 @@ internal partial class ProtoHeader
         return Result.Success(messageType);
     }
 
-    internal Result<List<MessagePortion>> GetPropertyHeaderInfos(IEnumerable<ProtoProperty> protoProperties)
+    internal Result<List<MessagePortion>> GetPropertyHeaderInfos(IEnumerable<ProtoProperty> protoProperties, int messageLength)
     {
         var messagePortions = new List<MessagePortion>();
 
@@ -43,6 +44,8 @@ internal partial class ProtoHeader
             var valueResult = GetHeaderItemValue(protoProperty.HeaderType);
 
             if (valueResult.IsFailure()) return Result.FromFailure<List<MessagePortion>>(valueResult);
+
+            if(totalHeaderLength + currentIndex + valueResult.Content > messageLength) return Result.Failure<List<MessagePortion>> (new MessageIncompleteException());
 
             messagePortions.Add(new MessagePortion(totalHeaderLength + currentIndex, valueResult.Content, protoProperty.GetType()));
 
