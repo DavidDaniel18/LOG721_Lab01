@@ -100,11 +100,7 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         await SendSpacesToMappers();
         async Task SendSpacesToMappers()
         {
-            var getSpaces = _spacesCache.Query(q => q);
-
-            Task.WaitAll(getSpaces);
-
-            var spaces = getSpaces.Result;
+            var spaces = await _spacesCache.Query(q => q);
 
             var mapTopics = _hostInfo.MapRoutingKeys.Split(',').ToList();
 

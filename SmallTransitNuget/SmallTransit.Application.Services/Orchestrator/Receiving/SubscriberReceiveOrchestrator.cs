@@ -44,7 +44,7 @@ internal sealed class SubscriberReceiveOrchestrator<TContract> : ReceiveOrchestr
 
                 var clientReceiveResult = Context.Handle(parsingResult.Content!.Protocol);
 
-                var result = await BindMonadExtensions.BindAsync((Task<Result>)clientReceiveResult.BindAsync(BrokerHandleMessage), (Func<Task<Result>>)(async () => await AnswerClient(clientReceiveResult.Content!)));
+                var result = await clientReceiveResult.BindAsync(BrokerHandleMessage).BindAsync(async () => await AnswerClient(clientReceiveResult.Content!));
 
                 if (result.IsFailure()) return Result.FromFailure(result);
             }

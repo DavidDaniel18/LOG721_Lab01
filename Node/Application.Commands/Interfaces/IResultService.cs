@@ -2,9 +2,9 @@
 
 public interface IResultService
 {
-    public void DisplayResults();
-    public bool HasMoreIterations();
-    public bool HasFinishedCollectedResults();
-    public void IncrementIteration();
-    public void ReceiveResult(string groupId, double delta);
+    public Task DisplayResults();
+    public Task<bool> HasMoreIterations();
+    public Task<bool> HasFinishedCollectedResults();
+    public Task IncrementIteration();
+    public Task ReceiveResult(string groupId, double delta);
 }

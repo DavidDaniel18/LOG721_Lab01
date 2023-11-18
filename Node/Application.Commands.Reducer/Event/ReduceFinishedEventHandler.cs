@@ -24,36 +24,35 @@ public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedE
         _resultService = resultService;
     }
 
-    public Task Handle(ReduceFinishedEvent command, CancellationToken cancellation)
+    public async Task Handle(ReduceFinishedEvent command, CancellationToken cancellation)
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
 
-        _resultService.ReceiveResult(command.group.Id, command.delta);
+        await _resultService.ReceiveResult(command.group.Id, command.delta);
 
-        if (_resultService.HasFinishedCollectedResults())
+        if (await _resultService.HasFinishedCollectedResults())
         {
             _logger.LogInformation($"Finished iteration");
 
-            _resultService.IncrementIteration();
-            _resultService.DisplayResults();
+            await _resultService.IncrementIteration();
+            
+            await _resultService.DisplayResults();
 
-            if (_resultService.HasMoreIterations())
+            if (await _resultService.HasMoreIterations())
             {
                 _logger.LogInformation($"Start next iteration");
                 // send message to input master to trigger another iteration
-                _publisher.PublishAsync(new InputCommand(_hostInfo.DataCsvName, _hostInfo.GroupCsvName), _hostInfo.InputRoutingKey);
+                await _publisher.PublishAsync(new InputCommand(_hostInfo.DataCsvName, _hostInfo.GroupCsvName), _hostInfo.InputRoutingKey);
             } 
             else
             {
                 Console.WriteLine("Last iteration finished...\nMap Reduce terminated");
-                _resultService.DisplayResults();
+                await _resultService.DisplayResults();
             }
         }
         else
         {
             _logger.LogInformation("Not finished yet... still waiting for other results...");
         }
-        
-        return Task.CompletedTask;
     }
 }

@@ -57,11 +57,6 @@ public static class ServiceRegistration
 
             keyValuePairs = keyValuePairs.DistinctBy(pair => pair.Key).ToList();
 
-            foreach (var pair in keyValuePairs)
-            {
-                Console.WriteLine($"pair key:{pair.Key}, pair value host: {pair.Value.Host}, pair value port: {pair.Value.Port}");
-            }
-
             var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(keyValuePairs), factory);
 
             return cache;

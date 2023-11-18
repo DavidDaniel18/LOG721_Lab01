@@ -12,8 +12,9 @@
 		<PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.12" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
+		<PackageReference Include="SmallTransit" Version="1.2.5" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-		<PackageReference Include="SyncStore" Version="1.0.38" />
+		<PackageReference Include="SyncStore" Version="1.0.40" />
 		<PackageReference Include="SyncStore.Abstractions" Version="1.0.0" />
 	</ItemGroup>
 

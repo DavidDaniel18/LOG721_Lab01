@@ -16,9 +16,7 @@ public sealed class ClientFactory
     public Result<INetworkStream> RetryCreateClient(string host, int port, string key)
     {
         do
-        {
-            _logger.LogInformation("creating bus to, host: {host}, port: {port}, with key: {key}", host, port, key);
-
+        {   
             var connectionResult = GetDestinationClient(host, port, key);
 
             if (connectionResult.IsFailure())
