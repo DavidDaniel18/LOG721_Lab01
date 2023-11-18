@@ -53,17 +53,19 @@ public class ResultService : IResultService
 
     public async Task ReceiveResult(string groupId, double delta)
     {
+        _logger.LogInformation($"ReceiveResult: groupId: {groupId}, delta: {delta}");
         await _groupResultReceived.AddOrUpdate(groupId, new ReduceFinishedBool { IsFinished = true, Id = groupId, Delta = delta });
-
         await _groupResultReceived.SaveChangesAsync();
+        _logger.LogInformation($"ReceiveResult: groupId: {groupId}, delta: {delta}, [SAVED]");
     }
 
     public async Task<bool> HasFinishedCollectedResults()
     {
-        var getGroupResultReceived = await _groupResultReceived.Query(q => q.Where(s => s.IsFinished));
+        var getGroupResultReceived = await _groupResultReceived.Query(q => q);
+        var groupsResultReceivedFinished = getGroupResultReceived.Where(s => s.IsFinished);
         var getGroups = await _groupCache.Query(g => g);
 
-        _logger.LogInformation($"finished count: {getGroupResultReceived.Count()}, nb of groups: {getGroups.Count()}");
+        _logger.LogInformation($"finished count: {groupsResultReceivedFinished.Count()}, nb of result: {getGroupResultReceived.Count()}, nb of groups: {getGroups.Count()}");
 
         return getGroupResultReceived.Count().Equals(getGroups.Count());
     }
