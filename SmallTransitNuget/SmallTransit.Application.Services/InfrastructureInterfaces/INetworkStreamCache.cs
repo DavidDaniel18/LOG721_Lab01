@@ -1,8 +1,8 @@
-﻿namespace SmallTransit.Application.Services.InfrastructureInterfaces;
+﻿using Microsoft.Extensions.Logging;
+
+namespace SmallTransit.Application.Services.InfrastructureInterfaces;
 
 public interface INetworkStreamCache
 {
-    void Add(INetworkStream networkStack);
-
-    INetworkStream GetOrAdd(string key);
+    INetworkStream GetOrAdd(string key, ILogger logger);
 }

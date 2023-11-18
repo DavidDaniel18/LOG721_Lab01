@@ -29,7 +29,7 @@ public sealed class PublishClient<TContract> : IDisposable
 
         if (_tcpBridge.IsNotStarted())
         {
-            var networkStream = _networkStreamCache.GetOrAdd(brokerKey);
+            var networkStream = _networkStreamCache.GetOrAdd(brokerKey, _logger);
 
             _tcpBridge.RunAsync(networkStream.GetStream(), networkStream.GetStream(), _cancellationTokenSource);
         }

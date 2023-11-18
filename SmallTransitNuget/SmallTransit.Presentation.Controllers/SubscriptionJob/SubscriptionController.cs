@@ -45,7 +45,7 @@ public sealed class SubscriptionController : BackgroundService
 
                 var networkStreamCache = scope.ServiceProvider.GetRequiredService<INetworkStreamCache>();
 
-                var networkStream = networkStreamCache.GetOrAdd(configuration.targetConfiguration.TargetKey);
+                var networkStream = networkStreamCache.GetOrAdd(configuration.targetConfiguration.TargetKey, _logger);
 
                 var subscriptionResult = await receiveClient.Subscribe(
                         networkStream,

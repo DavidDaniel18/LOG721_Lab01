@@ -2,6 +2,7 @@
 using SmallTransit.Abstractions.Interfaces;
 using SmallTransit.Abstractions.Monads;
 using SmallTransit.Application.UseCases;
+using SmallTransit.Domain.ProtoTransit.Extensions;
 using SmallTransit.Domain.Services.Sending.Send;
 
 namespace SmallTransit.Presentation.Controllers.Send;
@@ -19,7 +20,7 @@ public sealed class Sender<TContract, TResult> : ISender<TContract, TResult> whe
 
     public async Task<Result<TResult>> Send(TContract payload, string senderId, string targetKey)
     {
-        _logger.LogInformation($"Sending {typeof(TContract).Name} to {targetKey} from {senderId}");
+        _logger.LogInformation($"Sending {typeof(TContract).GetTypeName()} to {targetKey} from {senderId}");
 
         return await _sendClient.Send(new SendWrapper<TContract>(senderId, payload), targetKey);
     }

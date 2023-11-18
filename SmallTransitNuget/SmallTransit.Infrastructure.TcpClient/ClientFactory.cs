@@ -17,6 +17,8 @@ public sealed class ClientFactory
     {
         do
         {
+            _logger.LogInformation("creating bus to, host: {host}, port: {port}, with key: {key}", host, port, key);
+
             var connectionResult = GetDestinationClient(host, port, key);
 
             if (connectionResult.IsFailure())

@@ -42,6 +42,7 @@ public static class ServiceRegistration
         List<TargetConfiguration> targetConfigurations = new();
 
         targetConfigurations.AddRange(configuration.TargetPointConfigurators);
+        targetConfigurations.AddRange(configuration.QueueConfigurators.Select(queue => queue.TargetConfiguration).ToList());
 
         LoadQueueConfigurations(collection, configuration, targetConfigurations);
 
@@ -52,9 +53,12 @@ public static class ServiceRegistration
             var factory = services.GetRequiredService<ClientFactory>();
 
             var collection = targetConfigurations
-                    .Concat(configuration.QueueConfigurators.Select(queue => queue.TargetConfiguration))
-                    .ToList()
                 .ConvertAll(target => new KeyValuePair<string, ITargetConfiguration>(target.TargetKey, target));
+
+            foreach (var pair in collection)
+            {
+                Console.WriteLine($"pair key:{pair.Key}, pair value host: {pair.Value.Host}, pair value port: {pair.Value.Port}");
+            }
 
             var cache = new NetworkStreamCache(new ConcurrentDictionary<string, ITargetConfiguration>(collection), factory);
 

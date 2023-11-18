@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Monads;
 using SmallTransit.Application.Services.InfrastructureInterfaces;
 using SmallTransit.Application.Services.Orchestrator.Sending;
@@ -8,40 +10,65 @@ namespace SmallTransit.Application.UseCases;
 
 public sealed class SendClient<TContract, TResult> : IDisposable
 {
-    private readonly ITcpBridge _tcpBridge;
+    private readonly ConcurrentDictionary<string, TargerResolver<TContract, TResult>> _resolvers = new();
     private readonly INetworkStreamCache _networkStreamCache;
     private readonly ILogger<PublishClient<TContract>> _logger;
-    private readonly SendOrchestrator<TContract, TResult> _publishingSendingOrchestrator;
+    private readonly IServiceProvider _provider;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-    public SendClient(ITcpBridge tcpBridge, INetworkStreamCache networkStreamCache, ILogger<PublishClient<TContract>> logger)
+    public SendClient(INetworkStreamCache networkStreamCache, ILogger<PublishClient<TContract>> logger, IServiceProvider provider)
     {
-        _tcpBridge = tcpBridge;
         _networkStreamCache = networkStreamCache;
         _logger = logger;
-
-        _publishingSendingOrchestrator = new SendOrchestrator<TContract, TResult>(new SendingContext(), tcpBridge);
+        _provider = provider;
     }
 
     internal async Task<Result<TResult>> Send(SendWrapper<TContract> sendWrapper, string targetId)
     {
-        if (_tcpBridge.IsCompleted()) return Result.Failure<TResult>("Bridging task is completed");
+        var targetResolver = _resolvers.GetOrAdd(targetId, _ =>
+        {
+            var tcpBridge = _provider.GetRequiredService<ITcpBridge>();
 
-        if (_tcpBridge.IsNotStarted())
+            return new TargerResolver<TContract, TResult>(tcpBridge);
+        });
+
+        var tcpBridge = targetResolver.TcpBridge;
+        var publishingSendingOrchestrator = targetResolver.PublishingSendingOrchestrator;
+
+        if (tcpBridge.IsCompleted()) return Result.Failure<TResult>("Bridging task is completed");
+
+        if (tcpBridge.IsNotStarted())
         {
             _logger.LogInformation("Tcp bridge is not started. Starting...");
 
-            var networkStream = _networkStreamCache.GetOrAdd(targetId);
+            var networkStream = _networkStreamCache.GetOrAdd(targetId, _logger);
 
-            _tcpBridge.RunAsync(networkStream.GetStream(), networkStream.GetStream(), _cancellationTokenSource);
+            tcpBridge.RunAsync(networkStream.GetStream(), networkStream.GetStream(), _cancellationTokenSource);
+        }
+        else
+        {
+            _logger.LogInformation("Tcp bridge is already started");
         }
 
-        return await _publishingSendingOrchestrator.Execute(sendWrapper);
+        return await publishingSendingOrchestrator.Execute(sendWrapper);
     }
 
     public void Dispose()
     {
-        _tcpBridge.Dispose();
         _cancellationTokenSource.Dispose();
     }
+
+    private class TargerResolver<TContract, TResult>
+    {
+        public ITcpBridge TcpBridge { get; }
+
+        public SendOrchestrator<TContract, TResult> PublishingSendingOrchestrator { get; }
+
+        public TargerResolver(ITcpBridge tcpBridge)
+        {
+            TcpBridge = tcpBridge;
+            PublishingSendingOrchestrator = new SendOrchestrator<TContract, TResult>(new SendingContext(), tcpBridge); ;
+        }
+    }
+
 }

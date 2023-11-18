@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Configurator;
 using SmallTransit.Application.Services.InfrastructureInterfaces;
 
@@ -17,20 +18,29 @@ public sealed class NetworkStreamCache : INetworkStreamCache
         _clientFactory = clientFactory;
     }
 
-    public void Add(INetworkStream networkStack)
+    public INetworkStream GetOrAdd(string key, ILogger logger)
     {
-        _networkStacks.TryAdd(networkStack.Key, networkStack);
-    }
+        logger.LogInformation("creating bus to, key: {key}", key);
 
-    public INetworkStream GetOrAdd(string key)
-    {
         return _networkStacks.GetOrAdd(key, key =>
         {
-            var configuration = _configurations[key];
+            try
+            {
+                logger.LogInformation("creating bus to, key: {key}", key);
 
-            var result = _clientFactory.RetryCreateClient(configuration.Host, configuration.Port, configuration.TargetKey);
+                var configuration = _configurations[key];
 
-            return result.GetValueOrThrow();
+                var result = _clientFactory.RetryCreateClient(configuration.Host, configuration.Port, configuration.TargetKey);
+
+                return result.GetValueOrThrow();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error creating network stream");
+
+                throw;
+            }
+           
         });
     }
 }
