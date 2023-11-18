@@ -68,8 +68,13 @@ public class ResultService : IResultService
 
         var getGroup = await _groupCache.Query(q => q);
         var groupFinished = await _groupResultReceived.Query(g => g);
-        var getGroupResultReceivedDeltaUnderEpsilon = groupFinished.Where(s => s.IsFinished && EPSILON >= s.Delta);
-        
+        _logger.LogInformation($"Print Iteration Result Delta:");
+        var getGroupResultReceivedDeltaUnderEpsilon = groupFinished.Where(s => 
+        {
+            _logger.LogInformation($"GroupId:{s.Id}, Delta:{s.Delta}");
+            return s.IsFinished && EPSILON >= s.Delta;
+        });
+
         return !getGroup.Count().Equals(getGroupResultReceivedDeltaUnderEpsilon.Count());
     }
 
