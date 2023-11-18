@@ -18,6 +18,6 @@ public sealed class Group : Aggregate<Group>
 
     public override string ToString()
     {
-        return $"Id: {Id}, Barycentre: {Barycentre}, NbOfSpaces: {Spaces.Count()}";
+        return $"Id: {Id}, Barycentre: {Barycentre}";
     }
 }

@@ -34,21 +34,12 @@ public class ResultService : IResultService
     {
         var groups = await _groupCache.Query(g => g);
 
-        _logger.LogInformation("");
-        _logger.LogInformation("");
-        _logger.LogInformation("");
-        _logger.LogInformation("");
         _logger.LogInformation("Result:");
 
         groups.ForEach(group => 
         {
             _logger.LogInformation($"{group}");
         });
-
-        _logger.LogInformation("");
-        _logger.LogInformation("");
-        _logger.LogInformation("");
-        _logger.LogInformation("");
     }
 
     public async Task ReceiveResult(string groupId, double delta)
@@ -76,9 +67,10 @@ public class ResultService : IResultService
             return iteration < _hostInfo.NbOfIteration;
 
         var getGroup = await _groupCache.Query(q => q);
-        var getGroupResultReceivedDeltaUnderEpsilon = await _groupResultReceived.Query(q => q.Where(s => s.IsFinished && s.Delta <= EPSILON));
+        var groupFinished = await _groupResultReceived.Query(g => g);
+        var getGroupResultReceivedDeltaUnderEpsilon = groupFinished.Where(s => s.IsFinished && EPSILON >= s.Delta);
         
-        return getGroup.Count().Equals(getGroupResultReceivedDeltaUnderEpsilon.Count());
+        return !getGroup.Count().Equals(getGroupResultReceivedDeltaUnderEpsilon.Count());
     }
 
     public async Task IncrementIteration()
