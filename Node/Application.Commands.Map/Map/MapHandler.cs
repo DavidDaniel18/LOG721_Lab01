@@ -53,7 +53,7 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
 
         _logger.LogInformation("Saves groups with closests spaces linked to it...");
 
-        await _groupsCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)));
+        await _groupsCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)).ToList());
 
         await _spaceCache.SaveChangesAsync();
 

@@ -63,7 +63,32 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         {
             _logger.LogInformation("Init of Caches: Groups and Spaces...");
 
-            Task.WaitAll(new[] { SyncDataToCache(), SyncGroupToCache()}, cancellation);
+            var freshSpaces = _csvHandler.ReadDatas().ToList().Select(dto =>
+            {
+                var space = _dataMapper.MapFrom(dto);
+
+                return (space.Id, space);
+            }).ToList();
+
+            foreach (var space in freshSpaces)
+            {
+                await _spacesCache.AddOrUpdate(space.Id, space.space);
+
+                await _spacesCache.SaveChangesAsync();
+            }
+
+            //await _spacesCache.AddOrUpdateRange(freshSpaces);
+
+            var freshGroups = _csvHandler.ReadGroups().ToList().Select(dto =>
+            {
+                var group = _groupMapper.MapFrom(dto);
+
+                return (group.Id, group);
+            }).ToList();
+
+            await _groupsCache.AddOrUpdateRange(freshGroups);
+
+            await _groupsCache.SaveChangesAsync();
 
             _logger.LogInformation("Init of Caches: Terminated");
         }
@@ -71,30 +96,6 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         _logger.LogInformation("Map spaces to map workers...");
 
         await SendSpacesToMappers();
-        async Task SyncDataToCache()
-        {
-            await _spacesCache.AddOrUpdateRange(_csvHandler.ReadDatas().ToList().Select(dto =>
-            {
-                var space = _dataMapper.MapFrom(dto);
-
-                return (space.Id, space);
-            }).ToList());
-
-            await _spacesCache.SaveChangesAsync();
-        }
-
-        async Task SyncGroupToCache()
-        {
-            await _groupsCache.AddOrUpdateRange(_csvHandler.ReadGroups().ToList().Select(dto =>
-            {
-                var group = _groupMapper.MapFrom(dto);
-
-                return (group.Id, group);
-            }).ToList());
-
-            await _groupsCache.SaveChangesAsync();
-        }
-
         async Task SendSpacesToMappers()
         {
             var getSpaces = _spacesCache.Query(q => q);
@@ -122,7 +123,7 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
                 _logger.LogInformation($"Spaces sent to [{mapTopic}]...");
    
             }
-            _logger.LogError($"End of InputHandler");
+            _logger.LogInformation($"End of InputHandler");
         }
     }
 }

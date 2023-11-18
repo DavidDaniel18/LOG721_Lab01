@@ -6,7 +6,7 @@ namespace Domain.Grouping;
 
 public sealed class Group : Aggregate<Group>
 {
-    public double Barycentre { get; }
+    public double Barycentre { get; set; }
 
     public ImmutableList<Space> Spaces { get; set; }
 

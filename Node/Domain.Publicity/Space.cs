@@ -4,9 +4,9 @@ namespace Domain.Publicity;
 
 public sealed class Space : Aggregate<Space>
 {
-    public int Width { get; }
+    public int Width { get; set; }
 
-    public int Price { get; }
+    public int Price { get; set; }
 
     public Space(string id, int width, int price) : base(id)
     {
