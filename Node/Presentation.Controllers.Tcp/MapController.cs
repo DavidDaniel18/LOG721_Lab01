@@ -1,6 +1,5 @@
-﻿using Application.Commands.Map.Mapping;
+﻿using Application.Commands.Map.Map;
 using Application.Commands.Seedwork;
-using Domain.Publicity;
 using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.Tcp;

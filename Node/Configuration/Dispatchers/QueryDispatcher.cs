@@ -1,6 +1,6 @@
 ﻿using Application.Queries.Seedwork;
 
-namespace Node.Dispatchers;
+namespace Configuration.Dispatchers;
 
 public class QueryDispatcher : IQueryDispatcher
 {

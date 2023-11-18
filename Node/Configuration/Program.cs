@@ -1,35 +1,31 @@
 using System.Reflection;
-using Microsoft.OpenApi.Models;
-using System.Resources;
-using Application.Commands.Mappers.Interfaces;
-using Infrastructure.Clients.Tcp;
-using Infrastructure.FileHandlers.Interfaces;
-using Application.Common.Interfaces;
-using Application.Commands.Orchestrator.Service;
-using Application.Commands.Orchestrator.Interfaces;
+using Application.Commands;
 using Application.Commands.Interfaces;
-using Infrastructure.FileHandlers;
-using Presentation.Controllers.Tcp;
-using Application.Commands.Seedwork;
-using Application.Commands.Orchestrator.Shuffle;
-using Application.Commands.Map.Mapping;
-using Application.Commands.Map.Input;
 using Application.Commands.Map.Event;
-using Configuration;
-using Application.Commands.Reducer.Event;
-using SyncStore;
-using Domain.Publicity;
-using Domain.Grouping;
-using Domain.Common;
-using Application.Commands.Reducer.Reduce;
-using Configuration.Properties;
-using SmallTransit;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Presentation.Controllers.Rest.Controllers;
+using Application.Commands.Map.Input;
+using Application.Commands.Map.Map;
 using Application.Commands.Mappers;
+using Application.Commands.Mappers.Interfaces;
+using Application.Commands.Orchestrator.Interfaces;
+using Application.Commands.Orchestrator.Service;
+using Application.Commands.Orchestrator.Shuffle;
+using Application.Commands.Reducer.Event;
+using Application.Commands.Reducer.Reduce;
+using Application.Commands.Seedwork;
+using Application.Common.Interfaces;
 using Application.Dtos;
+using Domain.Grouping;
+using Domain.Publicity;
+using Infrastructure.Clients.Tcp;
+using Infrastructure.FileHandlers;
+using Infrastructure.FileHandlers.Interfaces;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.OpenApi.Models;
+using Presentation.Controllers.Rest.Controllers;
+using Presentation.Controllers.Tcp;
+using SyncStore;
 
-namespace Node
+namespace Configuration
 {
     public class Program
     {

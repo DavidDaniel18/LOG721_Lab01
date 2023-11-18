@@ -1,6 +1,5 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Common.Interfaces;
-using Domain.Common;
 using Domain.Grouping;
 using Domain.Publicity;
 using Microsoft.Extensions.Logging;

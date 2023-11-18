@@ -1,11 +1,11 @@
 ﻿using Application.Commands.Map.Input;
-using Application.Commands.Map.Mapping;
-using Application.Commands.Reducer.Reduce;
 using Application.Common.Interfaces;
 using Domain.Publicity;
 using Domain.Grouping;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Immutable;
+using Application.Commands;
+using Application.Commands.Map.Map;
 
 namespace Presentation.Controllers.Rest.Controllers
 {
@@ -35,6 +35,7 @@ namespace Presentation.Controllers.Rest.Controllers
         public async Task<ActionResult> Input()
         {
             await _inputPublisher.PublishAsync(new InputCommand(_hostInfo.DataCsvName, _hostInfo.GroupCsvName), _hostInfo.InputRoutingKey);
+
             return Ok("Input sent.");
         }
 
@@ -43,6 +44,7 @@ namespace Presentation.Controllers.Rest.Controllers
         public async Task<ActionResult> Map(string routingKey = "command/map1", int startIndex = 0, int endIndex = 24)
         {
             await _mapPublisher.PublishAsync(new MapCommand(startIndex, endIndex), routingKey);
+
             return Ok("Map sent.");
         }
 

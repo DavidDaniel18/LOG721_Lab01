@@ -1,4 +1,4 @@
-﻿namespace Application.Commands.Orchestrator.Service;
+﻿namespace Application.Commands.Interfaces;
 
 public interface IRoundRobinAlgorithm
 {

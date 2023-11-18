@@ -1,4 +1,6 @@
-﻿namespace Application.Commands.Orchestrator.Service;
+﻿using Application.Commands.Interfaces;
+
+namespace Application.Commands;
 
 public class RoundRobinAlgorithm : IRoundRobinAlgorithm
 {
@@ -19,7 +21,9 @@ public class RoundRobinAlgorithm : IRoundRobinAlgorithm
     public string GetNextElement()
     {
         string topic = _elements.ElementAt(_roundRobinIndex);
+
         IncrementRoundRobinIndex();
+        
         return topic;
     }
 }

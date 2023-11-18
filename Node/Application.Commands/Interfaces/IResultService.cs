@@ -1,8 +1,4 @@
-﻿using Domain.Publicity;
-using System;
-using System.Collections.Generic;
-
-namespace Application.Commands.Interfaces;
+﻿namespace Application.Commands.Interfaces;
 
 public interface IResultService
 {

@@ -6,7 +6,7 @@ namespace Application.Commands.Orchestrator.Service;
 
 public class GroupAttributionService : IGroupAttributionService
 {
-    private IAttributionStrategy _attributionStrategy;
+    private readonly IAttributionStrategy _attributionStrategy;
 
     public GroupAttributionService(IHostInfo hostInfo)
     {

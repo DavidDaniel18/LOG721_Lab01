@@ -1,7 +1,7 @@
 ﻿using System.Resources;
 using Infrastructure.FileHandlers.Interfaces;
 
-namespace Node;
+namespace Configuration;
 
 public class DataReader : IDataReader
 {

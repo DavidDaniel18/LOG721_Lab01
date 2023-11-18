@@ -5,10 +5,11 @@ using Domain.Publicity;
 using Microsoft.Extensions.Logging;
 using SyncStore.Abstractions;
 using System.Collections.Immutable;
+using Application.Commands.Reducer.Event;
 
 namespace Application.Commands.Reducer.Reduce;
 
-public sealed class ReduceHandler : ICommandHandler<Reduce>
+public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
 {
     private readonly ILogger<ReduceHandler> _logger;
 
@@ -26,7 +27,7 @@ public sealed class ReduceHandler : ICommandHandler<Reduce>
         _publisher = publisher;
     }
 
-    public async Task Handle(Reduce command, CancellationToken cancellation)
+    public async Task Handle(Commands.Reduce command, CancellationToken cancellation)
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
         var spacesForGroup = command.group.Spaces;

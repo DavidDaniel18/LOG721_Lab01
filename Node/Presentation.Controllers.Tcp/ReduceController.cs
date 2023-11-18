@@ -1,4 +1,4 @@
-﻿using Application.Commands.Reducer.Reduce;
+﻿using Application.Commands;
 using Application.Commands.Seedwork;
 using SmallTransit.Abstractions.Interfaces;
 

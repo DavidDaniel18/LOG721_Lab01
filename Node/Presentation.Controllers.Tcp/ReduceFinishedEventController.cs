@@ -1,4 +1,5 @@
-﻿using Application.Commands.Seedwork;
+﻿using Application.Commands.Reducer.Event;
+using Application.Commands.Seedwork;
 using SmallTransit.Abstractions.Interfaces;
 
 namespace Presentation.Controllers.Tcp;

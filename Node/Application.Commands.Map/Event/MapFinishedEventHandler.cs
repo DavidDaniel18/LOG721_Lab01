@@ -1,8 +1,6 @@
 ﻿using Application.Commands.Orchestrator.Shuffle;
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
-using Domain.Common;
-using Domain.Grouping;
 using Domain.Publicity;
 using Microsoft.Extensions.Logging;
 using SyncStore.Abstractions;
@@ -35,26 +33,36 @@ public sealed class MapFinishedEventHandler : ICommandHandler<MapFinishedEvent>
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
 
-        _logger.LogInformation($"Save the {command.name} result");
-        await _spaceFinishedSyncStore.AddOrUpdate(command.name, new MapFinishedBool { IsFinished = true, Id = command.name });
+        _logger.LogInformation($"Save the {command.Name} result");
+
+        await _spaceFinishedSyncStore.AddOrUpdate(command.Name, new MapFinishedBool { IsFinished = true, Id = command.Name });
+
         await _spaceFinishedSyncStore.SaveChangesAsync();
 
         _logger.LogInformation($"Is the map step finished...");
+
         var mapJobsFinished = await _spaceFinishedSyncStore.Query(query => query.Where(space => space.IsFinished));
-        _logger.LogInformation($"{command.name}: finished: {mapJobsFinished.Count()}, needed: {_hostInfo.MapRoutingKeys.Split(',').Count()}");
-        bool isFinished = mapJobsFinished.Count() == _hostInfo.MapRoutingKeys.Split(',').Count();
+
+        var routingKeyCount = _hostInfo.MapRoutingKeys.Split(',').Count();
+
+        _logger.LogInformation($"{command.Name}: finished: {mapJobsFinished.Count()}, needed: {routingKeyCount}");
+       
+        var isFinished = mapJobsFinished.Count().Equals(routingKeyCount);
 
         if (isFinished)
         {
             _logger.LogInformation($"Map step finished");
 
             _logger.LogInformation($"Reset finished cache");
+
             mapJobsFinished.ForEach(f => f.IsFinished = false);
             
-            await _spaceFinishedSyncStore.AddOrUpdateRange(mapJobsFinished.Select(m => (m.Id, m)));
+            await _spaceFinishedSyncStore.AddOrUpdateRange(mapJobsFinished.Select(m => (m.Id, m)).ToList());
+
             await _spaceFinishedSyncStore.SaveChangesAsync();
 
             _logger.LogInformation($"Send Shuffle command...");
+
             await _publisher.PublishAsync(new Shuffle(), _hostInfo.MapShuffleRoutingKey);
         }
         else

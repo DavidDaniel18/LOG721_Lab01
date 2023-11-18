@@ -1,4 +1,5 @@
-﻿using Application.Commands.Seedwork;
+﻿using Application.Commands.Map.Event;
+using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
 using Domain.Grouping;
 using Domain.Publicity;
@@ -6,7 +7,7 @@ using Domain.Services;
 using Microsoft.Extensions.Logging;
 using SyncStore.Abstractions;
 
-namespace Application.Commands.Map.Mapping;
+namespace Application.Commands.Map.Map;
 
 public sealed class MapHandler : ICommandHandler<MapCommand>
 {
@@ -37,17 +38,27 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
     public async Task Handle(MapCommand command, CancellationToken cancellation)
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
+
         var groups = await _groupsCache.Query(g => g);
+
         var spaces = await _spaceCache.Query(s => s);
 
-        spaces.Skip(command.startIndex).Take(command.endIndex + 1 - command.startIndex).ToList()
-            .ForEach(space => GroupServices.GetClosestGroupByBarycentre(space, groups).Spaces.Add(space));
+        spaces.Skip(command.StartIndex).Take(command.EndIndex + 1 - command.StartIndex).ToList()
+            .ForEach(space =>
+            {
+                var group = GroupServices.GetClosestGroupByBarycentre(space, groups);
+
+                group.Spaces = group.Spaces.Add(space);
+            });
 
         _logger.LogInformation("Saves groups with closests spaces linked to it...");
+
         await _groupsCache.AddOrUpdateRange(groups.Select(g => (g.Id, g)));
+
         await _spaceCache.SaveChangesAsync();
 
         _logger.LogInformation("Send Map terminated event...");
+
         await _publisher.PublishAsync(new MapFinishedEvent(_hostInfo.MapRoutingKey), _hostInfo.MapFinishedEventRoutingKey);
     }
 }

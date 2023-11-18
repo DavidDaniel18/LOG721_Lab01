@@ -1,6 +1,5 @@
-﻿using Application.Commands.Algorithm;
-using Application.Commands.Interfaces;
-using Application.Commands.Map.Mapping;
+﻿using Application.Commands.Interfaces;
+using Application.Commands.Map.Map;
 using Application.Commands.Mappers.Interfaces;
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
@@ -63,39 +62,40 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
         if (!spaces.Any() || !groups.Any())
         {
             _logger.LogInformation("Init of Caches: Groups and Spaces...");
-            Task.WaitAll(new Task[] {
-                Task.Run(() => SyncDataToCache(), cancellation),
-                Task.Run(() => SyncGroupToCache(), cancellation)
-            }, cancellation);
+
+            Task.WaitAll(new[] { SyncDataToCache(), SyncGroupToCache()}, cancellation);
+
             _logger.LogInformation("Init of Caches: Terminated");
         }
 
         _logger.LogInformation("Map spaces to map workers...");
-        SendSpacesToMappers();
 
-        async void SyncDataToCache()
+        await SendSpacesToMappers();
+        async Task SyncDataToCache()
         {
             await _spacesCache.AddOrUpdateRange(_csvHandler.ReadDatas().ToList().Select(dto =>
             {
                 var space = _dataMapper.MapFrom(dto);
+
                 return (space.Id, space);
-            }));
+            }).ToList());
 
             await _spacesCache.SaveChangesAsync();
         }
 
-        async void SyncGroupToCache()
+        async Task SyncGroupToCache()
         {
             await _groupsCache.AddOrUpdateRange(_csvHandler.ReadGroups().ToList().Select(dto =>
             {
                 var group = _groupMapper.MapFrom(dto);
+
                 return (group.Id, group);
-            }));
+            }).ToList());
 
             await _groupsCache.SaveChangesAsync();
         }
 
-        void SendSpacesToMappers()
+        async Task SendSpacesToMappers()
         {
             var getSpaces = _spacesCache.Query(q => q);
 
@@ -106,9 +106,8 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
             var mapTopics = _hostInfo.MapRoutingKeys.Split(',').ToList();
 
             int nbOfMapTopics = mapTopics.Count();
-            int chunkSize = spaces.Count() / mapTopics.Count();
 
-            var tasks = new Task[nbOfMapTopics];
+            int chunkSize = spaces.Count() / nbOfMapTopics;
 
             for (int i = 0; i < nbOfMapTopics; i++)
             {
@@ -117,7 +116,9 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
 
                 _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + chunkSize - 1}] to {mapTopic}"); 
                 _logger.LogInformation($"Sending...");
-                Task.WaitAll(_publisher.PublishAsync(new MapCommand(startIndex, startIndex + chunkSize - 1), mapTopic));
+
+                await _publisher.PublishAsync(new MapCommand(startIndex, startIndex + chunkSize - 1), mapTopic);
+
                 _logger.LogInformation($"Spaces sent to [{mapTopic}]...");
    
             }

@@ -1,12 +1,10 @@
-﻿
-
+﻿using Application.Commands.Interfaces;
+using Application.Commands.Map.Input;
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
-using Application.Commands.Map.Input;
-using Application.Commands.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Commands.Map.Event;
+namespace Application.Commands.Reducer.Event;
 
 public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedEvent>
 {
