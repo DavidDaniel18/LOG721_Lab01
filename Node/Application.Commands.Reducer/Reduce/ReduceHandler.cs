@@ -42,13 +42,16 @@ public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
         var spacesAll= await _spacesCache.Query(s => s);
 
         var spaces = await _spacesCache.Query(s => s.Where(space => space.GroupId!.Equals(command.group.Id)));
-
+    
         double barycentre = command.group.Barycentre;
 
         _logger.LogInformation($"Calculate avg for groupId: {command.group.Id}");
         double avg = 0;
-        spaces.ForEach(s => avg += s.GetNormalizedValue());
-        avg /= spaces.Count();
+        if (spaces.Any())
+        {
+            spaces.ForEach(s => avg += s.GetNormalizedValue());
+            avg /= spaces.Count();
+        }
 
         _logger.LogInformation($"Save avg {avg} and emptied the spaces list of the group...");
         await _groupsCache.AddOrUpdate(command.group.Id, new Group(command.group.Id, avg, ImmutableList<Space>.Empty));
