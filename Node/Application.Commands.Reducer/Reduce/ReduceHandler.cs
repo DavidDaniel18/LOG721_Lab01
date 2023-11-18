@@ -38,6 +38,8 @@ public sealed class ReduceHandler : ICommandHandler<Commands.Reduce>
     public async Task Handle(Commands.Reduce command, CancellationToken cancellation)
     {
         _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
+        
+        var spacesAll= await _spacesCache.Query(s => s);
 
         var spaces = await _spacesCache.Query(s => s.Where(space => space.GroupId!.Equals(command.group.Id)));
 

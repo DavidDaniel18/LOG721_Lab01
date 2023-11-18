@@ -70,13 +70,6 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
                 return (space.Id, space);
             }).ToList();
 
-            //foreach (var space in freshSpaces)
-            //{
-            //    await _spacesCache.AddOrUpdate(space.Id, space.space);
-
-            //    await _spacesCache.SaveChangesAsync();
-            //}
-
             await _spacesCache.AddOrUpdateRange(freshSpaces);
 
             await _spacesCache.SaveChangesAsync();
