@@ -109,7 +109,12 @@ public sealed class InputHandler : ICommandHandler<InputCommand>
                 _logger.LogInformation($"Send spaces[{startIndex}, {startIndex + chunkSize - 1}] to {mapTopic}"); 
                 _logger.LogInformation($"Sending...");
 
-                await _publisher.PublishAsync(new MapCommand(startIndex, startIndex + chunkSize - 1), mapTopic);
+                int endIndex =  startIndex + (chunkSize - 1);
+                endIndex = endIndex >= spaces.Count() ? spaces.Count() - 1 : endIndex;
+
+                var spaceIds = spaces.ToArray()[startIndex..endIndex].Select(s => s.Id).ToList();
+
+                await _publisher.PublishAsync(new MapCommand(spaceIds), mapTopic);
 
                 _logger.LogInformation($"Spaces sent to [{mapTopic}]...");
    

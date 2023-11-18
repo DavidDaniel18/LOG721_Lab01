@@ -1,7 +1,6 @@
 ﻿using Application.Commands.Map.Event;
 using Application.Commands.Seedwork;
 using Application.Common.Interfaces;
-using Domain.Common;
 using Domain.Grouping;
 using Domain.Publicity;
 using Domain.Services;
@@ -38,27 +37,20 @@ public sealed class MapHandler : ICommandHandler<MapCommand>
 
     public async Task Handle(MapCommand command, CancellationToken cancellation)
     {
-        await Try.WithConsequenceAsync(async () =>
-        {
-            _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
+        _logger.LogInformation($"Handler: {command.GetCommandName()}: Received");
 
-            var spacesFromCache = await _spaceCache.Query(s => s);
-            var groups = await _groupsCache.Query(g => g);
+        var spaceIdDic = command.SpaceIds.ToDictionary(s => s);
+        var spacesFromCache = await _spaceCache.Query(s => s.Where(space => spaceIdDic.ContainsKey(space.Id)));
+        var groups = await _groupsCache.Query(g => g);
 
-            var spaces = spacesFromCache.ToArray()[command.StartIndex..command.EndIndex];
+        _logger.LogInformation($"Spaces ids count fetched from command: [{command.SpaceIds.Count()}]");
 
-            _logger.LogInformation($"Find closests groups for space range: [{command.StartIndex}, {command.EndIndex}]...");
+        spacesFromCache.ToList().ForEach(space => space.GroupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id);
 
-            spaces.ToList().ForEach(space => space.GroupId = GroupServices.GetClosestGroupByBarycentre(space, groups).Id);
+        _logger.LogInformation("Saves spaces with closests group linked to it...");
 
-            _logger.LogInformation("Saves spaces with closests group linked to it...");
-
-            await _spaceCache.AddOrUpdateRange(spaces.Select(s => (s.Id, s)).ToList());
-
-            await _spaceCache.SaveChangesAsync();
-
-            return true;
-        }, async (_, _) => await _spaceCache.UndoChangesAsync(), 5);
+        await _spaceCache.AddOrUpdateRange(spacesFromCache.Select(s => (s.Id, s)).ToList());
+        await _spaceCache.SaveChangesAsync();
 
         _logger.LogInformation("Send Map terminated event...");
 

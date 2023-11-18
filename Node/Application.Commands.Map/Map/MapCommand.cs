@@ -2,7 +2,7 @@
 
 namespace Application.Commands.Map.Map;
 
-public sealed record MapCommand(/*List<Space> spaces*/ int StartIndex, int EndIndex) : ICommand
+public sealed record MapCommand(List<string> SpaceIds) : ICommand
 {
     public string GetCommandName()
     {
