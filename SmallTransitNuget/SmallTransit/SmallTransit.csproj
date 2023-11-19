@@ -4,34 +4,85 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	  <Version>1.0.0</Version>
-	  <PackageOutputPath>TcpNuget\</PackageOutputPath>
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <DocumentationFile>$(MSBuildProjectName).xml</DocumentationFile>
+	<Version>1.2.5</Version>
+	<PackageId>SmallTransit</PackageId>
   </PropertyGroup>
-
-	<ItemGroup>
-		<None Include="$(MSBuildProjectName).xml" Pack="true" PackagePath="TcpNuget\" />
-	</ItemGroup>
-
-	<ItemGroup>
-    <Folder Include="Configuration\Publisher\" />
-    <Folder Include="Configuration\Receiver\" />
-  </ItemGroup>
-
-	<ItemGroup>
-		<None Remove="TcpNuget721.xml" />
-		<None Remove="ServiceMeshHelper.xml" />
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="7.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="MessagePack" Version="2.5.129" />
+    <PackageReference Include="Scrutor" Version="4.2.2" />
   </ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Extensions\" />
+		<ProjectReference Include="..\SmallTransit.Application.Services\SmallTransit.Application.Services.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Application.Usecases\SmallTransit.Application.UseCases.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Domain.Common\SmallTransit.Domain.Common.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Domain.Services\SmallTransit.Domain.Services.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Infrastructure.TcpClient\SmallTransit.Infrastructure.TcpClient.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Presentation.Controllers\SmallTransit.Presentation.Controllers.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Abstractions\SmallTransit.Abstractions.csproj" />
+		<ProjectReference Include="..\SmallTransit.Application.Services\SmallTransit.Application.Services.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Application.Usecases\SmallTransit.Application.UseCases.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Domain.Common\SmallTransit.Domain.Common.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Domain.Services\SmallTransit.Domain.Services.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Infrastructure.TcpClient\SmallTransit.Infrastructure.TcpClient.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\SmallTransit.Presentation.Controllers\SmallTransit.Presentation.Controllers.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
 	</ItemGroup>
-	
+
+	<!-- Property Group and other settings -->
+
+	<Target Name="CopyProjectReferences" BeforeTargets="Pack">
+		<ItemGroup>
+			<!-- Get all project references -->
+			<ProjectReferencePaths Include="@(ProjectReference->'%(FullPath)')" />
+		</ItemGroup>
+
+		<!-- Ensure the 'lib' folder exists -->
+		<MakeDir Directories="$(ProjectDir)lib" />
+
+		<!-- Copy the built DLLs from each referenced project to the 'lib' folder -->
+		<Copy SourceFiles="@(ProjectReferencePaths->'%(RootDir)%(Directory)bin\$(Configuration)\net7.0\%(Filename).dll')" DestinationFolder="$(ProjectDir)lib" />
+	</Target>
+
+	<ItemGroup>
+		<!-- Include the 'lib' folder contents in the NuGet package -->
+		<None Include="lib\**" Pack="true" PackagePath="lib\$(TargetFramework)" />
+	</ItemGroup>
 </Project>

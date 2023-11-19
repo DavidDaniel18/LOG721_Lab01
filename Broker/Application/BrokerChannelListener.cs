@@ -1,9 +1,9 @@
-﻿using Domain.Common;
-using Interfaces;
+﻿using Interfaces;
 using Interfaces.Domain;
 using Microsoft.Extensions.Logging;
 using SmallTransit.Abstractions.Interfaces;
 using System.Threading.Channels;
+using SmallTransit.Abstractions.Monads;
 
 namespace Application
 {

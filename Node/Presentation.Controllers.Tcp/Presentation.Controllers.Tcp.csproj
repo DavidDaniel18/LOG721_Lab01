@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SmallTransit.Abstractions" Version="1.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Commands.Map\Application.Commands.Map.csproj" />
+    <ProjectReference Include="..\Application.Commands.Orchestrator\Application.Commands.Orchestrator.csproj" />
+    <ProjectReference Include="..\Application.Commands.Reducer\Application.Commands.Reducer.csproj" />
+    <ProjectReference Include="..\Domain.Publicity\Domain.Publicity.csproj" />
+  </ItemGroup>
+
+</Project>

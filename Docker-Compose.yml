@@ -1,61 +1,151 @@
 version: '3.8'
 services:
-  receiver:
+  map0:
+    image: node
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver0
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map0
     restart: always
     ports:
       - 4300:80
+      - 5300:3000
     environment:
-      RoutingKey: weather/montreal/temperature
+      NODE_NAME: map0
+      TYPE: map
+      BROKER_PORT: 32769
+      MASTER: true
+      MAP_ROUTING_KEYS: 'command/map0,command/map1,command/map2,command/map3'
+      MAP_ROUTING_KEY: command/map0
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
+      MAP_SHUFFLE_ROUTING_KEY: command/shuffle
+      REDUCE_ROUTING_KEYS: 'command/reduce0,command/reduce1,command/reduce2'
+      INPUT_ROUTING_KEY: command/input
+      SYNC_STORE_PAIR_PORT_LIST: 5301,5302,5303,5304,5305,5306
+      SYNC_EXPOSE: 5300
     depends_on:
       - broker
-  receiver1:
+  map1:
+    image: node
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver1
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map1
     restart: always
     ports:
       - 4301:80
+      - 5301:3000
     environment:
-      RoutingKey: weather/montreal/temperature
+      NODE_NAME: map1
+      TYPE: map
+      BROKER_PORT: 32769
+      MAP_ROUTING_KEY: command/map1
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5302,5303,5304,5305,5306
+      SYNC_EXPOSE: 5301
     depends_on:
       - broker
-  receiver2:
+  map2:
+    image: node
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver2
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map2
     restart: always
     ports:
       - 4302:80
+      - 5302:3000
     environment:
-      RoutingKey: weather/montreal/*
+      NODE_NAME: map2
+      TYPE: map
+      BROKER_PORT: 32769
+      MAP_ROUTING_KEY: command/map2
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5303,5304,5305,5306
+      SYNC_EXPOSE: 5302
     depends_on:
       - broker
-  receive3:
+  map3:
+    image: node
     build:
-      context: ./Receiver/
-      dockerfile: Receiver/Dockerfile
-    container_name: Receiver3
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Map3
     restart: always
     ports:
       - 4303:80
+      - 5303:3000
     environment:
-      RoutingKey: 'humidity/#'
+      NODE_NAME: map3
+      TYPE: map
+      BROKER_PORT: 32769
+      MAP_ROUTING_KEY: command/map3
+      MAP_FINISHED_EVENT_ROUTING_KEY: event/map/terminated
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5304,5305,5306
+      SYNC_EXPOSE: 5303
     depends_on:
       - broker
-  publisher:
+  reducer0:
+    image: node
     build:
-      context: ./Publisher/
+      context: ./Node/
       dockerfile: Configuration/Dockerfile
-    container_name: publisher
+    container_name: Reducer0
     restart: always
+    environment:
+      MASTER: true
+      NODE_NAME: reduce0
+      TYPE: reduce
+      BROKER_PORT: 32769
+      INPUT_ROUTING_KEY: command/input
+      REDUCE_ROUTING_KEY: command/reduce0
+      REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5305,5306
+      NB_OF_ITERATION: -1
+      SYNC_EXPOSE: 5304
     ports:
       - 4304:80
+      - 5304:3000
+    depends_on:
+      - broker
+  reducer1:
+    image: node
+    build:
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Reducer1
+    restart: always
+    environment:
+      NODE_NAME: reduce1
+      TYPE: reduce
+      BROKER_PORT: 32769
+      REDUCE_ROUTING_KEY: command/reduce1
+      REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5304,5306
+      SYNC_EXPOSE: 5305
+    ports:
+      - 4305:80
+      - 5305:3000
+    depends_on:
+      - broker
+  reducer2:
+    image: node
+    build:
+      context: ./Node/
+      dockerfile: Configuration/Dockerfile
+    container_name: Reducer2
+    restart: always
+    environment:
+      NODE_NAME: reduce2
+      TYPE: reduce
+      BROKER_PORT: 32769
+      REDUCE_ROUTING_KEY: command/reduce2
+      REDUCE_FINISHED_EVENT_ROUTING_KEY: event/reduce/terminated
+      SYNC_STORE_PAIR_PORT_LIST: 5300,5301,5302,5303,5304,5305
+      SYNC_EXPOSE: 5306
+    ports:
+      - 4306:80
+      - 5306:3000
     depends_on:
       - broker
   broker:

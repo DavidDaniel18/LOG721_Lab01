@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmallTransit.Domain.Common\SmallTransit.Domain.Common.csproj" />
+    <ProjectReference Include="..\SmallTransit.Abstractions\SmallTransit.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

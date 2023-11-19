@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ReadLocalFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+    <PackageReference Include="SyncStore.Abstractions" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
+    <ProjectReference Include="..\Application.Commands.Orchestrator\Application.Commands.Orchestrator.csproj" />
+    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\Application.Common\Application.Common.csproj" />
+    <ProjectReference Include="..\Application.Dtos\Application.Dtos.csproj" />
+    <ProjectReference Include="..\Application.Commands.Mappers\Application.Commands.Mappers.csproj" />
+    <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
+    <ProjectReference Include="..\Domain.Services\Domain.Services.csproj" />
+  </ItemGroup>
+
+</Project>

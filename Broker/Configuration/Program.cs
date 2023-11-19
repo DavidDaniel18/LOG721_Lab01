@@ -1,12 +1,11 @@
-
 using Application;
-using Configuration;
 using Controllers.Repositories;
 using Entities.Cache;
 using Interfaces.Cache;
 using Interfaces.Handler;
 using Interfaces.Repositories;
 using Interfaces.Services;
+using SmallTransit;
 using IRouter = Interfaces.IRouter;
 
 namespace ConfigurationBroker
@@ -68,7 +67,7 @@ namespace ConfigurationBroker
 
         private static void ConfigureSmallMassTransit(IServiceCollection services)
         {
-            services.AddSmallTransit();
+            services.AddSmallTransit(_ => { });
             services.AddSmallTransitBroker(configurator => 
             {
                 configurator.TcpPort = 32769;

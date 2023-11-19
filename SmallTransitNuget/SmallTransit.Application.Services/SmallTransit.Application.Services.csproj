@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MessagePack" Version="2.5.129" />
+    <PackageReference Include="System.IO.Pipelines" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmallTransit.Domain.Common\SmallTransit.Domain.Common.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.Services\SmallTransit.Domain.Services.csproj" />
+    <ProjectReference Include="..\SmallTransit.Abstractions\SmallTransit.Abstractions.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.ProtoTransit\SmallTransit.Domain.ProtoTransit.csproj" />
+    <ProjectReference Include="..\SmallTransit.Domain.Services\SmallTransit.Domain.Services.csproj" />
+  </ItemGroup>
+
+</Project>
