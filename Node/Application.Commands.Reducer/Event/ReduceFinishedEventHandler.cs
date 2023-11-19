@@ -31,6 +31,7 @@ public sealed class ReduceFinishedEventHandler : ICommandHandler<ReduceFinishedE
         await _resultService.ReceiveResult(command.group.Id, command.delta);
 
         _logger.LogInformation($"Handler: {command.GetCommandName()}: GroupId:{command.group.Id} Delta:{command.group.Id}: HasFinishedCollectedResults()");
+
         if (await _resultService.HasFinishedCollectedResults())
         {
             _logger.LogInformation($"Finished iteration");

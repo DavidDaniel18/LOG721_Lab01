@@ -186,8 +186,6 @@ namespace Configuration
 
         private static void ApplicationSetup(IServiceCollection services)
         {
-            //ScrutorScanForType(services, typeof(IMappingTo<,>), assemblyNames: "Application.Mapping");
-
             services.AddScoped<IMappingTo<GroupDto, Group>, GroupMapper>();
             services.AddScoped<IMappingTo<DataDto, Space>, SpaceMapper>();
 

@@ -11,7 +11,7 @@ public class ResultService : IResultService
 {
     private const double EPSILON = 1.0; 
 
-    private static int iteration = 1;
+    private static int _iteration = 1;
 
     private readonly ILogger<IResultService> _logger;
 
@@ -45,35 +45,42 @@ public class ResultService : IResultService
     public async Task ReceiveResult(string groupId, double delta)
     {
         _logger.LogInformation($"ReceiveResult: groupId: {groupId}, delta: {delta}");
+
         await _groupResultReceived.AddOrUpdate(groupId, new ReduceFinishedBool { IsFinished = true, Id = groupId, Delta = delta });
+
         await _groupResultReceived.SaveChangesAsync();
+
         _logger.LogInformation($"ReceiveResult: groupId: {groupId}, delta: {delta}, [SAVED]");
     }
 
     public async Task<bool> HasFinishedCollectedResults()
     {
-        var getGroupResultReceived = await _groupResultReceived.Query(q => q);
-        var groupsResultReceivedFinished = getGroupResultReceived.Where(s => s.IsFinished);
+        var groupsResultReceivedFinished = await _groupResultReceived.Query(q => q.Where(s => s.IsFinished));
+
         var getGroups = await _groupCache.Query(g => g);
 
-        _logger.LogInformation($"finished count: {groupsResultReceivedFinished.Count()}, nb of result: {getGroupResultReceived.Count()}, nb of groups: {getGroups.Count()}");
+        _logger.LogInformation($"finished count: {groupsResultReceivedFinished.Count()}, nb of result: {groupsResultReceivedFinished.Count()}, nb of groups: {getGroups.Count()}");
 
-        return getGroupResultReceived.Count().Equals(getGroups.Count());
+        return groupsResultReceivedFinished.Count().Equals(getGroups.Count());
     }
 
     public async Task<bool> HasMoreIterations()
     {
         if (_hostInfo.NbOfIteration >= 0) 
-            return iteration < _hostInfo.NbOfIteration;
+            return _iteration < _hostInfo.NbOfIteration;
+
+        var groupFinished = await _groupResultReceived.Query(g => g);
+
+        _logger.LogInformation($"Print Iteration Result Delta:");
+
+        var getGroupResultReceivedDeltaUnderEpsilon = groupFinished.Where(reduceFinishedBool => 
+        {
+            _logger.LogInformation($"GroupId:{reduceFinishedBool.Id}, Delta:{reduceFinishedBool.Delta}");
+
+            return reduceFinishedBool is { Delta: <= EPSILON };
+        });
 
         var getGroup = await _groupCache.Query(q => q);
-        var groupFinished = await _groupResultReceived.Query(g => g);
-        _logger.LogInformation($"Print Iteration Result Delta:");
-        var getGroupResultReceivedDeltaUnderEpsilon = groupFinished.Where(s => 
-        {
-            _logger.LogInformation($"GroupId:{s.Id}, Delta:{s.Delta}");
-            return s.IsFinished && EPSILON >= s.Delta;
-        });
 
         return !getGroup.Count().Equals(getGroupResultReceivedDeltaUnderEpsilon.Count());
     }
@@ -82,9 +89,9 @@ public class ResultService : IResultService
     {
         var groupsFinished = await _groupResultReceived.Query(g => g);
 
-        groupsFinished.ForEach(g => g.IsFinished = false);
+        groupsFinished.ForEach(reduceFinishedBool => reduceFinishedBool.IsFinished = false);
 
-        await _groupResultReceived.AddOrUpdateRange(groupsFinished.Select(g => (g.Id, g)).ToList());
+        await _groupResultReceived.AddOrUpdateRange(groupsFinished.Select(reduceFinishedBool => (reduceFinishedBool.Id, g: reduceFinishedBool)).ToList());
 
         await _groupResultReceived.SaveChangesAsync();
 
@@ -96,6 +103,6 @@ public class ResultService : IResultService
 
         await _spaceResultReceived.SaveChangesAsync();
 
-        Interlocked.Increment(ref iteration);
+        Interlocked.Increment(ref _iteration);
     }
 }
