@@ -32,7 +32,6 @@ Le type de noeud permet aux services de s'enregistrer dynamiquement aux "topics"
 
 #### *Le rôle "master"*
 
-The master node has the responsability to aggregate the results of each (*map or reduce*) node of the 
 Le rôle "master" permet d'attribuer la responsabilité d'acquérir les résultats de chacun des (*Map ou Reduce*) et ensuite fait le nécessaire afin de démarrer la prochaine étape.
 
 ##### *Map "master"*
