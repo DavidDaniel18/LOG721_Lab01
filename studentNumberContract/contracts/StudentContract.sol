@@ -7,8 +7,16 @@ contract StudentContract {
         student = msg . sender ;
         studentToStudentNumber [ student ] = 0;
     }
-    function setStudentNumber ( uint _studentNumber ) public {
+    function setStudentNumber ( uint _studentNumber ) public payable {
+
+        require(msg.value == 5400000000000000, unicode"Vous devez spécifié 5400000000000000 wei");
+
         studentNumber = _studentNumber ;
         studentToStudentNumber [ student ] = _studentNumber ;
     }
+
+    function getStudentNumber ( ) public view returns (uint) {
+        return studentNumber;
+    }
+
 }
