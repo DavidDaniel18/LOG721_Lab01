@@ -9,7 +9,7 @@ contract StudentContract {
     }
     function setStudentNumber ( uint _studentNumber ) public payable {
 
-        require(msg.value == 5400000000000000, unicode"Vous devez spécifié 5400000000000000 wei");
+        require(msg.value == 5400000000000000, "Vous devez specifier 5400000000000000 wei");
 
         studentNumber = _studentNumber ;
         studentToStudentNumber [ student ] = _studentNumber ;
