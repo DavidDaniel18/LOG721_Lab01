@@ -10,7 +10,7 @@ public sealed class TcpBridge : ITcpBridge
 
     private readonly ChannelTunnel _writeShore = new();
 
-    private const int TransferredBites = 1024;
+    private const int TransferredBites = 128000;
 
     private Task _readTask = Task.CompletedTask;
 

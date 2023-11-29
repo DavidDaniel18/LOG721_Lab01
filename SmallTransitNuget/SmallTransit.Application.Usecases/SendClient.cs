@@ -45,10 +45,6 @@ public sealed class SendClient<TContract, TResult> : IDisposable
 
             tcpBridge.RunAsync(networkStream.GetStream(), networkStream.GetStream(), _cancellationTokenSource);
         }
-        else
-        {
-            _logger.LogInformation("Tcp bridge is already started");
-        }
 
         return await publishingSendingOrchestrator.Execute(sendWrapper);
     }

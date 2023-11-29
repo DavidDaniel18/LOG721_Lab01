@@ -34,11 +34,11 @@ public class ResultService : IResultService
     {
         var groups = await _groupCache.Query(g => g);
 
-        _logger.LogInformation("Result:");
+        _logger.LogError("Result:");
 
         groups.ForEach(group => 
         {
-            _logger.LogInformation($"{group}");
+            _logger.LogError($"{group}");
         });
     }
 

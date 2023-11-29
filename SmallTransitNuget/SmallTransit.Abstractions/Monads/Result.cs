@@ -1,7 +1,11 @@
-﻿namespace SmallTransit.Abstractions.Monads;
+﻿using Microsoft.Extensions.Logging;
+
+namespace SmallTransit.Abstractions.Monads;
 
 public record Result(Exception? Exception)
 {
+    public static ILogger? Logger { get; set; }
+
     public bool IsSuccess()
     {
         return Exception is null;
@@ -29,14 +33,14 @@ public record Result(Exception? Exception)
 
     public static Result Failure(Exception exception)
     {
-        Console.WriteLine(exception.Message);
+        Logger?.LogError(exception.Message);
 
         return new Result(exception);
     }
 
     public static Result Failure(string exceptionMessage)
     {
-        Console.WriteLine(exceptionMessage);
+        Logger?.LogError(exceptionMessage);
 
         return Failure(new Exception(exceptionMessage));
     }
@@ -48,28 +52,28 @@ public record Result(Exception? Exception)
 
     public static Result<TContent> Failure<TContent>(Exception exception)
     {
-        Console.WriteLine(exception.Message);
+        Logger?.LogError(exception.Message);
 
         return new Result<TContent>(default, exception);
     }
 
     public static Result<TContent> Failure<TContent>(string exceptionMessage)
     {
-        Console.WriteLine(exceptionMessage);
+        Logger?.LogError(exceptionMessage);
 
         return new Result<TContent>(default, new Exception(exceptionMessage));
     }
 
     public static Result<TContent> FromFailure<TContent>(Result innerResult)
     {
-        Console.WriteLine(innerResult.Exception?.Message);
+        Logger?.LogError(innerResult.Exception!.Message);
 
         return Failure<TContent>(innerResult.Exception ?? new ArgumentException("Inner result must be a failure", nameof(innerResult)));
     }
 
     public static Result FromFailure(Result innerResult)
     {
-        Console.WriteLine(innerResult.Exception?.Message);
+        Logger?.LogError(innerResult.Exception!.Message);
 
         return Failure(innerResult.Exception ?? new ArgumentException("Inner result must be a failure", nameof(innerResult)));
     }
