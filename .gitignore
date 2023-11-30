@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Smart Contract Build
-.studentNumberContract/build/*
+studentNumberContract/build/*
