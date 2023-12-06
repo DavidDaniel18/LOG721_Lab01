@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Smart Contract Build
 studentNumberContract/build/*
+
+#.env
+.env
