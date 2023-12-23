@@ -1,0 +1,16 @@
+{
+  "name": "web3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/tache_6.js",
+  "scripts": {
+    "start": "node src/tache_6.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "web3": "^4.3.0"
+  }
+}
