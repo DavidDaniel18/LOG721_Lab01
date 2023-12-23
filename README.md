@@ -26,6 +26,12 @@ Tests initiaux de déploiement et d'interaction avec le smart contract.
 Création de scripts clients simples en Web3.js pour interagir avec le smart contract.
 Tests préliminaires de la communication entre le client et le smart contract sur le réseau Ethereum de test.
 
+#### Répertoires (Laboratoire#3):
+- ``web3/``
+- ``web3Pub/``
+- ``web3Sub/``
+- ``studentNumberContract/``
+
 ### Problèmes Rencontrés et Solutions Envisagées
 Au cours du développement, nous avons rencontré plusieurs défis, notamment :
 
